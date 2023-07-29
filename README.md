@@ -3,7 +3,8 @@
 ## Strategy:
 * When price crosses 9MA upwards, flatten position and go long
 * When price crosses 9MA downwards, flatten position and go short
-* Biggest downfall is number of trades taken can be very excessive, so fees (if they exist) need to be watched closely and taxes will be deplorable 
+* Ensure we are breaking out of previous X number candles H-L range (or MA slope). This ensures the moves worthy and helps mitigate below.
+* Biggest downfall is number of trades taken can be very excessive without anything to show for it, so fees (if they exist) need to be managed closely and taxes will be deplorable 
 ## Instruments:
 * SPY Options about a week or two from expiry
 ## Notes:
