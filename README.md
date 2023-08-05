@@ -14,7 +14,10 @@
 ## Immediate To Do:
 * Need to get api keys from webull
 * Need to find dependable MD feed cause webull currently doesn't offer it
-* Need to look into use of EMA over MA and vice versa
+* Decide whether to build book inside signal generator or in its own process.
+  - If in its own process, seperate md from signal generator and stream it to both signal generator and book
+* Need to look into use of EMA over MA and vice versa.
+  * Currently going to use SMA as its less sensitve to price changes
 * Need to look into how many decimals can be used for order entry on options. Price levels are typically $0.01 each (so $1.00 in options), so if we can cutr this down to say $0.005 or less, we are able to place more marketable orders without paying the whole dollar
 ## Notes:
 * Incorporate other indicators, especially volume
