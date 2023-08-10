@@ -19,6 +19,7 @@
 
 * ### Market Data Feed
 
+  * For first iteration, MD will exist within Signal Generator
   * Need api keys from webull to build out
   * Simple Client Session websocket will do
   * Stream data to Book and Signal Generator
@@ -31,6 +32,7 @@
 
 * ### Book
 
+  * Not sure if book is really necessary as long as decision engine receives best bid/ask
   * Recieves market data from Market Data Feed
   * Builds a book of bids and asks
   * Sends bid/ask to Decision Engine
