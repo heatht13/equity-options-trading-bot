@@ -1,4 +1,4 @@
-# destiny
+# Bot Name Goes Here
 
 ## Strategy
 
