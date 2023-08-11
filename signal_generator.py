@@ -46,14 +46,17 @@ class MASignalGenerator():
         ma = self._sma(candle, self.period) if self.indicator == 'sma' else self._ema(candle, self.period)
         lookback_high, lookback_low = self._lookback(candle, self.lookback_period)
         self.execution_ws.send_json({
-                                        'ohlc': candle,
-                                        'ma': ma,
-                                        'ma_period': self.period,
-                                        'indicator': self.indicator,
-                                        'lookback_high': lookback_high, 
-                                        'lookback_low': lookback_low,
-                                        'symbol': symbol,
-                                        'timestamp': timestamp
+                                    'type': 'signal',
+                                    'data': {
+                                            'ohlc': candle,
+                                            'ma': ma,
+                                            'ma_period': self.period,
+                                            'indicator': self.indicator,
+                                            'lookback_high': lookback_high, 
+                                            'lookback_low': lookback_low,
+                                            'symbol': symbol,
+                                            'timestamp': timestamp
+                                        }
                                     }) 
                                      
     async def _book(self, msg):
@@ -63,9 +66,13 @@ class MASignalGenerator():
         msg_time = datetime.strptime(msg['timestamp'], '%Y-%m-%dT%H:%M:%S.%fZ')
         price = float(msg['price'])
         symbol = msg['symbol']
-        self.execution_ws.send_json({'price': price,
-                                     'timestamp': msg_time,
-                                     'symbol': symbol
+        self.execution_ws.send_json({
+                                    'type': 'price',
+                                    'data': {
+                                        'price': price,
+                                        'timestamp': msg_time,
+                                        'symbol': symbol
+                                        }
                                      })
         #TODO: Need to confirm msgs are in order and correspond to current candle
         if price > self.ohlc['h']:
@@ -136,13 +143,11 @@ def main(self):
     ma_strategy.add_argument('--period', type=str, default='9', choices=[str(x) for x in range(1, 201)], help="Moving average period")
     ma_strategy.add_argument('--lookback', type=str, default='5', choices=[str(x) for x in range(1, 21)], help="Lookback period")
     execution_args = parser.add_argument_group("Execution", "Execution parameters")
-    execution_args.add_argument('--execution_uri', type=str, default='ws://localhost:8080', help="Execution uri")
+    execution_args.add_argument('--execution_uri', type=str, default='https://localhost:8080/ws', help="Execution uri")
     credentials = parser.add_argument_group("Credentials", "Credentials for data source")
     credentials.add_argument('--api_key', type=str, default=None, help="API key")
     credentials.add_argument('--api_secret', type=str, default=None, help="API secret")
     args = parser.parse_args()
-    #TODO:figure out how to get arg groups
-    args = vars(args)
     signal_generator = MASignalGenerator(**args)
     ma_signal_task = asyncio.run(signal_generator.signal_handler(**args))
 
