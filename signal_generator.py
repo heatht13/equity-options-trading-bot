@@ -1,0 +1,164 @@
+import aiohttp
+from aiohttp import web
+import asyncio
+from collections import deque
+from logging import Logger
+from argparse import ArgumentParser
+from datetime import datetime
+
+logger = Logger(__name__)
+
+MA = set(('sma', 'ema'))
+OHLC = {'o': 0, 'h': 0, 'l': 0, 'c': 0, 't': 0}
+TIMEFRAMES = {'1m': 60, '5m': 300, '15m': 900, '1h': 3600, '4h': 14400, '1d': 86400}
+
+class MASignalGenerator():
+    def __init__(self, feed_uri, timeframe, symbols, indicator, period, lookback, execution_uri=None):
+        self.feed_uri = feed_uri
+        self.timeframe = TIMEFRAMES[timeframe]
+        self.symbols = symbols
+        self.indicator = indicator
+        self.period = int(period)
+        self.lookback_period = int(lookback)
+        self.execution_ws = aiohttp.ClientSession().ws_connect(execution_uri)
+        self.sma_queues = dict()
+        self.ema_queues = dict()
+        self.ohlc = OHLC
+
+    def add_ma_queue(self, period, indicator):
+        queues = self.sma_queues if indicator == 'sma' else self.ema_queues
+        if period not in queues:
+            queues[period] = deque(maxlen=period)
+    
+    def sma(self, candle, period):
+        queue = self.sma_queues[period]
+        queue.append(candle)
+        if len(queue) < period:
+            logger.info(f'Not enough data for {period} period sma')
+            return None
+        return sum((candle['c'] for candle in queue)) / queue.maxlen
+
+    def ema(self, price, period, ema_prev=None):
+        raise NotImplementedError
+
+    def lookback(self, candle, lookback):
+        self.lookback_queue.append(candle)
+        if len(self.lookback_queue) < lookback:
+            logger.info(f'Not enough data for {lookback} lookback period')
+            return None
+        return max((candle['h'] for candle in self.lookback_queue)), min((candle['l'] for candle in self.lookback_queue))
+    
+    async def send_signals(self, candle, symbol, timestamp):
+
+        ma = self.sma(candle, self.period) if self.indicator == 'sma' else self.ema(candle, self.period)
+        lookback_high, lookback_low = self.lookback(candle, self.lookback_period)
+        self.execution_ws.send_json({
+                                    'type': 'signal_update',
+                                    'symbol': symbol,
+                                    'data': {
+                                            'ohlc': candle,
+                                            'ma': ma,
+                                            #'ma_period': self.period,
+                                            #'indicator': self.indicator,
+                                            'lookback_high': lookback_high, 
+                                            'lookback_low': lookback_low,
+                                            #'look_back_period': self.lookback_period,
+                                            'timestamp': timestamp
+                                        }
+                                    }) 
+                                     
+    async def book(self, msg):
+        raise NotImplementedError
+    
+    async def handle_ticks(self, msg):
+        msg_time = datetime.strptime(msg['timestamp'], '%Y-%m-%dT%H:%M:%S.%fZ')
+        price = float(msg['price'])
+        symbol = msg['symbol']
+        self.execution_ws.send_json({
+                                    'type': 'price',
+                                    'data': {
+                                        'price': price,
+                                        'timestamp': msg_time,
+                                        'symbol': symbol
+                                        }
+                                     })
+        #TODO: Need to confirm msgs are in order and correspond to current candle
+        if price > self.ohlc['h']:
+            self.ohlc['h'] = price
+        elif price < self.ohlc['l']:
+            self.ohlc['l'] = price
+        #open candle: will need more precision.Currently seconds
+        if msg_time % self.timeframe == 1:
+            self.ohlc['o'] = price
+            self.ohlc['h'] = price
+            self.ohlc['l'] = price
+            self.ohlc['c'] = price
+            self.ohlc['t'] = self.timeframe
+            pass
+        #close candle: will need more precision. Currently seconds
+        elif msg_time % self.timeframe == 0:
+            self.ohlc['c'] = price
+            self.send_signals(self.ohlc, symbol, msg_time)
+        
+    async def handle_ws(self, feed_uri, symbols):
+        while True:
+            try:
+                async with aiohttp.ClientSession() as session:
+                    async with session.ws_connect(feed_uri) as ws:
+                        sub_price = {
+                            "type": "subscribe",
+                            "channel": "QUOTE",
+                            "symbol": symbols
+                        }
+                        await ws.send_json(sub_price)
+                        sub_book = {
+                            "type": "subscribe",
+                            "channel": "TICK",
+                            "symbol": symbols
+                        }
+                        await ws.send_json(sub_book)
+                        async for msg in ws:
+                            logger.info(msg)
+                            msg = msg.json()
+                            if msg['type'] == 'QUOTE':
+                                await self.book(msg)
+                            elif msg['type'] == 'TICK':
+                                self.handle_ticks(msg)
+                            else:
+                                logger.warning(f'Unknown message: {msg["type"]}')
+            except Exception as e:
+                logger.error(e)
+                await asyncio.sleep(1)
+
+    async def signal_handler_main(self):
+        if self.indicator in MA:
+            self.add_ma_queue(self.period, self.indicator)
+        self.lookback_queue = deque(maxlen=self.lookback_period)
+
+        app = web.Application()
+        #app.add_routes([web.get('/', hello)])
+
+        await self.handle_ws(self.feed_uri, self.symbols)
+
+def main(self):
+    parser = ArgumentParser()
+    ma_strategy = parser.add_argument_group("MA strategy", "Moving average strategy")
+    ma_strategy.add_argument('--feed_uri', type=str, default='ws://localhost:8080', help="data source uri")
+    ma_strategy.add_argument('--timeframe', type=str, default='5m', choices=TIMEFRAMES.keys(), help="Timeframe for candles")
+    ma_strategy.add_argument('--symbols', type=str, default='SPY', help="Symbols to trade")
+    ma_strategy.add_argument('--indicator', type=str, default='sma', choices=MA, help="Moving average: ether sma or ema")
+    ma_strategy.add_argument('--period', type=str, default='9', choices=[str(x) for x in range(1, 201)], help="Moving average period")
+    ma_strategy.add_argument('--lookback', type=str, default='5', choices=[str(x) for x in range(1, 21)], help="Lookback period")
+    execution_args = parser.add_argument_group("Execution", "Execution parameters")
+    execution_args.add_argument('--execution_uri', type=str, default='https://localhost:8080/ws', help="Execution uri")
+    credentials = parser.add_argument_group("Credentials", "Credentials for data source")
+    credentials.add_argument('--api_key', type=str, default=None, help="API key")
+    credentials.add_argument('--api_secret', type=str, default=None, help="API secret")
+    args = parser.parse_args()
+    signal_generator = MASignalGenerator(**args)
+    asyncio.run(signal_generator.signal_handler_main())
+
+if __name__ == '__main__':
+    main()
+
+STRATEGY = MASignalGenerator
