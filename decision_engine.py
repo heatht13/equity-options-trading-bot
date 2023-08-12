@@ -5,49 +5,106 @@ from collections import deque
 from logging import Logger
 from argparse import ArgumentParser
 from datetime import datetime
+
 logger = Logger(__name__)
 
+SIGNAL_PROC_WAIT_INTERVAL_SEC = 1
+NUM_CONTRACTS = 1
+
+#NOTE: send_json() is just a place holder for the actual awaitable send function
+
 class DecisionEngine():
-    def __init__(self, execution_path, port):
+    def __init__(self, execution_path, port, order_router_uri):
         self.execution_path = execution_path
         self.port = port
-        self.symbols = None
+        self.order_router_ws = aiohttp.ClientSession().ws_connect(order_router_uri)
+        self.prices = dict()
+        self.positions = dict()
+        self.signals = dict()
+        self.symbols = set()
 
-    def _process_price(self, data):
+    def get_positions(self):
+        self.order_router_ws.send_json({
+            'type': 'get_positions'
+        })
+
+    def send_order(self, symbol, side, price, quantity):
+        self.order_router_ws.send_json({
+            'type': 'order',
+            'symbol': symbol,
+            'side': side,
+            'price': price,
+            'quantity': quantity,
+            'timestamp': datetime.utcnow().timestamp()
+        })
+
+    def handle_price_update(self, data):
         symbol = data['symbol']
+        self.symbols.add(symbol)
         timestamp = data['timestamp']
-        price = float(data['price'])
-        if symbol not in self.symbols:
-            self.symbols[symbol] = dict()
-        self.symbols[symbol]['price'] = price
-        self.symbols[symbol]['timestamp'] = timestamp
+        price = data['price']
+        self.prices[symbol] = price
 
-    def _process_signal(self, data):
-        raise NotImplementedError
-
-    async def _handle_ws(self, request):
+    def handle_signal_update(self, symbol, data):
+        self.symbols.add(symbol)
+        self.signals[symbol] = data
+        
+    async def handle_ws(self, request):
         ws = web.WebSocketResponse()
         await ws.prepare(request)
 
         async for msg in ws:
             msg = msg.json()
             if msg['type'] == 'price':
-                self._process_price(msg['data'])
-            elif msg['type'] == 'signal':
-                self._process_signal(msg['data'])
+                self.handle_price_update(msg['data'])
+            elif msg['type'] == 'signal_update':
+                self.handle_signal_update(msg['data'])
 
-    def start(self):
+    async def request_handler(self):
         app = web.Application()
-        app.add_routes([web.get('/ws', self._handle_ws)])
-        web.run_app(app, port=self.port)
+        app.add_routes([web.get('/ws', self.handle_ws)])
+        #web.run_app(app, port=self.port)
+
+    async def signal_processor(self):
+        while True:
+            for symbol in self.symbols:
+                if symbol not in self.signals or symbol not in self.prices:
+                    continue
+                signal = self.signals[symbol]
+                price = self.prices[symbol]
+                if symbol not in self.positions:
+                    if price > signal['ma'] and price > signal['lookback_high']:
+                        self.send_order(symbol, 'buy', price, NUM_CONTRACTS)
+                    elif price < signal['ma'] and price < signal['lookback_low']:
+                        self.send_order(symbol, 'sell', price, NUM_CONTRACTS)
+                else:
+                    #NOTE: Could open up counter short/long position here after closing this
+                    # side, but will skip and let next iteration decide with code above
+                    position = self.positions[symbol]
+                    if position['side'] == 'long':
+                        if price < signal['ma']:
+                            self.send_order(symbol, 'sell', price, NUM_CONTRACTS)
+                    elif position['side'] == 'short':
+                        if price > signal['ma']:
+                            self.send_order(symbol, 'buy', price, NUM_CONTRACTS)
+
+            await asyncio.sleep(SIGNAL_PROC_WAIT_INTERVAL_SEC)
+
+    async def start(self):
+        request_handler_task = asyncio.create_task(self.request_handler())
+        signal_processor_task = asyncio.create_task(self.signal_processor())
+        await request_handler_task
+        await signal_processor_task
 
 def main():
     parser = ArgumentParser()
     decision_engine = parser.add_argument_group("Decision Engine", "Decision Engine parameters")
     decision_engine.add_argument('--execution_path', help="Path to Decision Engine")
     decision_engine.add_argument('--port', help="Port to run Decision Engine on")
+    decision_engine.add_argument('--order_router_uri', help="URI of Order Router")
     args = parser.parse_args()
     decision_engine = DecisionEngine(**args)
+    asyncio.run(decision_engine.start())
 
 if __name__ == '__main__':
     main()
