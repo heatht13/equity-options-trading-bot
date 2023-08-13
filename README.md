@@ -20,7 +20,8 @@
 * ### Market Data Feed
 
   * For first iteration, MD will exist within Signal Generator
-  * Need api keys from webull to build out
+  * Building out on TD Ameritrade
+  * Waiting on api keys from Webull
   * Simple Client Session websocket will do
   * Stream data to Book and Signal Generator
 
@@ -47,7 +48,8 @@
 
 * ### Order Router
 
-  * Need api keys from webull to build out
+  * Building out on TD Ameritrade
+  * Waiting on api from Webull
   * Provides interface for position management, balances, and order entry
   * Receives order params and executes order on exchanges
   * Sends postions, orders, balances, and any other relevant data to Decision Engine
@@ -59,11 +61,8 @@
 ## Immediate To Do
 
 * Need to get api keys from webull
-* Need to find dependable MD feed cause webull currently doesn't offer it
 * Decide whether to build book inside signal generator or in its own process.
   * If in its own process, seperate md from signal generator and stream it to both signal generator and book
-* Need to look into use of EMA over MA and vice versa.
-  * Currently going to use SMA as its less sensitve to price changes
 * Need to look into how many decimals can be used for order entry on options. Price levels are typically $0.01 each (so $1.00 in options), so if we can cutr this down to say $0.005 or less, we are able to place more marketable orders without paying the whole dollar
 
 ## Notes
@@ -73,6 +72,6 @@
 * Optimize choosing expiry that minimizes time decay, but ensures a return
 
 ## Platform
-
+* TD Ameritrade API (soon to be Schwab API)
 * Webull OpenAPI
 * Python 3.11.3
