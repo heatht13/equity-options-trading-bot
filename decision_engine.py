@@ -1,6 +1,8 @@
 import aiohttp
 import asyncio
 from aiohttp import web
+import weakref
+from aiohttp import WSCloseCode
 from collections import deque
 from logging import Logger
 from argparse import ArgumentParser
@@ -53,17 +55,28 @@ class DecisionEngine():
         ws = web.WebSocketResponse()
         await ws.prepare(request)
 
-        async for msg in ws:
-            msg = msg.json()
-            if msg['type'] == 'price':
-                self.handle_price_update(msg['data'])
-            elif msg['type'] == 'signal_update':
-                self.handle_signal_update(msg['data'])
+        request.app['websockets'].add(ws)
+        try:
+            async for msg in ws:
+                msg = msg.json()
+                if msg['type'] == 'price':
+                    self.handle_price_update(msg['data'])
+                elif msg['type'] == 'signal_update':
+                    self.handle_signal_update(msg['data'])
+        finally:
+            request.app['websockets'].discard(ws)
+        return ws
+    
+    async def on_shutdown(app):
+        for ws in set(app['websockets']):
+            await ws.close(code=WSCloseCode.GOING_AWAY,
+                        message='Server shutdown')
 
     async def request_handler(self):
         app = web.Application()
         app.add_routes([web.get('/ws', self.handle_ws)])
-        #web.run_app(app, port=self.port)
+        app.on_shutdown.append(self.on_shutdown)
+        web.run_app(app, port=self.port)
 
     async def signal_processor(self):
         while True:
@@ -108,3 +121,5 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+DECISIONENGINE = DecisionEngine

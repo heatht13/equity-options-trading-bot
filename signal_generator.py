@@ -13,8 +13,7 @@ OHLC = {'o': 0, 'h': 0, 'l': 0, 'c': 0, 't': 0}
 TIMEFRAMES = {'1m': 60, '5m': 300, '15m': 900, '1h': 3600, '4h': 14400, '1d': 86400}
 
 class MASignalGenerator():
-    def __init__(self, feed_uri, timeframe, symbols, indicator, period, lookback, execution_uri=None):
-        self.feed_uri = feed_uri
+    def __init__(self, timeframe, symbols, indicator, period, lookback, execution_uri=None):
         self.timeframe = TIMEFRAMES[timeframe]
         self.symbols = symbols
         self.indicator = indicator
@@ -99,36 +98,9 @@ class MASignalGenerator():
         elif msg_time % self.timeframe == 0:
             self.ohlc['c'] = price
             self.send_signals(self.ohlc, symbol, msg_time)
-        
-    async def handle_ws(self, feed_uri, symbols):
-        while True:
-            try:
-                async with aiohttp.ClientSession() as session:
-                    async with session.ws_connect(feed_uri) as ws:
-                        sub_price = {
-                            "type": "subscribe",
-                            "channel": "QUOTE",
-                            "symbol": symbols
-                        }
-                        await ws.send_json(sub_price)
-                        sub_book = {
-                            "type": "subscribe",
-                            "channel": "TICK",
-                            "symbol": symbols
-                        }
-                        await ws.send_json(sub_book)
-                        async for msg in ws:
-                            logger.info(msg)
-                            msg = msg.json()
-                            if msg['type'] == 'QUOTE':
-                                await self.book(msg)
-                            elif msg['type'] == 'TICK':
-                                self.handle_ticks(msg)
-                            else:
-                                logger.warning(f'Unknown message: {msg["type"]}')
-            except Exception as e:
-                logger.error(e)
-                await asyncio.sleep(1)
+    
+    async def handle_ws(self, symbols):
+        raise NotImplementedError
 
     async def signal_handler_main(self):
         if self.indicator in MA:
@@ -138,27 +110,8 @@ class MASignalGenerator():
         app = web.Application()
         #app.add_routes([web.get('/', hello)])
 
-        await self.handle_ws(self.feed_uri, self.symbols)
+        await self.handle_ws(self, self.symbols)
 
-def main(self):
-    parser = ArgumentParser()
-    ma_strategy = parser.add_argument_group("MA strategy", "Moving average strategy")
-    ma_strategy.add_argument('--feed_uri', type=str, default='ws://localhost:8080', help="data source uri")
-    ma_strategy.add_argument('--timeframe', type=str, default='5m', choices=TIMEFRAMES.keys(), help="Timeframe for candles")
-    ma_strategy.add_argument('--symbols', type=str, default='SPY', help="Symbols to trade")
-    ma_strategy.add_argument('--indicator', type=str, default='sma', choices=MA, help="Moving average: ether sma or ema")
-    ma_strategy.add_argument('--period', type=str, default='9', choices=[str(x) for x in range(1, 201)], help="Moving average period")
-    ma_strategy.add_argument('--lookback', type=str, default='5', choices=[str(x) for x in range(1, 21)], help="Lookback period")
-    execution_args = parser.add_argument_group("Execution", "Execution parameters")
-    execution_args.add_argument('--execution_uri', type=str, default='https://localhost:8080/ws', help="Execution uri")
-    credentials = parser.add_argument_group("Credentials", "Credentials for data source")
-    credentials.add_argument('--api_key', type=str, default=None, help="API key")
-    credentials.add_argument('--api_secret', type=str, default=None, help="API secret")
-    args = parser.parse_args()
-    signal_generator = MASignalGenerator(**args)
-    asyncio.run(signal_generator.signal_handler_main())
-
-if __name__ == '__main__':
-    main()
-
-STRATEGY = MASignalGenerator
+        if self.session:
+            await self.session.close()
+            self.session = None
