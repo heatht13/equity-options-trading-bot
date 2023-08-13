@@ -7,6 +7,7 @@ from collections import deque
 from logging import Logger
 from argparse import ArgumentParser
 from datetime import datetime
+import json
 
 logger = Logger(__name__)
 
@@ -30,16 +31,20 @@ class DecisionEngine():
             'type': 'get_positions'
         })
 
-    def send_order(self, symbol, side, price, quantity):
-        self.order_router_ws.send_json({
+    def send_order(self, symbol, order_type, side, price, quantity, offset, tif, asset_type=None):
+        self.order_router_ws.send_str(json.dumps({
             'type': 'order',
             'symbol': symbol,
+            'order_type': order_type,
             'side': side,
             'price': price,
             'quantity': quantity,
+            'offset': offset,
+            'tif': tif,
+            'asset_type': asset_type,
             'timestamp': datetime.utcnow().timestamp()
-        })
 
+        }))
     def handle_price_update(self, data):
         symbol = data['symbol']
         self.symbols.add(symbol)
@@ -87,19 +92,19 @@ class DecisionEngine():
                 price = self.prices[symbol]
                 if symbol not in self.positions:
                     if price > signal['ma'] and price > signal['lookback_high']:
-                        self.send_order(symbol, 'buy', price, NUM_CONTRACTS)
+                        self.send_order(symbol, 'limit', 'buy', price, NUM_CONTRACTS, 'open', 'day', 'OPTION')
                     elif price < signal['ma'] and price < signal['lookback_low']:
-                        self.send_order(symbol, 'sell', price, NUM_CONTRACTS)
+                        self.send_order(symbol, 'limit', 'sell', price, NUM_CONTRACTS, 'open', 'day', 'OPTION')
                 else:
                     #NOTE: Could open up counter short/long position here after closing this
                     # side, but will skip and let next iteration decide with code above
                     position = self.positions[symbol]
                     if position['side'] == 'long':
                         if price < signal['ma']:
-                            self.send_order(symbol, 'sell', price, NUM_CONTRACTS)
+                            self.send_order(symbol, 'limit', 'sell', price, NUM_CONTRACTS, 'close', 'day', 'OPTION')
                     elif position['side'] == 'short':
                         if price > signal['ma']:
-                            self.send_order(symbol, 'buy', price, NUM_CONTRACTS)
+                            self.send_order(symbol, 'limit', 'buy', price, NUM_CONTRACTS, 'close', 'day', 'OPTION')
 
             await asyncio.sleep(SIGNAL_PROC_WAIT_INTERVAL_SEC)
 
@@ -112,9 +117,10 @@ class DecisionEngine():
 def main():
     parser = ArgumentParser()
     decision_engine = parser.add_argument_group("Decision Engine", "Decision Engine parameters")
-    decision_engine.add_argument('--execution_path', help="Path to Decision Engine")
-    decision_engine.add_argument('--port', help="Port to run Decision Engine on")
-    decision_engine.add_argument('--order_router_uri', help="URI of Order Router")
+    decision_engine.add_argument('--execution_path', type=str, default='https://localhost', help="Path to decision engine")
+    decision_engine.add_argument('--port', type=str, default='8080', help="Port to run the decision engine on")
+    order_router = parser.add_argument_group("Order Router", "Order Router parameters")
+    order_router.add_argument('--order_router_uri', type=str, default='https://localhost:8081',  help="URI of Order Router")
     args = parser.parse_args()
     decision_engine = DecisionEngine(**args)
     asyncio.run(decision_engine.start())

@@ -5,6 +5,7 @@ from collections import deque
 from logging import Logger
 from argparse import ArgumentParser
 from datetime import datetime
+import json
 
 logger = Logger(__name__)
 
@@ -13,13 +14,15 @@ OHLC = {'o': 0, 'h': 0, 'l': 0, 'c': 0, 't': 0}
 TIMEFRAMES = {'1m': 60, '5m': 300, '15m': 900, '1h': 3600, '4h': 14400, '1d': 86400}
 
 class MASignalGenerator():
-    def __init__(self, timeframe, symbols, indicator, period, lookback, execution_uri=None):
+    def __init__(self, execution_path, port, decision_engine_uri, timeframe, symbols, indicator, period, lookback):
+        self.execution_path = execution_path
+        self.port = port
+        self.decision_engine_ws = aiohttp.ClientSession().ws_connect(decision_engine_uri)
         self.timeframe = TIMEFRAMES[timeframe]
         self.symbols = symbols
         self.indicator = indicator
         self.period = int(period)
         self.lookback_period = int(lookback)
-        self.execution_ws = aiohttp.ClientSession().ws_connect(execution_uri)
         self.sma_queues = dict()
         self.ema_queues = dict()
         self.ohlc = OHLC
@@ -51,7 +54,7 @@ class MASignalGenerator():
 
         ma = self.sma(candle, self.period) if self.indicator == 'sma' else self.ema(candle, self.period)
         lookback_high, lookback_low = self.lookback(candle, self.lookback_period)
-        self.execution_ws.send_json({
+        self.decision_engine_ws.send_str(json.dumps({
                                     'type': 'signal_update',
                                     'symbol': symbol,
                                     'data': {
@@ -64,7 +67,7 @@ class MASignalGenerator():
                                             #'look_back_period': self.lookback_period,
                                             'timestamp': timestamp
                                         }
-                                    }) 
+                                    }))
                                      
     async def book(self, msg):
         raise NotImplementedError
@@ -73,14 +76,14 @@ class MASignalGenerator():
         msg_time = datetime.strptime(msg['timestamp'], '%Y-%m-%dT%H:%M:%S.%fZ')
         price = float(msg['price'])
         symbol = msg['symbol']
-        self.execution_ws.send_json({
+        self.decision_engine_ws.send_str(json.dumps({
                                     'type': 'price',
                                     'data': {
                                         'price': price,
                                         'timestamp': msg_time,
                                         'symbol': symbol
                                         }
-                                     })
+                                     }))
         #TODO: Need to confirm msgs are in order and correspond to current candle
         if price > self.ohlc['h']:
             self.ohlc['h'] = price
@@ -108,10 +111,9 @@ class MASignalGenerator():
         self.lookback_queue = deque(maxlen=self.lookback_period)
 
         app = web.Application()
-        #app.add_routes([web.get('/', hello)])
-
-        await self.handle_ws(self, self.symbols)
-
+        #TODO: not correct, just filling in for now
+        app.add_routes([web.get('/ws', self.handle_ws)])
+        web.run_app(app, port=self.port)
         if self.session:
             await self.session.close()
             self.session = None

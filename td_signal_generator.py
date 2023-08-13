@@ -39,20 +39,21 @@ class TDASignalGenerator(MASignalGenerator):
     
     async def generate_token_from_refresh(self, refresh_token):
         headers = {'Content-Type':'application/x-www-form-urlencoded'}
-        payload = {
+        data = {
             'grant_type':'refresh_token',
             'refresh_token': refresh_token,
             'client_id': self.consumer_key,
         }
-        response = await self.rest_query('post', self.td_uri+self.endpoints['oath_token'], headers, payload)
+        response = await self.rest_query('post', self.td_uri+self.endpoints['oath_token'], headers, json=data)
         access_token = response['access_token']
         access_token_expiration = datetime.utcnow() + int(response['expires_in'])
         return access_token, access_token_expiration
 
     async def get_user_principals(self):
-        headers = {'Authorization': f'Bearer {self.access_token}'}
-        payload = {'fields' : "streamerSubscriptionKeys,streamerConnectionInfo"}
-        response = await self.rest_query('get', self.td_uri+self.endpoints['user_principals'], headers, payload)
+        headers = {'Authorization': f'Bearer {self.access_token}',
+                   'Content-Type':'application/json'}
+        data = {'fields' : "streamerSubscriptionKeys,streamerConnectionInfo"}
+        response = await self.rest_query('get', self.td_uri+self.endpoints['user_principals'], headers, json=data)
         return response
 
     async def handle_ws(self, symbols):
@@ -131,14 +132,17 @@ class TDASignalGenerator(MASignalGenerator):
 
 def main():
     parser = ArgumentParser()
+    signal_generator_args = parser.add_argument_group("SignalGenerator", "Signal Generator parameters")
+    signal_generator_args.add_argument('--execution_path', type=str, default='https://localhost', help="Path to signal generator")
+    signal_generator_args.add_argument('--port', type=str, default='8081', help="Port to run the signal generator on")
+    decision_engine_args = parser.add_argument_group("DecisionEngine", "Decision Engine parameters")
+    decision_engine_args.add_argument('--decision_engine_uri', type=str, default='https://localhost:8080', help="URI of decision engine")
     ma_strategy = parser.add_argument_group("MA strategy", "Moving average strategy")
     ma_strategy.add_argument('--timeframe', type=str, default='5m', choices=TIMEFRAMES.keys(), help="Timeframe for candles")
     ma_strategy.add_argument('--symbols', type=str, default='SPY', help="Symbols to trade")
     ma_strategy.add_argument('--indicator', type=str, default='sma', choices=MA, help="Moving average: ether sma or ema")
     ma_strategy.add_argument('--period', type=str, default='9', choices=[str(x) for x in range(1, 201)], help="Moving average period")
     ma_strategy.add_argument('--lookback', type=str, default='5', choices=[str(x) for x in range(1, 21)], help="Lookback period")
-    execution_args = parser.add_argument_group("Execution", "Execution parameters")
-    execution_args.add_argument('--execution_uri', type=str, default='https://localhost:8080/ws', help="Execution uri")
     credentials = parser.add_argument_group("Credentials", "Credentials for data source")
     credentials.add_argument('--user_id', type=str, default=None, help="API user id")
     credentials.add_argument('--consumer_key', type=str, default=None, help="API application consumer key")
