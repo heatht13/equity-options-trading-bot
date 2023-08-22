@@ -75,3 +75,17 @@
 * TD Ameritrade API (soon to be Schwab API)
 * Webull OpenAPI
 * Python 3.11.3
+
+## Supervisord.conf process example
+[program:decision_engine]
+command=/path/to/un/decision_engine
+process_name=%(program_name)s
+numprocs=1
+directory=/tmp
+//priority=999 higher num equals less prio ie last to start and first to stop
+autostart=true
+user=heatht13
+stdout_logfile=/path/to/decision_engine_logs
+stderr_logfile=/path/to/decision_engine_err_logs
+//environment=any env vars we want to define here (supervisor scope)
+serverurl=AUTO
