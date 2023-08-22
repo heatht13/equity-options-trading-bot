@@ -17,42 +17,42 @@
 
 * Note: Currently have SignalGenerator, MD, and Book in one process
 
+* ### Decision Engine (Client)
+
+  * subscribes to signals and bids/asks feeds from Signal Generator
+  * Determines whether signal is generated from signal data
+  * requests positions, balances, other relevant info from order router
+  * Produce decisions based on signals, balances, and positions
+  * sends order parameters to order router for execution on exchange
+
+* ### Signal Generator (Server and Client)
+
+  * Supports strategy discussed above
+  * client subscribes to MD from exchange
+  * produces signals from MD
+  * server sends signals, bids/asks to decision engine client
+ 
+* ### Order Router (Server and Client)
+
+  * Building out on TD Ameritrade
+  * Waiting on api from Webull
+  * server handles position management, balances, and order entry requests from decision engine
+  * client makes positions, balances, and order entry requests to exchange
+
 * ### Market Data Feed
 
   * For first iteration, MD will exist within Signal Generator
   * Building out on TD Ameritrade
   * Waiting on api keys from Webull
-  * Simple Client Session websocket will do
   * Stream data to Book and Signal Generator
-
-* ### Signal Generator
-
-  * Supports strategy discussed above
-  * Recieves market data and produces signal data
-  * Sends signal data to Decision Engine
 
 * ### Book
 
-  * Not sure if book is really necessary as long as decision engine receives best bid/ask
+  * Not needed. Bids/Asks will be streamed directly to decision engine.
+  * If we want to store book data to db, we can implement this
   * Recieves market data from Market Data Feed
   * Builds a book of bids and asks
   * Sends bid/ask to Decision Engine
-
-* ### Decision Engine
-
-  * Recieves bid/ask from Book and signal data from Signal Generator
-  * Determines whether signal is generated from signal data
-  * Receives positions, balances, other relevant info
-  * Produce decisions based on signals, balances, and positions
-  * Sends order parameters to order router for execution on exchange
-
-* ### Order Router
-
-  * Building out on TD Ameritrade
-  * Waiting on api from Webull
-  * Provides interface for position management, balances, and order entry
-  * Receives order params and executes order on exchanges
-  * Sends postions, orders, balances, and any other relevant data to Decision Engine
 
 ## Instruments
 
