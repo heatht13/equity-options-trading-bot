@@ -73,6 +73,7 @@
 * Optimize choosing expiry that minimizes time decay, but ensures a return
 
 ## Platform
+
 * TD Ameritrade API (soon to be Schwab API)
 * Webull OpenAPI
 * Python 3.11.3
@@ -104,45 +105,4 @@ async def handle_client(reader, writer):
 server = await asyncio.start_unix_server(handle_client, '/tmp/unix_socket')
 async with server:
     await server.server_forever()
-```
-
-## Supervisord.conf process example
-
-```
-[unix_http_server]
-file=/tmp/supervisor.sock
-chmod=777
-
-[supervisorctl]
-serverurl=unix:///tmp/supervisor.sock
-
-[rpcinterface:supervisor]
-supervisor.rpcinterface_factory = supervisor.rpcinterface:make_main_rpcinterface
-
-[program:decision_engine]
-command=.py311/bin/python %(program_name)s.py --port 8101 --order_router_uri 127.0.0.1:8103
-process_name=%(program_name)s
-numprocs=1
-stdout_logfile=/dev/stdout
-stdout_logfile_maxbytes=0
-stderr_logfile=/dev/stderr
-stderr_logfile_maxbytes=0
-
-[program:td_signal_generator]
-command=.py311/bin/python %(program_name)s.py --port 8102 --decision_engine_uri 127.0.0.1:8101 --timeframe --symbols --indicator --period --lookback --user_id --consumer_key --refresh_token
-process_name=%(program_name)s
-numprocs=1
-stdout_logfile=/dev/stdout
-stdout_logfile_maxbytes=0
-stderr_logfile=/dev/stderr
-stderr_logfile_maxbytes=0
-
-[program:td_order_router]
-command=.py311/bin/python %(program_name)s.py --port 8103 --decision_engine_uri 127.0.0.1:8101 --account_id --user_id --consumer_key --refresh_token
-process_name=%(program_name)s
-numprocs=1
-stdout_logfile=/dev/stdout
-stdout_logfile_maxbytes=0
-stderr_logfile=/dev/stderr
-stderr_logfile_maxbytes=0
 ```

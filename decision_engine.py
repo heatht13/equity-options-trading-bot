@@ -14,8 +14,6 @@ logger = Logger(__name__)
 SIGNAL_PROC_WAIT_INTERVAL_SEC = 1
 NUM_CONTRACTS = 1
 
-#NOTE: send_json() is just a place holder for the actual awaitable send function
-
 class DecisionEngine():
     def __init__(self, execution_path, port, order_router_uri):
         self.execution_path = execution_path
