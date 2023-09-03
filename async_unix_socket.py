@@ -12,6 +12,9 @@ class AsyncUnixSocketServer():
         self.unix_socket_path = unix_socket_path
 
     async def send_str(self, msg):
+        if self.writer.is_closing():
+            raise ConnectionError("Connection to client closing")
+        msg = str(msg)
         message_length = len(msg)
         self.writer.write(message_length.to_bytes(self.MSG_LENGTH_PREFIX_BYTES, byteorder='big'))
         self.writer.write(msg.encode('utf-8'))
@@ -67,6 +70,9 @@ class AsyncUnixSocketClient():
         self.unix_socket_path = unix_socket_path
 
     async def send_str(self, msg):
+        if self.writer.is_closing():
+            raise ConnectionError("Connection to server closing")
+        msg = str(msg)
         message_length = len(msg)
         self.writer.write(message_length.to_bytes(self.MSG_LENGTH_PREFIX_BYTES, byteorder='big'))
         self.writer.write(msg.encode('utf-8'))
@@ -86,7 +92,8 @@ class AsyncUnixSocketClient():
 
     async def connect(self):
         self.reader, self.writer = await asyncio.open_unix_connection(path=self.unix_socket_path)
-
+        await self.receive()
+        
     async def close(self):
         self.writer.close()
         await self.writer.wait_closed()
@@ -117,6 +124,9 @@ class ContextManagedAsyncUnixSocketServer:
         await self.server.wait_closed()
 
     async def send_str(self, msg):
+        if self.writer.is_closing():
+            raise ConnectionError("Connection to client closing")
+        msg = str(msg)
         message_length = len(msg)
         self.writer.write(message_length.to_bytes(self.MSG_LENGTH_PREFIX_BYTES, byteorder='big'))
         self.writer.write(msg.encode('utf-8'))
@@ -164,6 +174,7 @@ class ContextManagedAsyncUnixSocketClient:
 
     async def __aenter__(self):
         self.reader, self.writer = await asyncio.open_unix_connection(self.unix_socket_path)
+        await self.receive()
         return self
 
     async def __aexit__(self, exc_type, exc, tb):
@@ -172,6 +183,9 @@ class ContextManagedAsyncUnixSocketClient:
             await self.writer.wait_closed()
 
     async def send_str(self, msg):
+        if self.writer.is_closing():
+            raise ConnectionError("Connection to server closing")
+        msg = str(msg)
         message_length = len(msg)
         self.writer.write(message_length.to_bytes(self.MSG_LENGTH_PREFIX_BYTES, byteorder='big'))
         self.writer.write(msg.encode('utf-8'))
