@@ -1,9 +1,7 @@
 import aiohttp
 from aiohttp import web
-import asyncio
 from collections import deque
 from logging import Logger
-from argparse import ArgumentParser
 from datetime import datetime
 import json
 
@@ -13,7 +11,7 @@ MA = set(('sma', 'ema'))
 OHLC = {'o': 0, 'h': 0, 'l': 0, 'c': 0, 't': 0}
 TIMEFRAMES = {'1m': 60, '5m': 300, '15m': 900, '1h': 3600, '4h': 14400, '1d': 86400}
 
-class MASignalGenerator():
+class MALookbackDataParser():
     def __init__(self, execution_path, port, decision_engine_uri, timeframe, symbols, indicator, period, lookback):
         self.execution_path = execution_path
         self.port = port
@@ -50,12 +48,13 @@ class MASignalGenerator():
             return None
         return max((candle['h'] for candle in self.lookback_queue)), min((candle['l'] for candle in self.lookback_queue))
     
-    async def send_signals(self, candle, symbol, timestamp):
+    async def send_indicators(self, candle, symbol, timestamp):
 
         ma = self.sma(candle, self.period) if self.indicator == 'sma' else self.ema(candle, self.period)
         lookback_high, lookback_low = self.lookback(candle, self.lookback_period)
         self.decision_engine_ws.send_str(json.dumps({
-                                    'type': 'signal_update',
+                                    'type': 'update',
+                                    'channel': 'indicator',
                                     'symbol': symbol,
                                     'data': {
                                             'ohlc': candle,
@@ -77,11 +76,12 @@ class MASignalGenerator():
         price = float(msg['price'])
         symbol = msg['symbol']
         self.decision_engine_ws.send_str(json.dumps({
-                                    'type': 'price',
+                                    'type': 'update',
+                                    'channel': 'prices',
+                                    'symbol': symbol,
                                     'data': {
                                         'price': price,
                                         'timestamp': msg_time,
-                                        'symbol': symbol
                                         }
                                      }))
         #TODO: Need to confirm msgs are in order and correspond to current candle
@@ -100,12 +100,12 @@ class MASignalGenerator():
         #close candle: will need more precision. Currently seconds
         elif msg_time % self.timeframe == 0:
             self.ohlc['c'] = price
-            self.send_signals(self.ohlc, symbol, msg_time)
+            self.send_indicators(self.ohlc, symbol, msg_time)
     
     async def handle_ws(self, symbols):
         raise NotImplementedError
 
-    async def signal_handler_main(self):
+    async def data_handler_main(self):
         if self.indicator in MA:
             self.add_ma_queue(self.period, self.indicator)
         self.lookback_queue = deque(maxlen=self.lookback_period)

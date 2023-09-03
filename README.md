@@ -25,7 +25,7 @@
   * Produce decisions based on signals, balances, and positions
   * sends order parameters to order router for execution on exchange
 
-* ### Signal Generator (Server and Client)
+* ### Data Provider (Server and Client)
 
   * Supports strategy discussed above
   * client subscribes to MD from exchange
@@ -61,6 +61,7 @@
 ## Immediate To Do
 
 * Remove aiohttp from inter-process IO. Use async unix sockets instead. Keep aiohttp for order entry and if needed MD too
+  * Have implemented sockets classes. Integrated in decision engine, need to integrate in data provider and order router classes
 * Need to get api keys from webull
 * Decide whether to build book inside signal generator or in its own process.
   * If in its own process, seperate md from signal generator and stream it to both signal generator and book
@@ -77,32 +78,3 @@
 * TD Ameritrade API (soon to be Schwab API)
 * Webull OpenAPI
 * Python 3.11.3
-
-## Example async unix socket server and client creation:
-
-```
-MSG_LENGTH_PREFIX_BYTES = 4
-##Client Side:
-async def send_msg(reader, writer):
-    ##handle any incoming msgs and generate outgoing msg
-    message_length = len(msg)
-    writer.write(message_length.to_bytes(MSG_LENGTH_PREFIX_BYTES, byteorder='big'))
-    writer.write(message.encode('utf-8'))
-    await writer.drain()
-reader, writer = await asyncio.open_unix_connection(path='/tmp/unix_socket')
-await send_msg(writer, "this is my message")
-writer.close()
-##Server Side
-async def handle_client(reader, writer):
-    data = b''
-    while True:
-        msg_length_prefix = await reader.read(MSG_LENGTH_PREFIX_BYTES)
-        msg_length = int.from_bytes(message_length_prefix, byteorder='big')
-        msg = await reader.read(msg_length)
-        msg = msg.decode('utf-8')
-        ##handle msg
-        writer.write(response)
-server = await asyncio.start_unix_server(handle_client, '/tmp/unix_socket')
-async with server:
-    await server.server_forever()
-```

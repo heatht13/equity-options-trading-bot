@@ -130,15 +130,6 @@ class TDAOrderRouter():
         response = await self.rest_query('delete', self.td_uri+self.endpoints['orders']+order_id)
         return response
     
-    async def order_handler_main(self):
-        app = web.Application()
-        app.add_routes([web.post('/order', self.place_order)])
-        app.add_routes([web.delete('/order', self.cancel_order)])
-        app.add_routes([web.get('/order', self.get_orders)])
-        app.add_routes([web.get('/accounts', self.get_accounts)])
-        web.run_app(app, port=self.port)
-
-    
 def main():
     parser = ArgumentParser()
     order_router_args = parser.add_argument_group("OrderRouter", "Order Router parameters")

@@ -1,18 +1,16 @@
 import aiohttp
-from aiohttp import web
 import asyncio
-from collections import deque
 from logging import Logger
 from argparse import ArgumentParser
-from datetime import datetime, timezone
+from datetime import datetime
 from urllib.parse import urlencode
 import json
 
-from signal_generator import MASignalGenerator, TIMEFRAMES, MA
+from ma_lookback_data_parser import MALookbackDataParser, TIMEFRAMES, MA
 
 logger = Logger(__name__)
 
-class TDASignalGenerator(MASignalGenerator):
+class TDADataProvider(MALookbackDataParser):
     def __init__(self, user_id, consumer_key, refresh_token, **args):
         super().__init__(**args)
         self.user_id = user_id
@@ -148,10 +146,10 @@ def main():
     credentials.add_argument('--consumer_key', type=str, default=None, help="API application consumer key")
     credentials.add_argument('--refresh_token', type=str, default=None, help="API refresh token")
     args = parser.parse_args()
-    signal_generator = TDASignalGenerator(**args)
-    asyncio.run(signal_generator.signal_handler_main())
+    signal_generator = TDADataProvider(**args)
+    asyncio.run(signal_generator.data_handler_main())
 
 if __name__ == '__main__':
     main()
 
-SIGNALGENERATOR = TDASignalGenerator
+SIGNALGENERATOR = TDADataProvider
