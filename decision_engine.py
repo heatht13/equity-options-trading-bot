@@ -111,7 +111,7 @@ class DecisionEngine():
                             if symbol in self.positions and self.positions[symbol]['side'] == 'long':
                                 orders.add(self.create_order(symbol, 'limit', 'sell', price, NUM_CONTRACTS, 'close', 'day', 'OPTION'))
                             orders.add(self.create_order(symbol, 'limit', 'sell', price, NUM_CONTRACTS, 'open', 'day', 'OPTION'))
-                            
+
                         for order in orders:
                             await order_router_socket.send_str(json.dumps({
                                 'type': 'order',

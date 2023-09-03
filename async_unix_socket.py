@@ -144,10 +144,6 @@ class ContextManagedAsyncUnixSocketServer:
         finally:
             self.writer.close()
 
-    def start(self):
-        return self
-
-
 
 #==============================CONTEXT MANAGED ASYNC UNIX SOCKET CLIENT==========================================================
 # This is a context manager version of AsyncUnixSocketClient.

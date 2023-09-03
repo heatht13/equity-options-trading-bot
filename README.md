@@ -62,6 +62,7 @@
 
 * Remove aiohttp from inter-process IO. Use async unix sockets instead. Keep aiohttp for order entry and if needed MD too
   * Have implemented sockets classes. Integrated in decision engine, need to integrate in data provider and order router classes
+  * Need to implement receive side of order router socket. This requires assigning socket to class attribute for use across different functions
 * Need to get api keys from webull
 * Decide whether to build book inside signal generator or in its own process.
   * If in its own process, seperate md from signal generator and stream it to both signal generator and book
