@@ -1,21 +1,18 @@
-import aiohttp
-from aiohttp import web
+import json
 from collections import deque
 from logging import Logger
 from datetime import datetime
-import json
+from async_unix_socket import ContextManagedAsyncUnixSocketServer
 
 logger = Logger(__name__)
 
-MA = set(('sma', 'ema'))
+MA = {'sma', 'ema'}
 OHLC = {'o': 0, 'h': 0, 'l': 0, 'c': 0, 't': 0}
 TIMEFRAMES = {'1m': 60, '5m': 300, '15m': 900, '1h': 3600, '4h': 14400, '1d': 86400}
 
 class MALookbackDataParser():
-    def __init__(self, execution_path, port, decision_engine_uri, timeframe, symbols, indicator, period, lookback):
-        self.execution_path = execution_path
-        self.port = port
-        self.decision_engine_ws = aiohttp.ClientSession().ws_connect(decision_engine_uri)
+    def __init__(self, socket, timeframe, symbols, indicator, period, lookback):
+        self.socket = socket
         self.timeframe = TIMEFRAMES[timeframe]
         self.symbols = symbols
         self.indicator = indicator
@@ -109,11 +106,10 @@ class MALookbackDataParser():
         if self.indicator in MA:
             self.add_ma_queue(self.period, self.indicator)
         self.lookback_queue = deque(maxlen=self.lookback_period)
-
-        app = web.Application()
-        #TODO: not correct, just filling in for now
-        app.add_routes([web.get('/ws', self.handle_ws)])
-        web.run_app(app, port=self.port)
+        async with ContextManagedAsyncUnixSocketServer(self.socket) as server:
+            async for data_chunk in server:
+                print("Received:", data_chunk)
+                #TODO: Listen and serve client requests
         if self.session:
             await self.session.close()
             self.session = None

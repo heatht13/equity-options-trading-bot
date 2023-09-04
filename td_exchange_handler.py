@@ -5,14 +5,13 @@ import json
 from logging import Logger
 from argparse import ArgumentParser
 from datetime import datetime
+from async_unix_socket import ContextManagedAsyncUnixSocketServer
 
 #TODO: separate TD order router from base order router class
-class TDAOrderRouter():
-    def __init__(self, execution_path, port, decision_engine_uri, account_id, user_id, consumer_key, refresh_token, **args):
+class TDAExchangeHandler():
+    def __init__(self, socket, account_id, user_id, consumer_key, refresh_token, **args):
         super().__init__(**args)
-        self.execution_path = execution_path
-        self.port = port
-        self.decision_engine_ws = aiohttp.ClientSession().ws_connect(decision_engine_uri)
+        self.socket = socket
         self.account_id = account_id
         self.user_id = user_id
         self.consumer_key = consumer_key
@@ -39,11 +38,11 @@ class TDAOrderRouter():
 
     async def rest_query(self,method, endpoint, headers=None, json=None):
         if self.session is None:
-            self.rest_session = aiohttp.ClientSession()
+            self.session = aiohttp.ClientSession()
         headers = (headers if headers is not None
                                     else {'Authorization': f'Bearer {self.access_token}',
                                         'Content-Type':'application/json'})
-        async with self.rest_session.request(method, endpoint, headers=headers, json=json) as response:
+        async with self.session.request(method, endpoint, headers=headers, json=json) as response:
             if response.status // 100 != 2:
                 raise Exception(f'Error {response.status} on {method} {endpoint}: {response.reason}')
             return await response.json()
@@ -130,23 +129,30 @@ class TDAOrderRouter():
         response = await self.rest_query('delete', self.td_uri+self.endpoints['orders']+order_id)
         return response
     
+    async def exchange_handler_main(self):
+        async with ContextManagedAsyncUnixSocketServer(self.socket) as server:
+            async for data_chunk in server:
+                print("Received:", data_chunk)
+                #TODO: Listen and serve client requests
+        if self.session:
+            await self.session.close()
+            self.session = None
+
+    
 def main():
     parser = ArgumentParser()
-    order_router_args = parser.add_argument_group("OrderRouter", "Order Router parameters")
-    order_router_args.add_argument('--execution_path', type=str, default='https://localhost', help="Path to order router")
-    order_router_args.add_argument('--port', type=str, default='8082', help="Port to run the order router on")
-    decision_engine_args = parser.add_argument_group("DecisionEngine", "Decision Engine parameters")
-    decision_engine_args.add_argument('--decision_engine_uri', type=str, default='https://localhost:8080', help="URI of decision engine")
+    order_router_args = parser.add_argument_group("Exchange Handler", "Exchange Handler parameters")
+    order_router_args.add_argument('--socket', type=str, default='/tmp/exchange.sock', help="Path to unix domain socket responsible for serving exchange related requests")
     credentials = parser.add_argument_group("Credentials", "TD account owners API credentials")
     credentials.add_argument('--account_id', type=str, default=None, help="API account id")
     credentials.add_argument('--user_id', type=str, default=None, help="API user id")
     credentials.add_argument('--consumer_key', type=str, default=None, help="API application consumer key")
     credentials.add_argument('--refresh_token', type=str, default=None, help="API refresh token")
     args = parser.parse_args()
-    order_router = TDAOrderRouter(**args)
-    asyncio.run(order_router.order_handler_main())
+    exchange_handler = TDAExchangeHandler(**args)
+    asyncio.run(exchange_handler.exchange_handler_main())
 
 if __name__ == '__main__':
     main()
 
-ORDERROUTER = TDAOrderRouter
+ExchangeHandler = TDAExchangeHandler

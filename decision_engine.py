@@ -1,11 +1,10 @@
 import json
 import asyncio
+import enum
 from logging import Logger
 from argparse import ArgumentParser
 from datetime import datetime
 from collections import namedtuple, deque
-import enum
-
 from async_unix_socket import ContextManagedAsyncUnixSocketClient
 
 logger = Logger(__name__)
@@ -50,7 +49,6 @@ class Signal(enum.Enum):
     LONG = enum.auto()
     SHORT = enum.auto()
     HOLD = enum.auto()
-    
 
 class DecisionEngine():
     def __init__(self, data_provider_path, order_router_path):
@@ -64,7 +62,6 @@ class DecisionEngine():
         self.price_state = PriceState.UNSET
 
     def generate_signal(self, symbol):
-        #TODO: This doesnt handle all states/cases. What if we go from up to pending breakout again?
         price = self.prices[symbol]
         indicator = self.indicators[symbol]
         signal = Signal.HOLD
@@ -86,7 +83,7 @@ class DecisionEngine():
             self.price_state = PriceState.UNSET
         return signal
 
-    def create_order(self, symbol, order_type, side, price, quantity, offset, tif, asset_type=None):
+    def create_order(self, symbol, order_type, side, price, quantity, offset, tif, asset_type):
         return Order(
             symbol=str(symbol),
             order_type=str(order_type),
@@ -99,8 +96,10 @@ class DecisionEngine():
         )
     
     async def signal_handler(self):
-        while True:
-            try:
+        #TODO: This needs some work. Needs to handle every case/scenario. Currently, it does not.
+        logger.info(f"Decision Engine signal handler started")
+        try:
+            while True:
                 for symbol in self.symbols:
                     if symbol not in self.indicators or symbol not in self.prices:
                         continue
@@ -121,14 +120,15 @@ class DecisionEngine():
                         elif self.positions[symbol]['side'] == 'long':
                             self.orders.append(self.create_order(symbol, 'limit', 'sell', price, NUM_CONTRACTS, 'close', 'day', 'OPTION'))
                 asyncio.sleep(SIGNAL_PROC_WAIT_INTERVAL_SEC)
-            except asyncio.CancelledError as e:
-                break
+        finally:
+            logger.info(f"Decision Engine signal handler shutting down")
 
     async def send_orders(self, exchange_socket):
-        while True:
-            try:
+        try:
+            while True:
                 while self.orders.count() > 0:
                     order = self.orders.pop()
+                    logger.info(f"Sending order: {order}")
                     await exchange_socket.send_str(json.dumps({
                         'type': 'order',
                         'order': {
@@ -143,20 +143,18 @@ class DecisionEngine():
                         }
                     }))
                 asyncio.sleep(ORDER_SOCKET_WAIT_INTERVAL_SEC)
-            except asyncio.CancelledError as e:
-                break
-            except ConnectionError as e:
-                logger.error(f'Exchange socket disconnected; orders task resetting: {e}')
-                break
+        except ConnectionError as e:
+            logger.error(f'Exchange socket disconnected; exchange handler orders task resetting: {e}')
     
     async def handle_exchange_msgs(self, exchange_socket):
-        while True:
-            try:
+        try:
+            while True:
                 exchange_socket.send_str(json.dumps({
                             'type': 'subscribe',
                             'channel': 'positions',
                             'interval': '10'
                         }))
+                logger.info(f"Subscribed to positions channel")
                 async for msg in exchange_socket:
                     msg = json.loads(msg)
                     if msg['type'] == 'update':
@@ -167,50 +165,44 @@ class DecisionEngine():
                     elif msg['type'] == 'error':
                         logger.error(msg)
                         break
-            except asyncio.CancelledError as e:
-                break
-            except ConnectionError as e:
-                logger.error(f'Exchange socket disconnected; exchange message task resetting: {e}')
-                break
+        except ConnectionError as e:
+            logger.error(f'Exchange socket disconnected; exchange handler message task resetting: {e}')
 
     async def exchange_handler(self):
-        while True:
-            try:
-                logger.info(f"Starting exchange handler")
+        logger.info(f"Decision Engine exchange handler started")
+        try:
+            while True:
                 async with ContextManagedAsyncUnixSocketClient(self.order_router_path) as exchange_socket:
-                    handle_exchange_msgs_task = asyncio.create_task(self.handle_exchange_msgs(exchange_socket))
-                    send_orders_task = asyncio.create_task(self.send_orders(exchange_socket))
-                    exchange_tasks = set(handle_exchange_msgs_task, send_orders_task)
-                    done, pending = await asyncio.wait(exchange_tasks, return_when=asyncio.FIRST_COMPLETED)
-                    for task in done:
+                    exchange_tasks = set()
+                    exchange_tasks.add(asyncio.create_task(self.handle_exchange_msgs(exchange_socket)).add_done_callback(exchange_tasks.discard))
+                    exchange_tasks.add(asyncio.create_task(self.send_orders(exchange_socket)).add_done_callback(exchange_tasks.discard))
+                    _, pending = await asyncio.wait(exchange_tasks, return_when=asyncio.FIRST_COMPLETED)
+                    for task in pending:
                         task.cancel()
-                    await asyncio.gather(*done, return_exceptions=True)
-            except asyncio.CancelledError:
-                break
-            finally:
-                for task in exchange_tasks:
-                    task.cancel()
-                #TODO: Remove before going live. just doing this to mitgate against the inevitable while testing
-                await asyncio.sleep(5)
+                    await asyncio.gather(*pending, return_exceptions=True)
+                #TODO: Remove before going live. just doing this to mitigate against the inevitable while testing
+                await asyncio.sleep(2)
+        finally:
+            for task in exchange_tasks:
+                task.cancel()
+            await asyncio.gather(*exchange_tasks, return_exceptions=True)
+            logger.info(f"Decision Engine exchange handler shutting down")
 
     async def market_data_handler(self):
-        while True:
-            try:
-                logger.info(f"Starting market data handler")
+        logger.info(f"Decision Engine market data handler started")
+        try:
+            while True:
                 async with ContextManagedAsyncUnixSocketClient(self.data_provider_path) as md_socket:
-                        
                     await md_socket.send_str(json.dumps({
                         'type': 'subscribe',
                         'channel': 'prices',
                         'symbols': list(self.symbols)
                     }))
-                
                     await md_socket.send_str(json.dumps({
                         'type': 'subscribe',
                         'channel': 'indicators',
                         'symbols': list(self.symbols)
                     }))
-
                     async for msg in md_socket:
                         msg = json.loads(msg)
                         print(msg)
@@ -224,29 +216,30 @@ class DecisionEngine():
                         elif msg['type'] == 'error':
                             logger.error(msg)
                             break
-            except asyncio.CancelledError:
-                break
-            finally:
-                #TODO: Remove before going live. just doing this to mitgate against the inevitable while testing
-                await asyncio.sleep(5)
+                #TODO: Remove before going live. just doing this to mitigate against the inevitable while testing
+                await asyncio.sleep(2)
+        finally:
+            logger.info(f"Decision Engine market data handler shutting down")
 
     async def start(self):
         logger.info("Decision Engine starting")
-        self.running = True
-        while self.running:
-            signal_handler_task = asyncio.create_task(self.signal_handler())
-            exchange_handler_task = asyncio.create_task(self.exchange_handler())
-            market_data_handler_task = asyncio.create_task(self.market_data_handler())
-            decision_engine_tasks = set(signal_handler_task, exchange_handler_task, market_data_handler_task)
-            done, pending = await asyncio.wait(decision_engine_tasks, return_when=asyncio.FIRST_COMPLETED)
-            for task in done:
+        try:
+            self.running = True
+            decision_engine_tasks = set()
+            decision_engine_tasks.add(asyncio.create_task(self.signal_handler()).add_done_callback(decision_engine_tasks.discard))
+            decision_engine_tasks.add(asyncio.create_task(self.exchange_handler()).add_done_callback(decision_engine_tasks.discard))
+            decision_engine_tasks.add(asyncio.create_task(self.market_data_handler()).add_done_callback(decision_engine_tasks.discard))
+            while self.running:
+                done, _ = await asyncio.wait(decision_engine_tasks, return_when=asyncio.FIRST_COMPLETED)
+                for task in done:
+                    decision_engine_tasks.add(asyncio.create_task(task.get_coro()))
+        finally:
+            for task in decision_engine_tasks:
                 task.cancel()
-            await asyncio.gather(*done, return_exceptions=True)
-        for task in decision_engine_tasks:
-            task.cancel()
+            await asyncio.gather(*decision_engine_tasks, return_exceptions=True)
+            logger.info("Decision Engine shutting down")
 
     def stop(self):
-        logger.info("Decision Engine shutting down")
         self.running = False
 
 def main():

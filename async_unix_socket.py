@@ -46,6 +46,10 @@ class AsyncUnixSocketServer():
     async def start(self):
         self.server = await asyncio.start_unix_server(self.client_handler, self.unix_socket_path)
 
+    async def stop(self):
+        self.server.close()
+        await self.server.wait_closed()
+
 
 
 #==============================ASYNC UNIX SOCKET CLIENT==========================================================
@@ -105,7 +109,7 @@ class AsyncUnixSocketClient():
 # Usage:
 #       async def data_consumer():
 #           async with ContextManagedAsyncUnixSocketServer("/tmp/my_unix_socket") as server:
-#               async for data_chunk in server.start():
+#               async for data_chunk in server:
 #                   print("Received:", data_chunk)
 class ContextManagedAsyncUnixSocketServer:
     MSG_LENGTH_PREFIX_BYTES=4
@@ -153,6 +157,7 @@ class ContextManagedAsyncUnixSocketServer:
             pass
         finally:
             self.writer.close()
+            await self.writer.wait_closed()
 
 
 #==============================CONTEXT MANAGED ASYNC UNIX SOCKET CLIENT==========================================================

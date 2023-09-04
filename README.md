@@ -19,9 +19,9 @@
 
 * ### Decision Engine (Client)
 
-  * subscribes to signals and bids/asks feeds from Signal Generator
+  * subscribes to signals and bids/asks feeds from Data Provider
   * Determines whether signal is generated from signal data
-  * requests positions, balances, other relevant info from order router
+  * requests positions, balances, other relevant info from Exchange Handler
   * Produce decisions based on signals, balances, and positions
   * sends order parameters to order router for execution on exchange
 
@@ -30,13 +30,13 @@
   * Supports strategy discussed above
   * client subscribes to MD from exchange
   * produces signals from MD
-  * server sends signals, bids/asks to decision engine client
- 
-* ### Order Router (Server and Client)
+  * server sends signals, bids/asks to Decision Engine client
+
+* ### Exchange Handler (Server and Client)
 
   * Building out on TD Ameritrade
   * Waiting on api from Webull
-  * server handles position management, balances, and order entry requests from decision engine
+  * server handles position management, balances, and order entry requests from Decision Engine
   * client makes positions, balances, and order entry requests to exchange
 
 * ### Market Data Feed
@@ -58,11 +58,10 @@
 
 * SPY Options about a week or two from expiry
 
-## Immediate To Do
+## To Do
 
-* Remove aiohttp from inter-process IO. Use async unix sockets instead. Keep aiohttp for order entry and if needed MD too
-  * Have implemented sockets classes. Integrated in decision engine, need to integrate in data provider and order router classes
-  * Need to implement receive side of order router socket. This requires assigning socket to class attribute for use across different functions
+* Need to build out unix socket server side for Exchange Handler and Data Provider
+* Need to fix signal handler logic to account for any state
 * Need to get api keys from webull
 * Decide whether to build book inside signal generator or in its own process.
   * If in its own process, seperate md from signal generator and stream it to both signal generator and book

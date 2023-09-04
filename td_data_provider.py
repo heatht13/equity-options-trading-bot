@@ -130,11 +130,8 @@ class TDADataProvider(MALookbackDataParser):
 
 def main():
     parser = ArgumentParser()
-    signal_generator_args = parser.add_argument_group("SignalGenerator", "Signal Generator parameters")
-    signal_generator_args.add_argument('--execution_path', type=str, default='https://localhost', help="Path to signal generator")
-    signal_generator_args.add_argument('--port', type=str, default='8081', help="Port to run the signal generator on")
-    decision_engine_args = parser.add_argument_group("DecisionEngine", "Decision Engine parameters")
-    decision_engine_args.add_argument('--decision_engine_uri', type=str, default='https://localhost:8080', help="URI of decision engine")
+    signal_generator_args = parser.add_argument_group("Data Provider", "Data Provider parameters")
+    signal_generator_args.add_argument('--socket', type=str, default='/tmp/data_provider.sock', help="Path to unix domain socket responsible for serving data")
     ma_strategy = parser.add_argument_group("MA strategy", "Moving average strategy")
     ma_strategy.add_argument('--timeframe', type=str, default='5m', choices=TIMEFRAMES.keys(), help="Timeframe for candles")
     ma_strategy.add_argument('--symbols', type=str, default='SPY', help="Symbols to trade")
