@@ -9,8 +9,8 @@ from async_unix_socket import ContextManagedAsyncUnixSocketClient
 
 logger = Logger(__name__)
 
-ORDER_SOCKET_WAIT_INTERVAL_SEC = 2
-SIGNAL_PROC_WAIT_INTERVAL_SEC = 1
+ORDER_SOCKET_INTERVAL_SEC = 2
+SIGNAL_PROC_INTERVAL_SEC = 1
 NUM_CONTRACTS = 1
 MAX_ORDERS = 5
 MSG_LENGTH_PREFIX_BYTES = 4
@@ -119,7 +119,7 @@ class DecisionEngine():
                             self.orders.append(self.create_order(symbol, 'limit', 'sell', price, NUM_CONTRACTS, 'open', 'day', 'OPTION'))
                         elif self.positions[symbol]['side'] == 'long':
                             self.orders.append(self.create_order(symbol, 'limit', 'sell', price, NUM_CONTRACTS, 'close', 'day', 'OPTION'))
-                asyncio.sleep(SIGNAL_PROC_WAIT_INTERVAL_SEC)
+                asyncio.sleep(SIGNAL_PROC_INTERVAL_SEC)
         finally:
             logger.info(f"Decision Engine signal handler shutting down")
 
@@ -130,7 +130,8 @@ class DecisionEngine():
                     order = self.orders.pop()
                     logger.info(f"Sending order: {order}")
                     await exchange_socket.send_str(json.dumps({
-                        'type': 'order',
+                        'type': 'request',
+                        'channel': 'new_order',
                         'order': {
                             'symbol': order.symbol,
                             'order_type': order.order_type,
@@ -142,7 +143,7 @@ class DecisionEngine():
                             'asset_type': order.asset_type
                         }
                     }))
-                asyncio.sleep(ORDER_SOCKET_WAIT_INTERVAL_SEC)
+                asyncio.sleep(ORDER_SOCKET_INTERVAL_SEC)
         except ConnectionError as e:
             logger.error(f'Exchange socket disconnected; exchange handler orders task resetting: {e}')
     
@@ -219,9 +220,9 @@ class DecisionEngine():
                 #TODO: Remove before going live. just doing this to mitigate against the inevitable while testing
                 await asyncio.sleep(2)
         finally:
-            logger.info(f"Decision Engine market data handler shutting down")
+            logger.info(f"Decision Engine market data handler shut down")
 
-    async def start(self):
+    async def decision_engine_main(self):
         logger.info("Decision Engine starting")
         try:
             self.running = True
@@ -239,7 +240,7 @@ class DecisionEngine():
             await asyncio.gather(*decision_engine_tasks, return_exceptions=True)
             logger.info("Decision Engine shutting down")
 
-    def stop(self):
+    def shutdown(self):
         self.running = False
 
 def main():
@@ -249,7 +250,7 @@ def main():
     decision_engine.add_argument('--order-router-path', type=str, default='/tmp/order_router.sock', help="Path to order router unix domain socket")
     args = parser.parse_args()
     decision_engine = DecisionEngine(**args)
-    asyncio.run(decision_engine.start())
+    asyncio.run(decision_engine.decision_engine_main())
 
 if __name__ == '__main__':
     main()

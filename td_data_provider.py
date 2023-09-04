@@ -27,7 +27,7 @@ class TDADataProvider(MALookbackDataParser):
         }
 
     async def rest_query(self,method, endpoint, headers=None, json=None):
-        if self.session is None:
+        if self.rest_session is None:
             self.rest_session = aiohttp.ClientSession()
 
         async with self.rest_session.request(method, endpoint, headers=headers, json=json) as response:
@@ -54,8 +54,7 @@ class TDADataProvider(MALookbackDataParser):
         response = await self.rest_query('get', self.td_uri+self.endpoints['user_principals'], headers, json=data)
         return response
 
-    async def handle_ws(self, symbols):
-
+    async def stream_handler(self, symbols):
         if self.access_token is None or self.access_token_exp < datetime.utcnow():
             self.access_token, self.access_token_exp = await self.generate_token_from_refresh(self.refresh_token)
         if self.principals is None:
@@ -76,11 +75,11 @@ class TDADataProvider(MALookbackDataParser):
         }
 
         uri = 'wss://' + self.principals['streamerInfo']['streamerSocketUrl'] + '/ws'
-        while True:
-            req_id = 1
+        while self.running:
             try:
-                async with aiohttp.ClientSession() as session:
-                    async with session.ws_connect(uri) as ws:
+                req_id = 1
+                async with aiohttp.ClientSession() as self.ws_session:
+                    async with self.ws_session.ws_connect(uri) as ws:
                         login = {
                             "requests": [
                                 {
@@ -122,11 +121,10 @@ class TDADataProvider(MALookbackDataParser):
                                 self.handle_ticks(msg)
                             else:
                                 logger.warning(f'Unknown message: {msg["type"]}')
-            except Exception as e:
-                logger.error(e)
-                #probably shouldnt catch exceptions at this veryu moment, so added sleep to allow ctrl+c SIGTERM
-                await asyncio.sleep(60)
-            req_id += 1
+            except (aiohttp.ClientError, aiohttp.WSServerHandshakeError, ConnectionResetError) as e:
+                logger.error(f"websocket connection closed; resetting. {e}")
+            finally:
+                req_id += 1
 
 def main():
     parser = ArgumentParser()
@@ -143,8 +141,8 @@ def main():
     credentials.add_argument('--consumer_key', type=str, default=None, help="API application consumer key")
     credentials.add_argument('--refresh_token', type=str, default=None, help="API refresh token")
     args = parser.parse_args()
-    signal_generator = TDADataProvider(**args)
-    asyncio.run(signal_generator.data_handler_main())
+    data_provider = TDADataProvider(**args)
+    asyncio.run(data_provider.data_handler_main())
 
 if __name__ == '__main__':
     main()

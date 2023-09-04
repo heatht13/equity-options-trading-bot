@@ -4,8 +4,9 @@ import asyncio
 # Usage:
 #       async def data_consumer():
 #           server = AsyncUnixSocketServer("/tmp/my_unix_socket")
-#           async for data_chunk in server.start():
+#           async for data_chunk in serverd.open():
 #               print("Received:", data_chunk)
+#           await server.close()
 class AsyncUnixSocketServer():
     MSG_LENGTH_PREFIX_BYTES=4
     def __init__(self, unix_socket_path):
@@ -37,16 +38,14 @@ class AsyncUnixSocketServer():
             self.reader = reader
             self.writer = writer
             await self.receive()
-        except asyncio.CancelledError as e:
-            pass
         finally:
             self.writer.close()
             await self.writer.wait_closed()
 
-    async def start(self):
+    async def open(self):
         self.server = await asyncio.start_unix_server(self.client_handler, self.unix_socket_path)
 
-    async def stop(self):
+    async def close(self):
         self.server.close()
         await self.server.wait_closed()
 
@@ -63,7 +62,7 @@ class AsyncUnixSocketServer():
 #               data_to_send = input("Enter data to send (or 'exit' to quit): ").encode("utf-8")
 #               if data_to_send == b'exit':
 #                   break
-#               await client.send_msg(data_to_send)
+#               await client.send_str(data_to_send)
 #       except KeyboardInterrupt:
 #           pass
 #       finally:
@@ -138,23 +137,21 @@ class ContextManagedAsyncUnixSocketServer:
 
     async def receive(self):
         while True:
-                msg_length_prefix = await self.reader.read(self.MSG_LENGTH_PREFIX_BYTES)
-                if not msg_length_prefix:
-                    break
-                msg_length = int.from_bytes(msg_length_prefix, byteorder='big')
-                msg = await self.reader.read(msg_length)
-                if not msg:
-                    break
-                msg = msg.decode('utf-8')
-                yield msg
+            msg_length_prefix = await self.reader.read(self.MSG_LENGTH_PREFIX_BYTES)
+            if not msg_length_prefix:
+                break
+            msg_length = int.from_bytes(msg_length_prefix, byteorder='big')
+            msg = await self.reader.read(msg_length)
+            if not msg:
+                break
+            msg = msg.decode('utf-8')
+            yield msg
 
     async def client_handler(self, reader, writer):
         try:
             self.reader = reader
             self.writer = writer
             await self.receive()
-        except asyncio.CancelledError as e:
-            pass
         finally:
             self.writer.close()
             await self.writer.wait_closed()
@@ -169,7 +166,7 @@ class ContextManagedAsyncUnixSocketServer:
 #                   data_to_send = input("Enter data to send (or 'exit' to quit): ").encode("utf-8")
 #                   if data_to_send == b'exit':
 #                       break
-#                   await client.send_data(data_to_send)
+#                   await client.send_str(data_to_send)
 class ContextManagedAsyncUnixSocketClient:
     MSG_LENGTH_PREFIX_BYTES = 4
     def __init__(self, unix_socket_path):
