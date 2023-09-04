@@ -60,7 +60,6 @@
 
 ## To Do
 
-* Need to build out unix socket server side for Exchange Handler and Data Provider
 * Need to fix signal handler logic to account for any state
 * Need to get api keys from webull
 * Decide whether to build book inside signal generator or in its own process.
