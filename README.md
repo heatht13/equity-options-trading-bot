@@ -60,6 +60,7 @@
 
 ## To Do
 
+* Need to condense down awaitables to improve concurrency and speed up execution
 * Need to fix signal handler logic to account for any state
 * Need to get api keys from webull
 * Decide whether to build book inside signal generator or in its own process.
