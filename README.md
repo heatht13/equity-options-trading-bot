@@ -25,7 +25,7 @@
   * Produce decisions based on signals, balances, and positions
   * sends order parameters to order router for execution on exchange
 
-* ### Data Provider (Server and Client)
+* ### Data Handler (Server and Client)
 
   * Supports strategy discussed above
   * client subscribes to MD from exchange
@@ -34,17 +34,9 @@
 
 * ### Exchange Handler (Server and Client)
 
-  * Building out on TD Ameritrade
-  * Waiting on api from Webull
+  * TDA and Webull handlers paused indefinitely. Need to find a new exchange.
   * server handles position management, balances, and order entry requests from Decision Engine
   * client makes positions, balances, and order entry requests to exchange
-
-* ### Market Data Feed
-
-  * For first iteration, MD will exist within Signal Generator
-  * Building out on TD Ameritrade
-  * Waiting on api keys from Webull
-  * Stream data to Book and Signal Generator
 
 * ### Book
 
@@ -60,6 +52,7 @@
 
 ## To Do
 
+* Need to find a new exchange
 * Need to condense down awaitables to improve concurrency and speed up execution
 * Need to fix signal handler logic to account for any state
 * Need to get api keys from webull
@@ -75,6 +68,6 @@
 
 ## Platform
 
-* TD Ameritrade API (soon to be Schwab API)
-* Webull OpenAPI
+* TD Ameritrade API (soon to be Schwab API). Development paused due to TD Ameritrade not supporting asynchronous code. Clowns
+* Webull OpenAPI. Development has not started because webull have not exposed their api. Nice
 * Python 3.11.3
