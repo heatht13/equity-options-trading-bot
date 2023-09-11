@@ -151,9 +151,9 @@ class MALookbackDataParser():
             if self.ws_session and not self.ws_session.closed:
                 await self.ws_session.close()
                 self.ws_session = None
-            if self.server:
-                await self.server.close()
-                self.server = None
+            # if self.server:
+            #     await self.server.close()
+            #     self.server = None
             self.ma_queue.clear()
             self.lookback_queue.clear()
             logger.info(f"Data Handler shut down")
@@ -166,13 +166,15 @@ class MALookbackDataParser():
         try:
             self.running = True
             data_handler_tasks = set()
-            data_handler_tasks.add(asyncio.create_task(self.data_handler()).add_done_callback(data_handler_tasks.discard))
-            while self.running:
-                done, _ = await asyncio.wait(data_handler_tasks, return_when=asyncio.FIRST_COMPLETED)
-                for task in done:
-                    data_handler_tasks.add(asyncio.create_task(task.get_coro()))
+            ##TODO: add done callback has issues
+            data_handler_tasks.add(asyncio.create_task(self.data_handler()))#.add_done_callback(data_handler_tasks.discard))
+            #while self.running:
+            done, _ = await asyncio.wait(data_handler_tasks, return_when=asyncio.FIRST_COMPLETED)
+                # for task in done:
+
+                #     data_handler_tasks.add(asyncio.create_task(task.get_coro()))
         finally:
-            for task in data_handler_tasks:
-                task.cancel()
-            await asyncio.gather(*data_handler_tasks, return_exceptions=True)
+            # for task in data_handler_tasks:
+            #     task.cancel()
+            # await asyncio.gather(*data_handler_tasks, return_exceptions=True)
             logger.info("Data Provider shutting down")

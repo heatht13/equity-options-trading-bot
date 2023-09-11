@@ -249,6 +249,7 @@ def main():
     decision_engine.add_argument('--data-provider-path', type=str, default='/tmp/data_provider.sock', help="Path to data provider unix domain socket")
     decision_engine.add_argument('--order-router-path', type=str, default='/tmp/order_router.sock', help="Path to order router unix domain socket")
     args = parser.parse_args()
+    args = vars(args)
     decision_engine = DecisionEngine(**args)
     asyncio.run(decision_engine.decision_engine_main())
 

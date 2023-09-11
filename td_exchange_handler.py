@@ -240,6 +240,7 @@ def main():
     credentials.add_argument('--consumer_key', type=str, default=None, help="API application consumer key")
     credentials.add_argument('--refresh_token', type=str, default=None, help="API refresh token")
     args = parser.parse_args()
+    args = vars(args)
     exchange_handler = TDAExchangeHandler(**args)
     asyncio.run(exchange_handler.exchange_handler_main())
 
