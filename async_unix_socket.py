@@ -127,21 +127,21 @@ class ContextManagedAsyncUnixSocketServer:
         await self.server.wait_closed()
 
     async def send_str(self, msg):
-        if self.writer.is_closing():
+        if self.server.writer.is_closing():
             raise ConnectionError("Connection to client closing")
         msg = str(msg)
         message_length = len(msg)
-        self.writer.write(message_length.to_bytes(self.MSG_LENGTH_PREFIX_BYTES, byteorder='big'))
-        self.writer.write(msg.encode('utf-8'))
-        await self.writer.drain()
+        self.server.writer.write(message_length.to_bytes(self.MSG_LENGTH_PREFIX_BYTES, byteorder='big'))
+        self.server.writer.write(msg.encode('utf-8'))
+        await self.server.writer.drain()
 
-    async def receive(self):
+    async def receive(self, reader):
         while True:
-            msg_length_prefix = await self.reader.read(self.MSG_LENGTH_PREFIX_BYTES)
+            msg_length_prefix = await reader.read(self.MSG_LENGTH_PREFIX_BYTES)
             if not msg_length_prefix:
                 break
             msg_length = int.from_bytes(msg_length_prefix, byteorder='big')
-            msg = await self.reader.read(msg_length)
+            msg = await reader.read(msg_length)
             if not msg:
                 break
             msg = msg.decode('utf-8')
@@ -149,9 +149,9 @@ class ContextManagedAsyncUnixSocketServer:
 
     async def client_handler(self, reader, writer):
         try:
-            self.reader = reader
-            self.writer = writer
-            await self.receive()
+            self.server.reader = reader
+            self.server.writer = writer
+            await self.receive(reader)
         finally:
             self.writer.close()
             await self.writer.wait_closed()

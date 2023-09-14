@@ -3,7 +3,7 @@ import asyncio
 from collections import deque
 from logging import Logger
 from datetime import datetime
-from async_unix_socket import AsyncUnixSocketServer
+from async_unix_socket import ContextManagedAsyncUnixSocketServer
 
 logger = Logger(__name__)
 
@@ -104,53 +104,48 @@ class MALookbackDataParser():
     async def stream_handler(self, symbols):
         raise NotImplementedError
     
-    async def data_handler(self):
-        logger.info(f"Data Handler started")
+    async def socket_handler(self):
+        logger.info(f"Socket Handler started")
         try:
             while self.running:
                 if self.indicator not in MA:
                     raise ValueError(f'Invalid indicator {self.indicator}')
-                await self.stream_handler(self.symbols)
-                self.server = AsyncUnixSocketServer(self.socket)
-                async for msg in self.server.open():
-                    msg = json.loads(msg)
-                    print("Received:", msg)
-                    msg_type = msg.get('type', None)
-                    if msg_type not in ('subscribe', 'unsubscribe'):
-                        await self.server.send_str(json.dumps({'error': 'Invalid message type. Must be either \'subscribe\' or \'unsubscribe\''}))
-                        continue
-                    msg_channel = msg.get('channel', None)
-                    if msg_type == 'subscribe':
-                        if msg_channel == 'all':
-                            self.client_subscriptions['prices'].update(msg['symbols'])
-                            self.client_subscriptions['indicators'].update(msg['symbols'])
-                            await self.server.send_str(json.dumps({'Success': f'Subscribed prices and indicators for {msg["symbols"]}'}))
-                        channel = self.client_subscriptions.get(msg_channel)
-                        if channel:
-                            self.client_subscriptions[channel].update(msg['symbols'])
-                            await self.server.send_str(json.dumps({'Success': f'Subscribed {msg_channel} for {msg["symbols"]}'}))
+                # self.server = ContextManagedAsyncUnixSocketServer(self.socket)
+                # async for msg in self.server.open():
+                async with ContextManagedAsyncUnixSocketServer(self.socket) as server:
+                    async for msg in server:
+                        msg = json.loads(msg)
+                        print("Received:", msg)
+                        msg_type = msg.get('type', None)
+                        if msg_type not in ('subscribe', 'unsubscribe'):
+                            await server.send_str(json.dumps({'error': 'Invalid message type. Must be either \'subscribe\' or \'unsubscribe\''}))
+                            continue
+                        msg_channel = msg.get('channel', None)
+                        if msg_type == 'subscribe':
+                            if msg_channel == 'all':
+                                self.client_subscriptions['prices'].update(msg['symbols'])
+                                self.client_subscriptions['indicators'].update(msg['symbols'])
+                                await server.send_str(json.dumps({'Success': f'Subscribed prices and indicators for {msg["symbols"]}'}))
+                            channel = self.client_subscriptions.get(msg_channel)
+                            if channel:
+                                self.client_subscriptions[channel].update(msg['symbols'])
+                                await server.send_str(json.dumps({'Success': f'Subscribed {msg_channel} for {msg["symbols"]}'}))
+                            else:
+                                await server.send_str(json.dumps({'error': 'Invalid message channel. Must be either \'prices\', \'indicators\', or \'all\''}))
                         else:
-                            await self.server.send_str(json.dumps({'error': 'Invalid message channel. Must be either \'prices\', \'indicators\', or \'all\''}))
-                    else:
-                        if msg_channel == 'all':
-                            self.client_subscriptions['prices'].difference_update(msg['symbols'])
-                            self.client_subscriptions['indicators'].difference_update(msg['symbols'])
-                            await self.server.send_str(json.dumps({'Success': f'Unsubscribed prices and indicators for {msg["symbols"]}'}))
-                        channel = self.client_subscriptions.get(msg_channel)
-                        if channel:
-                            self.client_subscriptions[channel].difference_update(msg['symbols'])
-                            await self.server.send_str(json.dumps({'Success': f'Unsubscribed {msg_channel} for {msg["symbols"]}'}))
-                        else:
-                            await self.server.send_str(json.dumps({'error': 'Invalid message channel. Must be either \'prices\', \'indicators\', or \'all\''}))
+                            if msg_channel == 'all':
+                                self.client_subscriptions['prices'].difference_update(msg['symbols'])
+                                self.client_subscriptions['indicators'].difference_update(msg['symbols'])
+                                await server.send_str(json.dumps({'Success': f'Unsubscribed prices and indicators for {msg["symbols"]}'}))
+                            channel = self.client_subscriptions.get(msg_channel)
+                            if channel:
+                                self.client_subscriptions[channel].difference_update(msg['symbols'])
+                                await server.send_str(json.dumps({'Success': f'Unsubscribed {msg_channel} for {msg["symbols"]}'}))
+                            else:
+                                await server.send_str(json.dumps({'error': 'Invalid message channel. Must be either \'prices\', \'indicators\', or \'all\''}))
         except ConnectionError as e:
             logger.error(f"Data Handler Connection Error; resetting. {e}")
         finally:
-            if self.rest_session and not self.rest_session.closed:
-                await self.rest_session.close()
-                self.rest_session = None
-            if self.ws_session and not self.ws_session.closed:
-                await self.ws_session.close()
-                self.ws_session = None
             # if self.server:
             #     await self.server.close()
             #     self.server = None
@@ -167,7 +162,8 @@ class MALookbackDataParser():
             self.running = True
             data_handler_tasks = set()
             ##TODO: add done callback has issues
-            data_handler_tasks.add(asyncio.create_task(self.data_handler()))#.add_done_callback(data_handler_tasks.discard))
+            data_handler_tasks.add(asyncio.create_task(self.socket_handler()))#.add_done_callback(data_handler_tasks.discard))
+            data_handler_tasks.add(asyncio.create_task(self.stream_handler(self.symbols)))#.add_done_callback(data_handler_tasks.discard))
             #while self.running:
             done, _ = await asyncio.wait(data_handler_tasks, return_when=asyncio.FIRST_COMPLETED)
                 # for task in done:
