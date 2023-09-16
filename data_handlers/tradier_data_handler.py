@@ -1,11 +1,10 @@
 import aiohttp
-import asyncio
 import logging
-from datetime import datetime
 import json
 import decimal
+from datetime import datetime
 
-from ma_lookback_data_parser import MALookbackDataParser, TIMEFRAMES, MA
+from md_handler import MALookbackDataParser
 
 #logger = Logger(__name__)
 logging.basicConfig(
@@ -19,7 +18,7 @@ logging.basicConfig(
 
 logger = logging.getLogger()
 
-class TradierDataProvider(MALookbackDataParser):
+class TradierDataHandler(MALookbackDataParser):
     class Error(Exception):
         pass
 
@@ -29,7 +28,6 @@ class TradierDataProvider(MALookbackDataParser):
         self.session_id = None
         self.rest_session = None
         self.ws_session = None
-        self.running = True
         self.rest_url = 'https://api.tradier.com'
         self.ws_uri = 'wss://ws.tradier.com/v1/markets/events'
         self.endpoints = {
@@ -85,7 +83,7 @@ class TradierDataProvider(MALookbackDataParser):
                 'data': data
             })
 
-    async def stream_handler(self, symbols):
+    async def stream_handler(self):
         if self.access_token is None:
             raise self.Error('Access Token required. None provided')
         
@@ -98,7 +96,7 @@ class TradierDataProvider(MALookbackDataParser):
                             if self.session_id is None:
                                 await self.get_session_id()
                             sub_symbols = {
-                                'symbols': symbols,
+                                'symbols': self.symbols,
                                 'filter': ['quote', 'trade'], #trade,quote,summary,timesale,tradex, dont pass if want all. summary gives OHLC data and prev close, but no timestamp
                                 'sessionid': self.session_id,
                                 'linebreak': True
@@ -131,5 +129,3 @@ class TradierDataProvider(MALookbackDataParser):
                                 self.ws_session = None
             except (aiohttp.ClientError, aiohttp.WSServerHandshakeError, ConnectionResetError) as e:
                 logger.error(f"websocket connection closed; resetting. {e}")
-
-SIGNALGENERATOR = TradierDataProvider

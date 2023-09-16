@@ -11,38 +11,37 @@ class AsyncUnixSocketServer():
     MSG_LENGTH_PREFIX_BYTES=4
     def __init__(self, unix_socket_path):
         self.unix_socket_path = unix_socket_path
+        self.server = None
 
-    async def send_str(self, msg):
-        if self.writer.is_closing():
+    async def send_str(self, writer, msg):
+        if writer.is_closing():
             raise ConnectionError("Connection to client closing")
         msg = str(msg)
         message_length = len(msg)
-        self.writer.write(message_length.to_bytes(self.MSG_LENGTH_PREFIX_BYTES, byteorder='big'))
-        self.writer.write(msg.encode('utf-8'))
-        await self.writer.drain()
+        writer.write(message_length.to_bytes(self.MSG_LENGTH_PREFIX_BYTES, byteorder='big'))
+        writer.write(msg.encode('utf-8'))
+        await writer.drain()
 
-    async def receive(self):
-        while True:
-                msg_length_prefix = await self.reader.read(self.MSG_LENGTH_PREFIX_BYTES)
-                if not msg_length_prefix:
-                    break
-                msg_length = int.from_bytes(msg_length_prefix, byteorder='big')
-                msg = await self.reader.read(msg_length)
-                if not msg:
-                    break
-                msg = msg.decode('utf-8')
-                yield msg
-        
+    # async def receive(self, reader):
+    #     while True:
+    #         msg_length_prefix = await reader.read(self.MSG_LENGTH_PREFIX_BYTES)
+    #         if not msg_length_prefix:
+    #             break
+    #         msg_length = int.from_bytes(msg_length_prefix, byteorder='big')
+    #         msg = await reader.read(msg_length)
+    #         if not msg:
+    #             break
+    #         msg = msg.decode('utf-8')
+    #         yield msg
+    
     async def client_handler(self, reader, writer):
         try:
-            self.reader = reader
-            self.writer = writer
-            await self.receive()
+            raise NotImplementedError
         finally:
-            self.writer.close()
-            await self.writer.wait_closed()
+            writer.close()
+            await writer.wait_closed()
 
-    async def open(self):
+    async def start_server(self):
         self.server = await asyncio.start_unix_server(self.client_handler, self.unix_socket_path)
 
     async def close(self):
@@ -109,15 +108,16 @@ class AsyncUnixSocketClient():
 #       async def data_consumer():
 #           async with ContextManagedAsyncUnixSocketServer("/tmp/my_unix_socket") as server:
 #               async for data_chunk in server:
-#                   print("Received:", data_chunk)
+# #                   print("Received:", data_chunk)
 class ContextManagedAsyncUnixSocketServer:
     MSG_LENGTH_PREFIX_BYTES=4
     def __init__(self, unix_socket_path):
         self.unix_socket_path = unix_socket_path
+        self.clients = set()
 
     async def __aenter__(self):
         self.server = await asyncio.start_unix_server(
-            self.client_handler,
+            self.handle_client,
             path=self.unix_socket_path
         )
         return self
@@ -126,35 +126,32 @@ class ContextManagedAsyncUnixSocketServer:
         self.server.close()
         await self.server.wait_closed()
 
-    async def send_str(self, msg):
-        if self.server.writer.is_closing():
+    async def send_str(self, writer, msg):
+        if writer.is_closing():
             raise ConnectionError("Connection to client closing")
         msg = str(msg)
         message_length = len(msg)
-        self.server.writer.write(message_length.to_bytes(self.MSG_LENGTH_PREFIX_BYTES, byteorder='big'))
-        self.server.writer.write(msg.encode('utf-8'))
-        await self.server.writer.drain()
+        writer.write(message_length.to_bytes(self.MSG_LENGTH_PREFIX_BYTES, byteorder='big'))
+        writer.write(msg.encode('utf-8'))
+        await writer.drain()
 
-    async def receive(self, reader):
-        while True:
-            msg_length_prefix = await reader.read(self.MSG_LENGTH_PREFIX_BYTES)
-            if not msg_length_prefix:
-                break
-            msg_length = int.from_bytes(msg_length_prefix, byteorder='big')
-            msg = await reader.read(msg_length)
-            if not msg:
-                break
-            msg = msg.decode('utf-8')
-            yield msg
-
-    async def client_handler(self, reader, writer):
+    async def handle_client(self, reader, writer):
+        self.writer = writer
         try:
-            self.server.reader = reader
-            self.server.writer = writer
-            await self.receive(reader)
+            while True:
+                msg_length_prefix = await reader.read(self.MSG_LENGTH_PREFIX_BYTES)
+                if not msg_length_prefix:
+                    break
+                msg_length = int.from_bytes(msg_length_prefix, byteorder='big')
+                msg = await reader.read(msg_length)
+                if not msg:
+                    break
+                msg = msg.decode('utf-8')
+                yield msg
         finally:
-            self.writer.close()
-            await self.writer.wait_closed()
+            self.writer = None
+            writer.close()
+            await writer.wait_closed()
 
 
 #==============================CONTEXT MANAGED ASYNC UNIX SOCKET CLIENT==========================================================
@@ -167,40 +164,42 @@ class ContextManagedAsyncUnixSocketServer:
 #                   if data_to_send == b'exit':
 #                       break
 #                   await client.send_str(data_to_send)
-class ContextManagedAsyncUnixSocketClient:
-    MSG_LENGTH_PREFIX_BYTES = 4
-    def __init__(self, unix_socket_path):
-        self.unix_socket_path = unix_socket_path
-        self.reader = None
-        self.writer = None
 
-    async def __aenter__(self):
-        self.reader, self.writer = await asyncio.open_unix_connection(self.unix_socket_path)
-        await self.receive()
-        return self
+#NOT FUNCTIONAL
+# class ContextManagedAsyncUnixSocketClient:
+#     MSG_LENGTH_PREFIX_BYTES = 4
+#     def __init__(self, unix_socket_path):
+#         self.unix_socket_path = unix_socket_path
+#         self.reader = None
+#         self.writer = None
 
-    async def __aexit__(self, exc_type, exc, tb):
-        if self.writer:
-            self.writer.close()
-            await self.writer.wait_closed()
+#     async def __aenter__(self):
+#         self.reader, self.writer = await asyncio.open_unix_connection(self.unix_socket_path)
+#         await self.receive()
+#         return self
 
-    async def send_str(self, msg):
-        if self.writer.is_closing():
-            raise ConnectionError("Connection to server closing")
-        msg = str(msg)
-        message_length = len(msg)
-        self.writer.write(message_length.to_bytes(self.MSG_LENGTH_PREFIX_BYTES, byteorder='big'))
-        self.writer.write(msg.encode('utf-8'))
-        await self.writer.drain()
+#     async def __aexit__(self, exc_type, exc, tb):
+#         if self.writer:
+#             self.writer.close()
+#             await self.writer.wait_closed()
 
-    async def receive(self):
-        while True:
-            msg_length_prefix = await self.reader.read(self.MSG_LENGTH_PREFIX_BYTES)
-            if not msg_length_prefix:
-                break
-            msg_length = int.from_bytes(msg_length_prefix, byteorder='big')
-            msg = await self.reader.read(msg_length)
-            if not msg:
-                break
-            msg = msg.decode('utf-8')
-            yield msg
+#     async def send_str(self, msg):
+#         if self.writer.is_closing():
+#             raise ConnectionError("Connection to server closing")
+#         msg = str(msg)
+#         message_length = len(msg)
+#         self.writer.write(message_length.to_bytes(self.MSG_LENGTH_PREFIX_BYTES, byteorder='big'))
+#         self.writer.write(msg.encode('utf-8'))
+#         await self.writer.drain()
+
+#     async def receive(self):
+#         while True:
+#             msg_length_prefix = await self.reader.read(self.MSG_LENGTH_PREFIX_BYTES)
+#             if not msg_length_prefix:
+#                 break
+#             msg_length = int.from_bytes(msg_length_prefix, byteorder='big')
+#             msg = await self.reader.read(msg_length)
+#             if not msg:
+#                 break
+#             msg = msg.decode('utf-8')
+#             yield msg
