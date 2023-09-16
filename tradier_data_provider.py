@@ -1,9 +1,9 @@
 import aiohttp
 import asyncio
 import logging
-from argparse import ArgumentParser
 from datetime import datetime
 import json
+import decimal
 
 from ma_lookback_data_parser import MALookbackDataParser, TIMEFRAMES, MA
 
@@ -19,7 +19,6 @@ logging.basicConfig(
 
 logger = logging.getLogger()
 
-
 class TradierDataProvider(MALookbackDataParser):
     class Error(Exception):
         pass
@@ -30,6 +29,7 @@ class TradierDataProvider(MALookbackDataParser):
         self.session_id = None
         self.rest_session = None
         self.ws_session = None
+        self.running = True
         self.rest_url = 'https://api.tradier.com'
         self.ws_uri = 'wss://ws.tradier.com/v1/markets/events'
         self.endpoints = {
@@ -58,6 +58,33 @@ class TradierDataProvider(MALookbackDataParser):
             return
         self.session_id = session_id
 
+    def parse_msg(self, msg):
+        channel = msg['type']
+        if channel == 'quote':
+            bid = decimal(str(msg['bid']))
+            ask = decimal(str(msg['ask']))
+            price = (bid + ask) / 2
+            data = {
+                'bid': bid,
+                'ask': ask,
+                'price': price,
+                'bid_size': msg['bidsz'],
+                'ask_size': msg['asksz']
+            }
+        else:
+            data = {
+                'price': decimal(str(msg['price'])),
+                'size': decimal(str(msg['size'])),
+                'trade_time': int(msg['date'])
+            }
+        return json.dumps({
+                'type': 'update',
+                'channel': channel,
+                'symbol': str(msg['symbol']).upper(),
+                'timestamp': datetime.utcnow().timestamp(),
+                'data': data
+            })
+
     async def stream_handler(self, symbols):
         if self.access_token is None:
             raise self.Error('Access Token required. None provided')
@@ -72,7 +99,7 @@ class TradierDataProvider(MALookbackDataParser):
                                 await self.get_session_id()
                             sub_symbols = {
                                 'symbols': symbols,
-                                'filter': ['quote'], #trade,quote,summary,timesale,tradex, dont pass if want all. summary gives OHLC data and prev close, but no timestamp
+                                'filter': ['quote', 'trade'], #trade,quote,summary,timesale,tradex, dont pass if want all. summary gives OHLC data and prev close, but no timestamp
                                 'sessionid': self.session_id,
                                 'linebreak': True
                             }
@@ -81,8 +108,8 @@ class TradierDataProvider(MALookbackDataParser):
                                 msg = msg.json()
                                 logger.info(msg)
                                 if 'type' in msg:
-                                    if msg['type'] == 'quote':
-                                        await self.handle_ticks(msg)
+                                    if msg['type'] in ('quote', 'trade'):
+                                        await self.handle_msg(msg)
                                     else:
                                         logger.info(f'Unhandled message type: {msg}')
                                 elif 'error' in msg:
@@ -102,28 +129,7 @@ class TradierDataProvider(MALookbackDataParser):
                             if self.ws_session and not self.ws_session.closed:
                                 await self.ws_session.close()
                                 self.ws_session = None
-
             except (aiohttp.ClientError, aiohttp.WSServerHandshakeError, ConnectionResetError) as e:
                 logger.error(f"websocket connection closed; resetting. {e}")
-
-def main():
-    parser = ArgumentParser()
-    signal_generator_args = parser.add_argument_group("Data Provider", "Data Provider parameters")
-    signal_generator_args.add_argument('--socket', type=str, default='/tmp/data_provider.sock', help="Path to unix domain socket responsible for serving data")
-    ma_strategy = parser.add_argument_group("MA strategy", "Moving average strategy")
-    ma_strategy.add_argument('--timeframe', type=str, default='5m', choices=TIMEFRAMES.keys(), help="Timeframe for candles")
-    ma_strategy.add_argument('--symbols', type=str.upper,  nargs='*', help="Symbols to trade")
-    ma_strategy.add_argument('--indicator', type=str, default='sma', choices=MA, help="Moving average: ether sma or ema")
-    ma_strategy.add_argument('--period', type=str, default='9', choices=[str(x) for x in range(1, 201)], help="Moving average period")
-    ma_strategy.add_argument('--lookback', type=str, default='5', choices=[str(x) for x in range(1, 21)], help="Lookback period")
-    credentials = parser.add_argument_group("Credentials", "Credentials for data source")
-    credentials.add_argument('--access-token', type=str, help="API access token")
-    args = parser.parse_args()
-    args = vars(args)
-    data_provider = TradierDataProvider(**args)
-    asyncio.run(data_provider.data_handler_main())
-
-if __name__ == '__main__':
-    main()
 
 SIGNALGENERATOR = TradierDataProvider
