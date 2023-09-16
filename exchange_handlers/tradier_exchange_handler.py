@@ -2,12 +2,21 @@ import aiohttp
 from aiohttp import web
 import asyncio
 import json
-from logging import Logger
+import logging
 from argparse import ArgumentParser
 from datetime import datetime
 from async_unix_socket import AsyncUnixSocketServer
 
-logger = Logger(__name__)
+#logger = Logger(__name__)
+logging.basicConfig(
+    level=logging.DEBUG,
+    format="%(asctime)s [%(levelname)s] [%(filename)s:%(lineno)d]: %(message)s",
+    handlers=[
+        #logging.FileHandler("path.log"),
+        logging.StreamHandler()
+    ]
+)
+logger = logging.getLogger()
 
 POSITIONS_HANDLER_INTERVAL_SECS = 2
 
@@ -158,7 +167,7 @@ class TDAExchangeHandler():
                 self.server = AsyncUnixSocketServer(self.socket)
                 async for msg in self.server.open():
                     msg = json.loads(msg)
-                    print("Received:", msg)
+                    logger.info("Received:", msg)
                     msg_type = msg.get('type', None)
                     if msg_type not in ('subscribe', 'unsubscribe', 'request'):
                         await self.server.send_str(json.dumps({'error': 'Invalid message type. Must be either \'subscribe\', \'unsubscribe\'. or \'request\''}))

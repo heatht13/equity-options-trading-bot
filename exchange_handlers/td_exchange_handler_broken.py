@@ -158,7 +158,7 @@ class TDAExchangeHandler():
                 self.server = AsyncUnixSocketServer(self.socket)
                 async for msg in self.server.open():
                     msg = json.loads(msg)
-                    print("Received:", msg)
+                    logger.info("Received:", msg)
                     msg_type = msg.get('type', None)
                     if msg_type not in ('subscribe', 'unsubscribe', 'request'):
                         await self.server.send_str(json.dumps({'error': 'Invalid message type. Must be either \'subscribe\', \'unsubscribe\'. or \'request\''}))

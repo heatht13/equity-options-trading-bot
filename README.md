@@ -53,6 +53,7 @@
 
 ## To Do
 
+* Potentially add some timeout logic to the queues and sockets
 * Need to fix signal handler logic to account for any state
 * Need to get api keys from webull
 * Decide whether to build book inside signal generator or in its own process.
