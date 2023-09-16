@@ -6,7 +6,7 @@ from datetime import datetime
 from urllib.parse import urlencode
 import json
 
-from ma_lookback_data_parser import MALookbackDataParser, TIMEFRAMES, MA
+from md_handler import MALookbackDataParser, TIMEFRAMES, MA
 
 #logger = Logger(__name__)
 logging.basicConfig(
@@ -270,5 +270,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-SIGNALGENERATOR = TDADataProvider

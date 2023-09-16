@@ -19,7 +19,7 @@
 
 * ### Decision Engine (Client)
 
-  * subscribes to signals and bids/asks feeds from Data Provider
+  * subscribes to signals and bids/asks feeds from MDSocketServer
   * Determines whether signal is generated from signal data
   * requests positions, balances, other relevant info from Exchange Handler
   * Produce decisions based on signals, balances, and positions
@@ -34,7 +34,8 @@
 
 * ### Exchange Handler (Server and Client)
 
-  * TDA and Webull handlers paused indefinitely. Need to find a new exchange.
+  * Tradier Exchange in development.
+  * TDA and Webull handlers paused indefinitely
   * server handles position management, balances, and order entry requests from Decision Engine
   * client makes positions, balances, and order entry requests to exchange
 
@@ -52,8 +53,7 @@
 
 ## To Do
 
-* Need to find a new exchange
-* Need to condense down awaitables to improve concurrency and speed up execution
+* Potentially add some timeout logic to the queues and sockets
 * Need to fix signal handler logic to account for any state
 * Need to get api keys from webull
 * Decide whether to build book inside signal generator or in its own process.
@@ -68,6 +68,7 @@
 
 ## Platform
 
+* Tradier Brokerage API
 * TD Ameritrade API (soon to be Schwab API). Development paused due to TD Ameritrade not supporting asynchronous code. Clowns
 * Webull OpenAPI. Development has not started because webull have not exposed their api. Nice
 * Python 3.11.3
