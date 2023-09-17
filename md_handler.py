@@ -52,34 +52,30 @@ class MALookbackDataParser():
         self.lookback_queue.append(candle)
         if len(self.lookback_queue) < lookback:
             logger.info(f'Not enough data for {lookback} lookback period')
-            return None
+            return None, None
         return max((candle['h'] for candle in self.lookback_queue)), min((candle['l'] for candle in self.lookback_queue))
     
     def update_indicators(self, msg):
-        #TODO: Use datetime.utcnow().timestamp() and track time to split candles
         symbol = msg['symbol']
-        msg_time = msg['timestamp']
         price = msg['data']['price']
-        size = msg['data']['size']
-        trade_time = msg['data']['trade_time']
-        #TODO: Need to confirm msgs are in order and correspond to current candle
+        quote_time = msg['data']['quote_time']
         if price > self.ohlc['h']:
             self.ohlc['h'] = price
         elif price < self.ohlc['l']:
             self.ohlc['l'] = price
         #open candle: will need more precision.Currently seconds
-        if trade_time % self.timeframe == 1:
+        if quote_time % self.timeframe == 1:
             self.ohlc['o'] = price
             self.ohlc['h'] = price
             self.ohlc['l'] = price
             self.ohlc['c'] = price
-            self.ohlc['t'] = self.timeframe
+            self.ohlc['t'] = self.timeframe // 60
         #close candle: will need more precision. Currently seconds
-        if trade_time % self.timeframe == 0:
+        if quote_time % self.timeframe == 0:
             self.ohlc['c'] = price
             ma = self.sma(self.ohlc, self.period) if self.indicator == 'sma' else self.ema(self.ohlc, self.period)
             lookback_high, lookback_low = self.lookback(self.ohlc, self.lookback_period)
-            msg = json.dumps({
+            msg = {
                 'type': 'update',
                 'channel': 'indicator',
                 'symbol': symbol,
@@ -92,11 +88,13 @@ class MALookbackDataParser():
                     'lookback_high': lookback_high, 
                     'lookback_low': lookback_low,
                     #'look_back_period': self.lookback_period,
-                    'trade_time': trade_time
+                    'close_time': quote_time
                 }
-            })
+            }
             self.ohlc = OHLC
+            logger.info(f"INDICATOR: {json.dumps(msg, indent=2)}")
             return msg
+        logger.info(f"OHLC: {json.dumps(self.ohlc, indent=2)}")
         return
         
     async def book(self, msg):
@@ -117,8 +115,10 @@ class MALookbackDataParser():
         if msg is None:
             return
         await self.send_msg(msg)
-        #TODO: Update indicators is broken
-        if msg['channel'] == 'trade':
+        if msg['channel'] == 'quote':
+            #TODO: Need to pass MA msgs every seconds so DE can track where it is relative to price
+            #Might make more sense to have DE caculate MA. Lookback can stay here, idk
+            logger.info(f"TIME: {datetime.fromtimestamp(msg['data']['quote_time'])}")
             update = self.update_indicators(msg)
             if update is not None:
                 await self.send_msg(update)
@@ -257,8 +257,8 @@ class MDSocketServer:
                 self.data_handler = getattr(import_module(f'data_handlers.{self.exchange}_data_handler'),
                                             f'{self.exchange.capitalize()}DataHandler')(**self.data_handler_kwargs)
                 md_handler_tasks = {
-                                    asyncio.create_task(self.data_handler.data_handler_main(), name=f'{self.exchange}_data_handler'), 
-                                    asyncio.create_task(self.server_task(), name=f'{self.exchange}_server')
+                                    asyncio.create_task(self.data_handler.data_handler_main(), name=f'{self.exchange.capitalize()} Data Handler'), 
+                                    asyncio.create_task(self.server_task(), name=f'MD Socket Server')
                                 }
                 await asyncio.wait(md_handler_tasks, return_when=asyncio.FIRST_COMPLETED)
             finally:
@@ -275,7 +275,7 @@ def main():
     signal_generator_args = parser.add_argument_group("Data Provider", "Data Provider parameters")
     signal_generator_args.add_argument('--socket', type=str, default='/tmp/md_server.sock', help="Path to unix domain socket responsible for serving data")
     credentials = parser.add_argument_group("Credentials", "Credentials for data source")
-    credentials.add_argument('--exchange', type=str, choices=EXCHANGES, help="Exchange to trade on")
+    credentials.add_argument('--exchange', type=str.lower, choices=EXCHANGES, help="Exchange to trade on")
     credentials.add_argument('--access-token', type=str, help="API access token")
     ma_strategy = parser.add_argument_group("MA strategy", "Moving average strategy")
     ma_strategy.add_argument('--timeframe', type=str, default='5m', choices=TIMEFRAMES.keys(), help="Timeframe for candles")

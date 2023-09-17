@@ -19,11 +19,12 @@ logging.basicConfig(
 class FakeDataHandler(MALookbackDataParser):
     def __init__(self, access_token, **kwargs):
         super().__init__(**kwargs)
+        self.last_ts_seq = 0
 
     def parse_msg(self, msg):
         channel = msg['type']
         if channel == 'timesale':
-            if msg['cancel'] or msg['correction']:
+            if msg['cancel'] or msg['correction'] or msg['seq'] <= self.last_ts_seq:
                 return None
             data = {
                 'bid': float(msg['bid']),
@@ -33,16 +34,18 @@ class FakeDataHandler(MALookbackDataParser):
                 'trade_time': float(msg['date']) / 10 ** 3,
                 'seq': msg['seq'],
             }
+            self.last_ts_seq = msg['seq']
         elif channel == 'quote':
             bid = decimal.Decimal(str(msg['bid']))
             ask = decimal.Decimal(str(msg['ask']))
-            price = float((bid + ask) / 2)
+            price = float(str((bid + ask) / 2))
             data = {
                 'bid': msg['bid'],
                 'ask': msg['ask'],
                 'price': price,
                 'bid_size': msg['bidsz'],
-                'ask_size': msg['asksz']
+                'ask_size': msg['asksz'],
+                'quote_time': float(msg['date']) / 10 ** 3
             }
         elif channel == 'trade':
             data = {
@@ -61,8 +64,8 @@ class FakeDataHandler(MALookbackDataParser):
             }
 
     async def stream_handler(self):
+        import random
         async def generate_timesale():
-            import random
             bid = 281.84
             ask = 281.85
             last = 281.84
@@ -112,11 +115,35 @@ class FakeDataHandler(MALookbackDataParser):
                     "askdate": "1557757190000"
                 }
                 await asyncio.sleep(1)
+                quote['date'] = str(int(datetime.utcnow().timestamp()) * 10 ** 3)
                 #logger.info(f"Received message: {json.dumps(msg, indent=4)}")
                 await self.handle_msg(quote)
                 bid += 1
-                ask += 1
                 bidsz += 1
+                ask += 1
                 asksz += 1
 
-        await asyncio.gather(generate_quote(), generate_timesale())
+        async def generate_trade():
+            price = 281.84
+            size = 60
+            cum_volume = 10000
+            while True:
+                trade = {
+                    "type": "trade",
+                    "symbol": "SPY",
+                    "exch": "Z",
+                    "price": str(price),
+                    "size": str(size),
+                    "cvol": str(cum_volume),
+                    "date": "1557757189000",
+                    "last": str(price)
+                }
+                await asyncio.sleep(random.uniform(1, 3))
+                trade['date'] = str(int(datetime.utcnow().timestamp() * 10 ** 3))
+                #logger.info(f"Received message: {json.dumps(msg, indent=4)}")
+                await self.handle_msg(trade)
+                price += 1
+                size += 1
+                cum_volume += 1
+
+        await asyncio.gather(generate_quote(), generate_timesale(), generate_trade())

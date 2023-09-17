@@ -226,7 +226,7 @@ class DecisionEngine():
                     await asyncio.gather(*subs)
                     async for msg in md_socket.receive():
                         msg = json.loads(msg)
-                        logger.info(f"Received message: {json.dumps(msg, indent=2)}")
+                        #logger.info(f"Received message: {json.dumps(msg, indent=2)}")
                         if msg['type'] == 'update':
                             if msg['channel'] == 'quotes':
                                 self.prices[msg['symbol']] = msg['data']['price']

@@ -56,7 +56,7 @@ class TradierDataHandler(MALookbackDataParser):
     def parse_msg(self, msg):
         channel = msg['type']
         if channel == 'timesale':
-            if msg['cancel'] or msg['correction']:
+            if msg['cancel'] or msg['correction'] or msg['seq'] <= self.last_ts_seq:
                 return None
             data = {
                 'bid': float(msg['bid']),
@@ -66,16 +66,18 @@ class TradierDataHandler(MALookbackDataParser):
                 'trade_time': float(msg['date']) / 10 ** 3,
                 'seq': msg['seq'],
             }
+            self.last_ts_seq = msg['seq']
         elif channel == 'quote':
             bid = decimal.Decimal(str(msg['bid']))
             ask = decimal.Decimal(str(msg['ask']))
-            price = float((bid + ask) / 2)
+            price = float(str((bid + ask) / 2))
             data = {
                 'bid': msg['bid'],
                 'ask': msg['ask'],
                 'price': price,
                 'bid_size': msg['bidsz'],
-                'ask_size': msg['asksz']
+                'ask_size': msg['asksz'],
+                'quote_time': float(msg['date']) / 10 ** 3
             }
         elif channel == 'trade':
             data = {
@@ -107,7 +109,7 @@ class TradierDataHandler(MALookbackDataParser):
                                 await self.get_session_id()
                             sub_symbols = {
                                 'symbols': self.symbols,
-                                'filter': ['quote'], #trade,quote,summary,timesale,tradex, dont pass if want all.
+                                'filter': ['quote', 'timesale'], #trade,quote,summary,timesale,tradex, dont pass if want all.
                                 'sessionid': self.session_id,
                                 'linebreak': True
                             }

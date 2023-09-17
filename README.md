@@ -13,10 +13,14 @@
   * Biggest downfall is number of trades taken can be very excessive without anything to show for it, so fees (if they exist) need to be managed accordingly. This is because when the price chops in a small range, it will continuously cross the 9MA resulting in sending multiple buy and sell signals. We would essentially be trading nothing and could likely incur losses
   * Due to potential frequency of trades, a cash account is not optimal. We need to be available to freely open and close positions all day. This requires margin or some alternative that allows us to place tens of orders a day. An account with $25k-$100k would be optimal.
 
-## Structure and Design
+## Architecture
 
-* Note: Currently have SignalGenerator, MD, and Book in one process
+* ### Startup
 
+  * Market Data Server: `.py311/bin/python md_handler.py --symbols SPY QQQ --exchange fake`
+  * Exchange Router: `.py311/bin/python exchange_router.py --exchange fake`
+  * Decision Engine: `.py311/bin/python decision_engine.py --symbols SPY QQQ`
+  
 * ### Decision Engine (Client)
 
   * subscribes to signals and bids/asks feeds from MDSocketServer
