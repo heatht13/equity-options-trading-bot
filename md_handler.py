@@ -16,11 +16,12 @@ logging.basicConfig(
     ]
 )
 logger = logging.getLogger()
+logger.setLevel(logging.INFO)
 
 MA = {'sma', 'ema'}
 OHLC = {'o': 0, 'h': 0, 'l': 0, 'c': 0, 't': 0}
 TIMEFRAMES = {'1m': 60, '5m': 300, '15m': 900, '1h': 3600, '4h': 14400, '1d': 86400}
-EXCHANGES = {'tradier'}
+EXCHANGES = {'tradier', 'fake'}
 
 class MALookbackDataParser():
     class Error(Exception):
@@ -44,7 +45,7 @@ class MALookbackDataParser():
             return None
         return sum((candle['c'] for candle in self.ma_queue)) / self.ma_queue.maxlen
 
-    def ema(self, price, period, ema_prev=None):
+    def ema(self, candle, period, ema_prev=None):
         raise NotImplementedError
 
     def lookback(self, candle, lookback):
@@ -55,6 +56,7 @@ class MALookbackDataParser():
         return max((candle['h'] for candle in self.lookback_queue)), min((candle['l'] for candle in self.lookback_queue))
     
     def update_indicators(self, msg):
+        #TODO: Use datetime.utcnow().timestamp() and track time to split candles
         symbol = msg['symbol']
         msg_time = msg['timestamp']
         price = msg['data']['price']
@@ -112,7 +114,10 @@ class MALookbackDataParser():
     
     async def handle_msg(self, msg):
         msg = self.parse_msg(msg)
+        if msg is None:
+            return
         await self.send_msg(msg)
+        #TODO: Update indicators is broken
         if msg['channel'] == 'trade':
             update = self.update_indicators(msg)
             if update is not None:
@@ -122,8 +127,7 @@ class MALookbackDataParser():
         while True:
             try:
                 logger.info("Data Handler Starting")
-                data_handler_task = asyncio.create_task(self.stream_handler())
-                await data_handler_task
+                await self.stream_handler()
             finally:
                 logger.info("Data Handler Shutting Down")
                 self.ma_queue.clear()
@@ -154,8 +158,7 @@ class MDSocketServer:
             msg = await self.clients[client]['queue'].get()
             channel = msg['channel']
             symbol = msg['symbol']
-            #TODO dont use prices, use channel. This is just testing
-            if symbol in self.clients[client]['prices']:
+            if symbol in self.clients[client]['quote']:
                 await self.send_json(writer, json.dumps(msg))
 
     async def request_handler(self, client, reader, writer):
@@ -175,23 +178,35 @@ class MDSocketServer:
                 await self.send_json(writer, json.dumps({'error': 'Invalid message type. Must be either \'subscribe\' or \'unsubscribe\''}))
                 continue
             msg_channel = msg.get('channel', None)
-            if msg_channel not in ('prices', 'indicators', 'all'):
-                await self.send_json(writer, json.dumps({'error': 'Invalid message channel. Must be either \'prices\', \'indicators\', or \'all\''}))
+            if msg_channel not in ('quotes', 'timesale', 'indicators', 'all'):
+                await self.send_json(writer, json.dumps({'error': 'Invalid message channel. Must be either \'quotes\', \'timesale\', \'indicators\', or \'all\''}))
                 continue
             if msg_type == 'subscribe':
-                if msg_channel in ('prices', 'all'):
-                    self.clients[client]['prices'].update(msg['symbols'])
-                    await self.send_json(writer, json.dumps({'Success': f'Subscribed prices for {msg["symbols"]}'}))
+                if msg_channel in ('quotes', 'all'):
+                    self.clients[client]['quote'].update(msg['symbols'])
+                    await self.send_json(writer, json.dumps({'type': 'success',
+                                                             'success': f'Subscribed quotes for {msg["symbols"]}'}))
+                if msg_channel in ('timesale', 'all'):
+                    self.clients[client]['timesale'].update(msg['symbols'])
+                    await self.send_json(writer, json.dumps({'type': 'success',
+                                                             'Success': f'Subscribed timesale for {msg["symbols"]}'}))
                 if msg_channel in ('indicators', 'all'):
-                    self.clients[client]['indicators'].update(msg['symbols'])
-                    await self.send_json(writer, json.dumps({'Success': f'Subscribed indicators for {msg["symbols"]}'}))
+                    self.clients[client]['indicator'].update(msg['symbols'])
+                    await self.send_json(writer, json.dumps({'type': 'success',
+                                                             'success': f'Subscribed indicators for {msg["symbols"]}'}))
             else:
                 if msg_channel in ('prices', 'all'):
-                    self.clients[client]['prices'].difference_update(msg['symbols'])
-                    await self.send_json(writer, json.dumps({'Success': f'Unsubscribed prices for {msg["symbols"]}'}))
+                    self.clients[client]['quote'].difference_update(msg['symbols'])
+                    await self.send_json(writer, json.dumps({'type': 'success',
+                                                             'success': f'Unsubscribed prices for {msg["symbols"]}'}))
+                if msg_channel in ('timesale', 'all'):
+                    self.clients[client]['timesale'].difference_update(msg['symbols'])
+                    await self.send_json(writer, json.dumps({'type': 'success',
+                                                             'success': f'Subscribed timesale for {msg["symbols"]}'}))
                 if msg_channel in ('indicators', 'all'):
-                    self.clients[client]['indicators'].difference_update(msg['symbols'])
-                    await self.send_json(writer, json.dumps({'Success': f'Unsubscribed indicators for {msg["symbols"]}'}))
+                    self.clients[client]['indicator'].difference_update(msg['symbols'])
+                    await self.send_json(writer, json.dumps({'type': 'success',
+                                                             'success': f'Unsubscribed indicators for {msg["symbols"]}'}))
     
     async def on_connect(self, reader, writer):
         try:
@@ -199,25 +214,27 @@ class MDSocketServer:
             logger.info(f"Client connected on {client}")
             self.clients[client] = {
                 'queue': asyncio.Queue(),
-                'prices': set(),
-                'indicators': set()
+                'quote': set(),
+                'timesale': set(),
+                'indicator': set()
             }
             client_handler_tasks = {
-                                    asyncio.create_task(self.request_handler(client, reader, writer)), 
-                                    asyncio.create_task(self.msg_handler(client, writer))
+                                    asyncio.create_task(self.request_handler(client, reader, writer), name=f'{client}_request_handler'), 
+                                    asyncio.create_task(self.msg_handler(client, writer), name=f'{client}_msg_handler')
                                 }
             await asyncio.wait(client_handler_tasks, return_when=asyncio.FIRST_COMPLETED)
-
         finally:
-            #TODO: Handle cancelling an already completed/cancelled task
+            logger.info(f"Client disconnected on {client}")
+            self.clients.pop(client, None) #TODO: do we need to wait for queue to empty before popping?
             for task in client_handler_tasks:
-                logger.info(f"Cancelling task: {task}")
+                logger.debug(f"Cancelling task: {task.get_name()}")
                 task.cancel()
             await asyncio.gather(*client_handler_tasks, return_exceptions=True)
             writer.close()
-            await writer.wait_closed()
-            self.clients.pop(client, None) #TODO: do we need to wait for queue to empty before popping?
-            self.data_handler.clients.pop(client, None)
+            try:
+                await writer.wait_closed()
+            except ConnectionResetError:
+                pass
     
     async def server_task(self):
         while self.running:
@@ -240,19 +257,16 @@ class MDSocketServer:
                 self.data_handler = getattr(import_module(f'data_handlers.{self.exchange}_data_handler'),
                                             f'{self.exchange.capitalize()}DataHandler')(**self.data_handler_kwargs)
                 md_handler_tasks = {
-                                    asyncio.create_task(self.data_handler.data_handler_main()), 
-                                    asyncio.create_task(self.server_task())
+                                    asyncio.create_task(self.data_handler.data_handler_main(), name=f'{self.exchange}_data_handler'), 
+                                    asyncio.create_task(self.server_task(), name=f'{self.exchange}_server')
                                 }
                 await asyncio.wait(md_handler_tasks, return_when=asyncio.FIRST_COMPLETED)
             finally:
                 logger.info("Market Data Shutting Down")
                 self.running = False
                 self.clients.clear()
-                #TODO: I dont want to do this. data_handler clients should point to the same address as self.clients
-                #self.data_handler.clients.clear()
-                #TODO: Handle cancelling an already completed/cancelled task
                 for task in md_handler_tasks:
-                    logger.info(f"Cancelling task: {task}")
+                    logger.info(f"Cancelling task: {task.get_name()}")
                     task.cancel()
                 await asyncio.gather(*md_handler_tasks, return_exceptions=True)
             

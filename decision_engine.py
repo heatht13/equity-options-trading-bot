@@ -19,6 +19,7 @@ logging.basicConfig(
 logger = logging.getLogger()
 
 ORDER_SOCKET_INTERVAL_SEC = 2
+MD_SOCKET_INTERVAL_SEC = 2
 SIGNAL_PROC_INTERVAL_SEC = 1
 NUM_CONTRACTS = 1
 MAX_ORDERS = 5
@@ -203,37 +204,42 @@ class DecisionEngine():
             try:
                 logger.info(f"Market Data Handler Starting")
                 async with ContextManagedAsyncUnixSocketClient(self.market_data_socket) as md_socket:
-                    prices = {
+                    quotes = {
                         'type': 'subscribe',
-                        'channel': 'prices',
+                        'channel': 'quotes',
                         'symbols': list(self.symbols)
                     }
-                    logger.info(f"Subscribing Prices: {prices}")
-                    await md_socket.send_json(json.dumps(prices))
+                    timesale = {
+                        'type': 'subscribe',
+                        'channel': 'timesale',
+                        'symbols': list(self.symbols)
+                    }
                     indicators = {
                         'type': 'subscribe',
                         'channel': 'indicators',
                         'symbols': list(self.symbols)
                     }
-                    logger.info(f"Subscribing Indicators: {indicators}")
-                    await md_socket.send_json(json.dumps(indicators))
+                    subs = set()
+                    for sub in (quotes, timesale, indicators):
+                        logger.info(f"Subscribing {sub['channel'].capitalize()}")
+                        subs.add(asyncio.create_task(md_socket.send_json(json.dumps(sub))))
+                    await asyncio.gather(*subs)
                     async for msg in md_socket.receive():
                         msg = json.loads(msg)
                         logger.info(f"Received message: {json.dumps(msg, indent=2)}")
-                        # if msg['type'] == 'update':
-                        #     if msg['channel'] == 'prices':
-                        #         self.prices[msg['symbol']] = msg['data']['price']
-                        #     elif msg['channel'] == 'indicators':
-                        #         self.indicators[msg['symbol']] = msg['data']
-                        # elif msg['type'] == 'success':
-                        #     logger.info(msg)
-                        # elif msg['type'] == 'error':
-                        #     logger.error(msg)
-                        #     break
-                #TODO: Remove before going live. just doing this to mitigate against the inevitable while testing
-                await asyncio.sleep(2)
-            finally:
-                logger.info(f"Market Data Handler Shutting Down")
+                        if msg['type'] == 'update':
+                            if msg['channel'] == 'quotes':
+                                self.prices[msg['symbol']] = msg['data']['price']
+                            elif msg['channel'] == 'indicators':
+                                self.indicators[msg['symbol']] = msg['data']
+                        elif msg['type'] == 'success':
+                            logger.info(msg)
+                        elif msg['type'] == 'error':
+                            logger.error(msg)
+                            break
+            except ConnectionRefusedError:
+                logger.error(f"Market Data Handler Unable to Connect. Resetting...")
+                await asyncio.sleep(MD_SOCKET_INTERVAL_SEC)
 
     async def decision_engine_main(self):
         while True:

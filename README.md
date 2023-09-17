@@ -53,6 +53,8 @@
 
 ## To Do
 
+* Have server respond with list of symbols that fail to subscribe
+* Have client send name so server can better track who the client is
 * Potentially add some timeout logic to the queues and sockets
 * Need to fix signal handler logic to account for any state
 * Need to get api keys from webull
