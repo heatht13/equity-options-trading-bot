@@ -36,7 +36,7 @@ class MALookbackDataParser():
         self.lookback_period = int(lookback)
         self.ma_queue = deque(maxlen=self.period)
         self.lookback_queue = deque(maxlen=self.lookback_period)
-        self.ohlc = OHLC
+        self.ohlc = OHLC.copy()
 
     def sma(self, candle, period):
         self.ma_queue.append(candle)
@@ -74,7 +74,9 @@ class MALookbackDataParser():
         if quote_time % self.timeframe == 0:
             self.ohlc['c'] = price
             ma = self.sma(self.ohlc, self.period) if self.indicator == 'sma' else self.ema(self.ohlc, self.period)
+            logger.info(f"MA Q: {self.ma_queue}")
             lookback_high, lookback_low = self.lookback(self.ohlc, self.lookback_period)
+            logger.info(f"Lookback Q: {self.lookback_queue}")
             msg = {
                 'type': 'update',
                 'channel': 'indicator',
@@ -91,7 +93,7 @@ class MALookbackDataParser():
                     'close_time': quote_time
                 }
             }
-            self.ohlc = OHLC
+            self.ohlc = OHLC.copy()
             logger.info(f"INDICATOR: {json.dumps(msg, indent=2)}")
             return msg
         logger.info(f"OHLC: {json.dumps(self.ohlc, indent=2)}")
@@ -117,7 +119,9 @@ class MALookbackDataParser():
         await self.send_msg(msg)
         if msg['channel'] == 'quote':
             #TODO: Need to pass MA msgs every seconds so DE can track where it is relative to price
-            #Might make more sense to have DE caculate MA. Lookback can stay here, idk
+            #Might make more sense to have DE caculate MA. Lookback can stay here, idk.
+            #Going to pass MA inside price msgs for now. May decide to just create one msg that contains all data (indicators, timesale, quote, etc)
+            #and pass that every second. lookback will be repetitive though, so maybe not. Only price and MA will change every second.
             logger.info(f"TIME: {datetime.fromtimestamp(msg['data']['quote_time'])}")
             update = self.update_indicators(msg)
             if update is not None:
