@@ -64,34 +64,37 @@ class DecisionEngine():
     def __init__(self, market_data_socket, exchange_socket, symbols):
         self.market_data_socket = market_data_socket
         self.exchange_socket = exchange_socket
-        self.prices = dict()
+        self.quotes = dict()
+        self.timesale = dict()
         self.positions = dict()
         self.orders = deque(maxlen=MAX_ORDERS)
-        self.indicators = dict()
+        self.mas = dict()
+        self.lookback = dict()
         self.symbols = symbols
         self.price_state = PriceState.UNSET
 
-    # def generate_signal(self, symbol):
-    #     price = self.prices[symbol]
-    #     indicator = self.indicators[symbol]
-    #     signal = Signal.HOLD
-    #     if price > indicator['ma']:
-    #         if price > indicator['lookback_high']:
-    #             if self.price_state.is_pending_breakout_up():
-    #                 signal = Signal.LONG
-    #             self.price_state = PriceState.UP
-    #         else:
-    #             self.price_state = PriceState.PENDING_BREAKOUT_UP
-    #     elif price < indicator['ma']:
-    #         if price < indicator['lookback_low']:
-    #             if self.price_state.is_pending_breakout_down():
-    #                 signal =  Signal.SHORT 
-    #             self.price_state = PriceState.DOWN
-    #         else:
-    #             self.price_state = PriceState.PENDING_BREAKOUT_DOWN
-    #     else:
-    #         self.price_state = PriceState.UNSET
-    #     return signal
+    def generate_signal(self, symbol):
+        quote = self.quotes[symbol]['price']
+        ma = self.mas[symbol]['ma']
+        lookback = self.lookback[symbol]
+        signal = Signal.HOLD
+        if quote > ma:
+            if quote > lookback['lookback_high']:
+                if self.price_state.is_pending_breakout_up():
+                    signal = Signal.LONG
+                self.price_state = PriceState.UP
+            else:
+                self.price_state = PriceState.PENDING_BREAKOUT_UP
+        elif quote < ma:
+            if quote < lookback['lookback_low']:
+                if self.price_state.is_pending_breakout_down():
+                    signal =  Signal.SHORT 
+                self.price_state = PriceState.DOWN
+            else:
+                self.price_state = PriceState.PENDING_BREAKOUT_DOWN
+        else:
+            self.price_state = PriceState.UNSET
+        return signal
 
     # def create_order(self, symbol, order_type, side, price, quantity, offset, tif, asset_type):
     #     return Order(
@@ -105,33 +108,33 @@ class DecisionEngine():
     #         asset_type=str(asset_type)
     #     )
     
-    # async def signal_handler(self):
-    #     #TODO: This needs some work. Needs to handle every case/scenario. Currently, it does not.
-    #     logger.info(f"Decision Engine signal handler started")
-    #     try:
-    #         while True:
-    #             for symbol in self.symbols:
-    #                 if symbol not in self.indicators or symbol not in self.prices:
-    #                     continue
+    async def signal_handler(self):
+        #TODO: This needs some work. Needs to handle every case/scenario. Currently, it does not.
+        logger.info(f"Decision Engine signal handler started")
+        try:
+            while True:
+                for symbol in self.symbols:
+                    if symbol not in self.quotes or symbol not in self.timesale or symbol not in self.mas or symbol not in self.lookback:
+                        continue
                     
-    #                 signal = self.generate_signal(symbol)
-    #                 if signal == Signal.HOLD:
-    #                     continue
+                    signal = self.generate_signal(symbol)
+                    if signal == Signal.HOLD:
+                        continue
 
-    #                 price = self.prices[symbol]
-    #                 if signal == Signal.LONG:
-    #                     if symbol not in self.positions:
-    #                         self.orders.append(self.create_order(symbol, 'limit', 'buy', price, NUM_CONTRACTS, 'open', 'day', 'OPTION'))
-    #                     elif self.positions[symbol]['side'] == 'short':
-    #                         self.orders.append(self.create_order(symbol, 'limit', 'buy', price, NUM_CONTRACTS, 'close', 'day', 'OPTION'))
-    #                 else:
-    #                     if symbol not in self.positions:
-    #                         self.orders.append(self.create_order(symbol, 'limit', 'sell', price, NUM_CONTRACTS, 'open', 'day', 'OPTION'))
-    #                     elif self.positions[symbol]['side'] == 'long':
-    #                         self.orders.append(self.create_order(symbol, 'limit', 'sell', price, NUM_CONTRACTS, 'close', 'day', 'OPTION'))
-    #             asyncio.sleep(SIGNAL_PROC_INTERVAL_SEC)
-    #     finally:
-    #         logger.info(f"Decision Engine signal handler shutting down")
+                    price = self.quotes[symbol]
+                    if signal == Signal.LONG:
+                        if symbol not in self.positions:
+                            self.orders.append(self.create_order(symbol, 'limit', 'buy', price, NUM_CONTRACTS, 'open', 'day', 'OPTION'))
+                        elif self.positions[symbol]['side'] == 'short':
+                            self.orders.append(self.create_order(symbol, 'limit', 'buy', price, NUM_CONTRACTS, 'close', 'day', 'OPTION'))
+                    else:
+                        if symbol not in self.positions:
+                            self.orders.append(self.create_order(symbol, 'limit', 'sell', price, NUM_CONTRACTS, 'open', 'day', 'OPTION'))
+                        elif self.positions[symbol]['side'] == 'long':
+                            self.orders.append(self.create_order(symbol, 'limit', 'sell', price, NUM_CONTRACTS, 'close', 'day', 'OPTION'))
+                asyncio.sleep(SIGNAL_PROC_INTERVAL_SEC)
+        finally:
+            logger.info(f"Decision Engine signal handler shutting down")
 
     # async def send_orders(self, exchange_socket):
     #     try:
@@ -206,7 +209,7 @@ class DecisionEngine():
                 async with ContextManagedAsyncUnixSocketClient(self.market_data_socket) as md_socket:
                     quotes = {
                         'type': 'subscribe',
-                        'channel': 'quotes',
+                        'channel': 'quote',
                         'symbols': list(self.symbols)
                     }
                     timesale = {
@@ -214,13 +217,18 @@ class DecisionEngine():
                         'channel': 'timesale',
                         'symbols': list(self.symbols)
                     }
-                    indicators = {
+                    mas = {
                         'type': 'subscribe',
-                        'channel': 'indicators',
+                        'channel': 'ma',
+                        'symbols': list(self.symbols)
+                    }
+                    lookback = {
+                        'type': 'subscribe',
+                        'channel': 'lookback',
                         'symbols': list(self.symbols)
                     }
                     subs = set()
-                    for sub in (quotes, timesale, indicators):
+                    for sub in (quotes, timesale, mas, lookback):
                         logger.info(f"Subscribing {sub['channel'].capitalize()}")
                         subs.add(asyncio.create_task(md_socket.send_json(json.dumps(sub))))
                     await asyncio.gather(*subs)
@@ -228,10 +236,16 @@ class DecisionEngine():
                         msg = json.loads(msg)
                         #logger.info(f"Received message: {json.dumps(msg, indent=2)}")
                         if msg['type'] == 'update':
-                            if msg['channel'] == 'quotes':
-                                self.prices[msg['symbol']] = msg['data']['price']
-                            elif msg['channel'] == 'indicators':
-                                self.indicators[msg['symbol']] = msg['data']
+                            if msg['channel'] == 'quote':
+                                self.quotes[msg['symbol']] = msg['data']
+                            elif msg['channel'] == 'timesale':
+                                self.timesale[msg['symbol']] = msg['data']
+                            elif msg['channel'] == 'ma':
+                                self.mas[msg['symbol']] = msg['data']
+                            elif msg['channel'] == 'lookback':
+                                self.lookback[msg['symbol']] = msg['data']
+                            else:
+                                logger.warning(f"Unhandled message type: {msg}")
                         elif msg['type'] == 'success':
                             logger.info(msg)
                         elif msg['type'] == 'error':

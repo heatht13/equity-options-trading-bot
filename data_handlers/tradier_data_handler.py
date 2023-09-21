@@ -118,7 +118,7 @@ class TradierDataHandler(MALookbackDataParser):
                                 msg = msg.json()
                                 logger.info(msg)
                                 if 'type' in msg:
-                                    if msg['type'] in ('quote', 'trade'):
+                                    if msg['type'] in ('quote', 'timesale'):
                                         await self.handle_msg(msg)
                                     else:
                                         logger.info(f'Unhandled message type: {msg}')

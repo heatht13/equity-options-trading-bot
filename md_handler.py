@@ -38,7 +38,10 @@ class MALookbackDataParser():
         self.lookback_queue = deque(maxlen=self.lookback_period)
         self.ohlc = OHLC.copy()
 
-    def sma(self, candle, period):
+    def sma(self, candle, period, tick, price):
+        #NOTE: This is absolutely horrible but works for now
+        if tick != 0:
+            return sum((candle['c'] for candle in self.ma_queue)) - self.ma_queue[0] + price / self.ma_queue.maxlen
         self.ma_queue.append(candle)
         if len(self.ma_queue) < period:
             logger.info(f'Not enough data for {period} period sma')
@@ -59,32 +62,31 @@ class MALookbackDataParser():
         symbol = msg['symbol']
         price = msg['data']['price']
         quote_time = msg['data']['quote_time']
+        #open candle: will need more precision.Currently seconds
         if price > self.ohlc['h']:
             self.ohlc['h'] = price
         elif price < self.ohlc['l']:
             self.ohlc['l'] = price
-        #open candle: will need more precision.Currently seconds
-        if quote_time % self.timeframe == 1:
+        tick = quote_time % self.timeframe
+        if tick == 1:
             self.ohlc['o'] = price
             self.ohlc['h'] = price
             self.ohlc['l'] = price
             self.ohlc['c'] = price
             self.ohlc['t'] = self.timeframe // 60
         #close candle: will need more precision. Currently seconds
-        if quote_time % self.timeframe == 0:
+        elif tick == 0:
             self.ohlc['c'] = price
-            ma = self.sma(self.ohlc, self.period) if self.indicator == 'sma' else self.ema(self.ohlc, self.period)
-            logger.info(f"MA Q: {self.ma_queue}")
             lookback_high, lookback_low = self.lookback(self.ohlc, self.lookback_period)
             logger.info(f"Lookback Q: {self.lookback_queue}")
+            channel = 'lookback'
             msg = {
                 'type': 'update',
-                'channel': 'indicator',
+                'channel': 'lookback',
                 'symbol': symbol,
                 'timestamp': datetime.utcnow().timestamp(),
                 'data': {
-                    'ohlc': self.ohlc,
-                    'ma': ma,
+                    # 'ohlc': self.ohlc,
                     #'ma_period': self.period,
                     #'indicator': self.indicator,
                     'lookback_high': lookback_high, 
@@ -94,10 +96,24 @@ class MALookbackDataParser():
                 }
             }
             self.ohlc = OHLC.copy()
-            logger.info(f"INDICATOR: {json.dumps(msg, indent=2)}")
-            return msg
+            logger.info(f"Lookback: {json.dumps(msg, indent=2)}")
+            self.send_msg(msg)
+        ma = self.sma(self.ohlc, self.period, tick, price) if self.indicator == 'sma' else self.ema(self.ohlc, self.period, tick, price)
+        msg = {
+            'type': 'update',
+            'channel': 'ma',
+            'symbol': symbol,
+            'timestamp': datetime.utcnow().timestamp(),
+            'data': {
+                'ma': ma,
+                'ma_period': self.period,
+                'close_time': quote_time
+            }
+        }
+        self.send_msg(msg)
+        logger.info(f"MA Q: {self.ma_queue}")
+        logger.info(f"MA: {json.dumps(msg, indent=2)}")
         logger.info(f"OHLC: {json.dumps(self.ohlc, indent=2)}")
-        return
         
     async def book(self, msg):
         raise NotImplementedError
@@ -162,7 +178,7 @@ class MDSocketServer:
             msg = await self.clients[client]['queue'].get()
             channel = msg['channel']
             symbol = msg['symbol']
-            if symbol in self.clients[client]['quote']:
+            if symbol in self.clients[client][channel]:
                 await self.send_json(writer, json.dumps(msg))
 
     async def request_handler(self, client, reader, writer):
@@ -186,7 +202,7 @@ class MDSocketServer:
                 await self.send_json(writer, json.dumps({'error': 'Invalid message channel. Must be either \'quotes\', \'timesale\', \'indicators\', or \'all\''}))
                 continue
             if msg_type == 'subscribe':
-                if msg_channel in ('quotes', 'all'):
+                if msg_channel in ('quote', 'all'):
                     self.clients[client]['quote'].update(msg['symbols'])
                     await self.send_json(writer, json.dumps({'type': 'success',
                                                              'success': f'Subscribed quotes for {msg["symbols"]}'}))
@@ -194,10 +210,14 @@ class MDSocketServer:
                     self.clients[client]['timesale'].update(msg['symbols'])
                     await self.send_json(writer, json.dumps({'type': 'success',
                                                              'Success': f'Subscribed timesale for {msg["symbols"]}'}))
-                if msg_channel in ('indicators', 'all'):
-                    self.clients[client]['indicator'].update(msg['symbols'])
+                if msg_channel in ('ma', 'all'):
+                    self.clients[client]['ma'].update(msg['symbols'])
                     await self.send_json(writer, json.dumps({'type': 'success',
-                                                             'success': f'Subscribed indicators for {msg["symbols"]}'}))
+                                                             'success': f'Subscribed ma for {msg["symbols"]}'}))
+                if msg_channel in ('lookback', 'all'):
+                    self.clients[client]['lookback'].update(msg['symbols'])
+                    await self.send_json(writer, json.dumps({'type': 'success',
+                                                             'success': f'Subscribed lookback for {msg["symbols"]}'}))
             else:
                 if msg_channel in ('prices', 'all'):
                     self.clients[client]['quote'].difference_update(msg['symbols'])
@@ -207,10 +227,14 @@ class MDSocketServer:
                     self.clients[client]['timesale'].difference_update(msg['symbols'])
                     await self.send_json(writer, json.dumps({'type': 'success',
                                                              'success': f'Subscribed timesale for {msg["symbols"]}'}))
-                if msg_channel in ('indicators', 'all'):
-                    self.clients[client]['indicator'].difference_update(msg['symbols'])
+                if msg_channel in ('ma', 'all'):
+                    self.clients[client]['ma'].difference_update(msg['symbols'])
                     await self.send_json(writer, json.dumps({'type': 'success',
-                                                             'success': f'Unsubscribed indicators for {msg["symbols"]}'}))
+                                                             'success': f'Unsubscribed ma for {msg["symbols"]}'}))
+                if msg_channel in ('lookback', 'all'):
+                    self.clients[client]['lookback'].difference_update(msg['symbols'])
+                    await self.send_json(writer, json.dumps({'type': 'success',
+                                                             'success': f'Unsubscribed lookback for {msg["symbols"]}'}))
     
     async def on_connect(self, reader, writer):
         try:
@@ -220,7 +244,8 @@ class MDSocketServer:
                 'queue': asyncio.Queue(),
                 'quote': set(),
                 'timesale': set(),
-                'indicator': set()
+                'ma': set(),
+                'lookback': set()
             }
             client_handler_tasks = {
                                     asyncio.create_task(self.request_handler(client, reader, writer), name=f'{client}_request_handler'), 
