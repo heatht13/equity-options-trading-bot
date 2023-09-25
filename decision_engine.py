@@ -19,7 +19,7 @@ logging.basicConfig(
 logger = logging.getLogger()
 
 ORDER_SOCKET_INTERVAL_SEC = 2
-MD_SOCKET_INTERVAL_SEC = 2
+SOCKET_CONN_INTERVAL_SEC = 2
 SIGNAL_PROC_INTERVAL_SEC = 1
 NUM_CONTRACTS = 1
 MAX_ORDERS = 5
@@ -182,25 +182,26 @@ class DecisionEngine():
     #     except ConnectionError as e:
     #         logger.error(f'Exchange socket disconnected; exchange handler message task resetting: {e}')
 
-    # async def exchange_handler(self):
-    #     while True:
-    #         try:
-    #             logger.info(f"Exchange Handler Starting")
-    #             async with ContextManagedAsyncUnixSocketClient(self.order_router_path) as exchange_socket:
-    #                 exchange_tasks = set()
-    #                 exchange_tasks.add(asyncio.create_task(self.handle_exchange_msgs(exchange_socket)).add_done_callback(exchange_tasks.discard))
-    #                 exchange_tasks.add(asyncio.create_task(self.send_orders(exchange_socket)).add_done_callback(exchange_tasks.discard))
-    #                 _, pending = await asyncio.wait(exchange_tasks, return_when=asyncio.FIRST_COMPLETED)
-    #                 for task in pending:
-    #                     task.cancel()
-    #                 await asyncio.gather(*pending, return_exceptions=True)
-    #             #TODO: Remove before going live. just doing this to mitigate against the inevitable while testing
-    #             await asyncio.sleep(2)
-    #         finally:
-    #             for task in exchange_tasks:
-    #                 task.cancel()
-    #             await asyncio.gather(*exchange_tasks, return_exceptions=True)
-    #             logger.info(f"Exchange Handler Shutting Down")
+    async def exchange_handler(self):
+        while True:
+            try:
+                logger.info(f"Exchange Handler Starting")
+                async with ContextManagedAsyncUnixSocketClient(self.exchange_socket) as exchange:
+                    exchange_tasks = set()
+                    exchange_tasks.add(asyncio.create_task(self.handle_exchange_msgs(exchange)).add_done_callback(exchange_tasks.discard))
+                    exchange_tasks.add(asyncio.create_task(self.send_orders(exchange)).add_done_callback(exchange_tasks.discard))
+                    _, pending = await asyncio.wait(exchange_tasks, return_when=asyncio.FIRST_COMPLETED)
+                    for task in pending:
+                        task.cancel()
+                    await asyncio.gather(*pending, return_exceptions=True)
+            except (ConnectionRefusedError, ConnectionResetError):
+                logger.error(f"Exchange Handler Unable to Connect. Resetting...")
+                await asyncio.sleep(SOCKET_CONN_INTERVAL_SEC)
+            finally:
+                for task in exchange_tasks:
+                    task.cancel()
+                await asyncio.gather(*exchange_tasks, return_exceptions=True)
+                logger.info(f"Exchange Handler Shutting Down")
 
     async def market_data_handler(self):
         while True:
@@ -251,9 +252,34 @@ class DecisionEngine():
                         elif msg['type'] == 'error':
                             logger.error(msg)
                             break
-            except ConnectionRefusedError:
+            except (ConnectionRefusedError, ConnectionResetError):
                 logger.error(f"Market Data Handler Unable to Connect. Resetting...")
-                await asyncio.sleep(MD_SOCKET_INTERVAL_SEC)
+                await asyncio.sleep(SOCKET_CONN_INTERVAL_SEC)
+            finally:
+                for task in subs:
+                    task.cancel()
+                await asyncio.gather(*subs, return_exceptions=True)
+                logger.info(f"Market Data Shutting Down")
+
+    # async def test_exchange_handler(self):
+    #     while True:
+    #         try:
+    #             logger.info(f"Exchange Handler Starting")
+    #             async with ContextManagedAsyncUnixSocketClient(self.exchange_socket) as exchange:
+    #                 await exchange.send_json(json.dumps({
+    #                     'type': 'subscribe',
+    #                     'channel': 'positions',
+    #                     'interval': '4'
+    #                 }))
+    #                 await exchange.send_json(json.dumps({
+    #                     'type': 'request',
+    #                     'channel': 'balances'
+    #                 }))
+    #                 async for msg in exchange.receive():
+    #                     logger.info(f"Received response: {msg}")
+    #         except (ConnectionRefusedError, ConnectionResetError) as e:
+    #             logger.error(f"Exchange Handler Unable to Connect. Resetting...")
+    #             await asyncio.sleep(SOCKET_CONN_INTERVAL_SEC)
 
     async def decision_engine_main(self):
         while True:
@@ -263,7 +289,8 @@ class DecisionEngine():
                 decision_engine_tasks = {
                                         # decision_engine_tasks.add(asyncio.create_task(self.signal_handler()).add_done_callback(decision_engine_tasks.discard)),
                                         # decision_engine_tasks.add(asyncio.create_task(self.exchange_handler()).add_done_callback(decision_engine_tasks.discard)),
-                                        asyncio.create_task(self.market_data_handler())
+                                        #syncio.create_task(self.market_data_handler()),
+                                        asyncio.create_task(self.test_exchange_handler())
                                     }
                 await asyncio.gather(*decision_engine_tasks)
                 # while self.running:
@@ -284,7 +311,7 @@ def main():
     parser = ArgumentParser()
     decision_engine = parser.add_argument_group("Decision Engine", "Decision Engine parameters")
     decision_engine.add_argument('--market-data-socket', type=str, default='/tmp/md_server.sock', help="Path to data provider unix domain socket")
-    decision_engine.add_argument('--exchange-socket', type=str, default='/tmp/excahnge_handler.sock', help="Path to order router unix domain socket")
+    decision_engine.add_argument('--exchange-socket', type=str, default='/tmp/exchange.sock', help="Path to order router unix domain socket")
     decision_engine.add_argument('--symbols', type=str.upper,  nargs='*', help="Symbols to trade")
     args = parser.parse_args()
     args = vars(args)

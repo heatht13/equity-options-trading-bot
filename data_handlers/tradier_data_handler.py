@@ -23,8 +23,6 @@ class TradierDataHandler(MALookbackDataParser):
         super().__init__(**kwargs)
         self.access_token = access_token
         self.session_id = None
-        self.rest_session = None
-        self.ws_session = None
         self.rest_url = 'https://api.tradier.com'
         self.ws_uri = 'wss://ws.tradier.com/v1/markets/events'
         self.endpoints = {
@@ -88,6 +86,7 @@ class TradierDataHandler(MALookbackDataParser):
         else:
             return None
         return {
+                'handler': 'data',
                 'type': 'update',
                 'channel': channel,
                 'symbol': str(msg['symbol']).upper(),
@@ -96,15 +95,12 @@ class TradierDataHandler(MALookbackDataParser):
             }
     
     async def stream_handler(self):
-        if self.access_token is None:
-            logger.error('Access Token required. None provided')
-            return
         while True:
             try:
                 async with aiohttp.ClientSession() as self.ws_session:
                     async with self.ws_session.ws_connect(self.ws_uri, ssl=True) as ws:
                         try:
-                            logger.info(f"Stream Handler started")
+                            logger.info(f"Stream Handler Started")
                             if self.session_id is None:
                                 await self.get_session_id()
                             sub_symbols = {
@@ -132,7 +128,7 @@ class TradierDataHandler(MALookbackDataParser):
                                 else:
                                     logger.warning(f'Unknown message: {msg}')
                         finally:
-                            logger.info(f"Stream Handler shutting down")
+                            logger.info(f"Stream Handler Shutting Down")
                             if self.rest_session and not self.rest_session.closed:
                                 await self.rest_session.close()
                                 self.rest_session = None

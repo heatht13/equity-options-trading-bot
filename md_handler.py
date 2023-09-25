@@ -29,6 +29,8 @@ class MALookbackDataParser():
 
     def __init__(self, clients, timeframe, symbols, indicator, period, lookback):
         self.clients = clients
+        self.rest_session = None
+        self.ws_session = None
         self.timeframe = TIMEFRAMES[timeframe]
         self.symbols = symbols
         self.indicator = indicator
@@ -81,6 +83,7 @@ class MALookbackDataParser():
             logger.info(f"Lookback Q: {self.lookback_queue}")
             channel = 'lookback'
             msg = {
+                'handler': 'data',
                 'type': 'update',
                 'channel': 'lookback',
                 'symbol': symbol,
@@ -100,6 +103,7 @@ class MALookbackDataParser():
             self.send_msg(msg)
         ma = self.sma(self.ohlc, self.period, tick, price) if self.indicator == 'sma' else self.ema(self.ohlc, self.period, tick, price)
         msg = {
+            'handler': 'data',
             'type': 'update',
             'channel': 'ma',
             'symbol': symbol,
@@ -115,13 +119,13 @@ class MALookbackDataParser():
         logger.info(f"MA: {json.dumps(msg, indent=2)}")
         logger.info(f"OHLC: {json.dumps(self.ohlc, indent=2)}")
         
-    async def book(self, msg):
+    async def book(self, **kwargs):
         raise NotImplementedError
     
-    async def parse_msg(self, msg):
+    async def stream_handler(self, **kwargs):
         raise NotImplementedError
     
-    async def stream_handler(self, symbols):
+    def parse_msg(self, msg):
         raise NotImplementedError
     
     async def send_msg(self, msg):
@@ -197,48 +201,51 @@ class MDSocketServer:
             if msg_type not in ('subscribe', 'unsubscribe'):
                 await self.send_json(writer, json.dumps({'error': 'Invalid message type. Must be either \'subscribe\' or \'unsubscribe\''}))
                 continue
-            msg_channel = msg.get('channel', None)
-            if msg_channel not in ('quotes', 'timesale', 'indicators', 'all'):
-                await self.send_json(writer, json.dumps({'error': 'Invalid message channel. Must be either \'quotes\', \'timesale\', \'indicators\', or \'all\''}))
-                continue
+            msg_channels = msg.get('channels', [])
             if msg_type == 'subscribe':
-                if msg_channel in ('quote', 'all'):
-                    self.clients[client]['quote'].update(msg['symbols'])
-                    await self.send_json(writer, json.dumps({'type': 'success',
-                                                             'success': f'Subscribed quotes for {msg["symbols"]}'}))
-                if msg_channel in ('timesale', 'all'):
-                    self.clients[client]['timesale'].update(msg['symbols'])
-                    await self.send_json(writer, json.dumps({'type': 'success',
-                                                             'Success': f'Subscribed timesale for {msg["symbols"]}'}))
-                if msg_channel in ('ma', 'all'):
-                    self.clients[client]['ma'].update(msg['symbols'])
-                    await self.send_json(writer, json.dumps({'type': 'success',
-                                                             'success': f'Subscribed ma for {msg["symbols"]}'}))
-                if msg_channel in ('lookback', 'all'):
-                    self.clients[client]['lookback'].update(msg['symbols'])
-                    await self.send_json(writer, json.dumps({'type': 'success',
-                                                             'success': f'Subscribed lookback for {msg["symbols"]}'}))
+                for channel in msg_channels:
+                    if channel == 'quote':
+                        self.clients[client]['quote'].update(msg['symbols'])
+                        await self.send_json(writer, json.dumps({'type': 'success',
+                                                                'success': f'Subscribed quotes for {msg["symbols"]}'}))
+                    elif channel == 'timesale':
+                        self.clients[client]['timesale'].update(msg['symbols'])
+                        await self.send_json(writer, json.dumps({'type': 'success',
+                                                                'Success': f'Subscribed timesale for {msg["symbols"]}'}))
+                    elif channel == 'ma':
+                        self.clients[client]['ma'].update(msg['symbols'])
+                        await self.send_json(writer, json.dumps({'type': 'success',
+                                                                'success': f'Subscribed ma for {msg["symbols"]}'}))
+                    elif channel == 'lookback':
+                        self.clients[client]['lookback'].update(msg['symbols'])
+                        await self.send_json(writer, json.dumps({'type': 'success',
+                                                                'success': f'Subscribed lookback for {msg["symbols"]}'}))
+                    else:
+                        await self.send_json(writer, json.dumps({'error': 'Invalid message channel. Must be either \'quote\', \'timesale\', \'ma\', or \'lookback\''}))
             else:
-                if msg_channel in ('prices', 'all'):
-                    self.clients[client]['quote'].difference_update(msg['symbols'])
-                    await self.send_json(writer, json.dumps({'type': 'success',
-                                                             'success': f'Unsubscribed prices for {msg["symbols"]}'}))
-                if msg_channel in ('timesale', 'all'):
-                    self.clients[client]['timesale'].difference_update(msg['symbols'])
-                    await self.send_json(writer, json.dumps({'type': 'success',
-                                                             'success': f'Subscribed timesale for {msg["symbols"]}'}))
-                if msg_channel in ('ma', 'all'):
-                    self.clients[client]['ma'].difference_update(msg['symbols'])
-                    await self.send_json(writer, json.dumps({'type': 'success',
-                                                             'success': f'Unsubscribed ma for {msg["symbols"]}'}))
-                if msg_channel in ('lookback', 'all'):
-                    self.clients[client]['lookback'].difference_update(msg['symbols'])
-                    await self.send_json(writer, json.dumps({'type': 'success',
-                                                             'success': f'Unsubscribed lookback for {msg["symbols"]}'}))
+                for channel in msg_channels:
+                    if channel == 'quote':
+                        self.clients[client]['quote'].difference_update(msg['symbols'])
+                        await self.send_json(writer, json.dumps({'type': 'success',
+                                                                'success': f'Unsubscibed quotes for {msg["symbols"]}'}))
+                    elif channel == 'timesale':
+                        self.clients[client]['timesale'].difference_update(msg['symbols'])
+                        await self.send_json(writer, json.dumps({'type': 'success',
+                                                                'Success': f'Unsubscibed timesale for {msg["symbols"]}'}))
+                    elif channel == 'ma':
+                        self.clients[client]['ma'].difference_update(msg['symbols'])
+                        await self.send_json(writer, json.dumps({'type': 'success',
+                                                                'success': f'Unsubscibed ma for {msg["symbols"]}'}))
+                    elif channel == 'lookback':
+                        self.clients[client]['lookback'].difference_update(msg['symbols'])
+                        await self.send_json(writer, json.dumps({'type': 'success',
+                                                                'success': f'Unsubscibed lookback for {msg["symbols"]}'}))
+                    else:
+                        await self.send_json(writer, json.dumps({'error': 'Invalid message channel. Must be either \'quote\', \'timesale\', \'ma\', or \'lookback\''}))
     
     async def on_connect(self, reader, writer):
         try:
-            client = str(writer.get_extra_info('sockname'))
+            client = str(writer.get_extra_info('peername'))
             logger.info(f"Client connected on {client}")
             self.clients[client] = {
                 'queue': asyncio.Queue(),
