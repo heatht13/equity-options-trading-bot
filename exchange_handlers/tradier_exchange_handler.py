@@ -20,7 +20,6 @@ logger = logging.getLogger()
 
 POSITIONS_HANDLER_INTERVAL_SECS = 2
 
-#TODO: separate TD order router from base order router class
 class TradierExchangeHandler(ExchangeHandler):
     def __init__(self, account_id, access_token, **kwargs):
         super().__init__(**kwargs)
@@ -30,20 +29,11 @@ class TradierExchangeHandler(ExchangeHandler):
         self.rest_url = 'https://api.tradier.com'
         self.ws_uri = 'wss://ws.tradier.com/v1/markets/events'
 
-        #NOTE: Use Request type to determine how the order endpoint is used. Order ID
-        #    must be specified at end of endpoint. Saved Orders can be used as well:
-        #    https://developer.tdameritrade.com/account-access/apis
-        #    - GET Request: retrieves the order's information/status. Can query in various ways. ref docs
-        #    - POST Request: places a new order. An order_id is returned
-        #    - DELETE Request: cancels the order
-        #    - PUT Request: replaces the order
         self.endpoints = {
-            # 'oath_token': '/oauth2/token',
-            # 'user_principals': '/userprincipals',
-            # 'orders': f'/accounts/{self.account_id}/orders',
-            # 'get_accounts': '/accounts',
+            'accounts': f'/v1/user/profile',
+            'balances': f'/v1/accounts/{self.account_id}/balances',
             'positions': f'/v1/accounts/{self.account_id}/positions',
-            'balances': f'/v1/accounts/{self.account_id}/balances'
+            'orders': f'/v1/accounts/{self.account_id}/orders',
         }
 
     async def rest_query(self,method, endpoint, headers=None, json=None):
@@ -69,16 +59,9 @@ class TradierExchangeHandler(ExchangeHandler):
             return
         self.session_id = session_id
 
-    # async def get_accounts(self, account_id=None):
-    #     account = '' if account_id is None else f'/{account_id}'
-    #     accounts = await self.rest_query('get', self.td_uri+self.endpoints['get_accounts']+account)
-
-    #     #TODO: need to support multiple accounts
-    #     # positions = {}
-    #     # for account in accounts:
-    #     #     if account['accountId'] == self.account_id:
-    #     #         positions = account['positions']
-    #     return accounts
+    async def get_accounts(self, account_id=None):
+        accounts = await self.rest_query('get', self.rest_url+self.endpoints['accounts'])
+        return accounts
     
     async def get_balances(self):
         balances = await self.rest_query('get', self.rest_url+self.endpoints['balances'])
@@ -88,63 +71,68 @@ class TradierExchangeHandler(ExchangeHandler):
         positions = await self.rest_query('get', self.rest_url+self.endpoints['positions'])
         return positions
 
-    # async def get_orders(self, order_id=None):
-    #     order = '' if order_id is None else f'/{order_id}'
-    #     orders = await self.rest_query('post', self.td_uri+self.endpoints['orders']+order)
-    #     return orders
+    async def get_orders(self, order_id=None):
+        order = '' if order_id is None else f'/{order_id}'
+        orders = await self.rest_query('get', self.rest_url+self.endpoints['orders']+order)
+        return orders
     
-    # async def place_order(self, symbol, order_type, side, price, quantity, offset, tif, asset_type):
-    #     #NOTE: ref https://developer.tdameritrade.com/content/place-order-samples for more information.
-    #     #    Currently, we assume all orders are options orders. ie. quantity denom. in num of contracts
+    async def place_order(self, symbol, order_type, side, offset, price, quantity, tif, asset_class='option', exp=None, strike=None, callput=None):
+        #    Currently, we assume all orders are options orders. ie. quantity denom. in num of contracts
 
-    #     #Order Type
-    #     if order_type not in ('market', 'limit', 'stop', 'stop_limit, trailing_stop'):
-    #         raise ValueError(f'Invalid order_type {order_type}')
-    #     order_type = order_type.upper()
+        symbol = symbol.upper()
 
-    #     #Order Direction
-    #     if side == 'buy':
-    #         offset = "BUY_TO_OPEN" if offset == 'open' else "BUY_TO_CLOSE"
-    #     else: # side == 'sell'
-    #         offset = "SELL_TO_OPEN" if offset == 'open' else "SELL_TO_CLOSE"
+        #Order Type
+        if order_type not in ('market', 'limit', 'stop', 'stop_limit'):
+            raise ValueError(f'Invalid order_type {order_type}')
 
-    #     #Time in Force
-    #     if tif not in ('gtc', 'day', 'fok'):
-    #         raise ValueError(f'Invalid time in force {tif}')
-    #     tif = 'GOOD_TILL_CANCEL' if tif == 'gtc' else 'DAY' if tif == 'day' else 'FILL_OR_KILL'
+        #Order Direction
+        if side == 'buy':
+            direction = "buy" if offset == 'open' else "buy_to_cover"
+        else: # side == 'sell'
+            direction = "sell_short" if offset == 'open' else "sell"
 
-    #     asset_type = 'OPTION'
+        price = str(price)
+        quantity = str(quantity)
 
-    #     data = {
-    #         "complexOrderStrategyType": "NONE",
-    #         "orderType": order_type,
-    #         "session": "NORMAL",
-    #         "price": str(price),
-    #         "duration": tif,
-    #         "orderStrategyType": "SINGLE",
-    #         "orderLegCollection": [
-    #             {
-    #             "instruction": offset,
-    #             "quantity": str(quantity),
-    #             "instrument": {
-    #                 "symbol": symbol,
-    #                 "assetType": asset_type
-    #                 }
-    #             }
-    #         ]
-    #     }
-    #     response = await self.rest_query('post', self.td_uri+self.endpoints['orders'], json=data)
-    #     return response
+        #Time in Force
+        if tif not in ('gtc', 'day', 'pre', 'post'):
+            raise ValueError(f'Invalid time in force {tif}')
 
-    # async def cancel_order(self, order_id):
-    #     response = await self.rest_query('delete', self.td_uri+self.endpoints['orders']+order_id)
-        # return response
+        data = {
+            'class': asset_class,
+            'symbol': symbol,
+            'side': direction,
+            'quantity': quantity,
+            'type': order_type,
+            'duration': tif,
+            'price': price
+        }
+
+        if asset_class == 'option':
+            option_type = 'C' if callput == 'call' else 'P'
+            strike = f"{int(strike*10**3):0>{8}}"
+            data['option_symbol'] = symbol+exp+option_type+strike
+
+            if side == 'buy':
+                direction = "buy_to_open" if offset == 'open' else "buy_to_close"
+            else: # side == 'sell'
+                direction = "sell_to_open" if offset == 'open' else "sell_to_close"
+            data['side'] = direction
+            data['quantity'] = "1" #NOTE: tradier says number of shares, but we need to test #str(int(quantity)*100)
+        
+        response = await self.rest_query('post', self.rest_url+self.endpoints['orders'], json=data)
+        return response
+
+    async def modify_order(self, order_id, order_type, price, tif):
+        raise NotImplementedError
+
+    async def cancel_order(self, order_id):
+        response = await self.rest_query('delete', self.rest_url+self.endpoints['orders']+order_id)
+        return response
 
     def parse_msg(self, msg):
         channel = msg['event']
         if channel == 'order':
-            if msg['cancel'] or msg['correction'] or msg['seq'] <= self.last_ts_seq:
-                return None
             data = {
                 'order_id': str(msg['id']),
                 'status': msg['status'],
