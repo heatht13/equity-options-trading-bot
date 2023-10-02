@@ -29,10 +29,11 @@ class TradierDataHandler(MALookbackDataParser):
             'create_session': '/v1/markets/events/session',
         }
 
-    async def rest_query(self,method, endpoint, headers=None, json=None):
+    async def rest_query(self, method, endpoint, headers=None, json=None):
         if self.rest_session is None:
             self.rest_session = aiohttp.ClientSession()
-
+        headers = (headers if headers is not None else {'Authorization': f'Bearer {self.access_token}',
+                                                        'Accept':'application/json'})
         uri = self.rest_url + endpoint
         async with self.rest_session.request(method, uri, headers=headers, data=json) as response:
             if response.status // 100 != 2:

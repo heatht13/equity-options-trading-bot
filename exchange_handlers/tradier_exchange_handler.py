@@ -27,22 +27,23 @@ class TradierExchangeHandler(ExchangeHandler):
         self.access_token = access_token
         self.session_id = None
         self.rest_url = 'https://api.tradier.com'
-        self.ws_uri = 'wss://ws.tradier.com/v1/markets/events'
+        self.ws_uri = 'wss://ws.tradier.com/v1/accounts/events'
 
         self.endpoints = {
             'accounts': f'/v1/user/profile',
             'balances': f'/v1/accounts/{self.account_id}/balances',
             'positions': f'/v1/accounts/{self.account_id}/positions',
             'orders': f'/v1/accounts/{self.account_id}/orders',
+            'create_session': '/v1/accounts/events/session'
         }
 
-    async def rest_query(self,method, endpoint, headers=None, json=None):
+    async def rest_query(self, method, endpoint, headers=None, json=None):
         if self.rest_session is None:
             self.rest_session = aiohttp.ClientSession()
-        headers = (headers if headers is not None
-                        else {'Authorization': f'Bearer {self.access_token}',
-                        'Accept':'application/json'})
-        async with self.rest_session.request(method, endpoint, headers=headers, json=json) as response:
+        headers = (headers if headers is not None else {'Authorization': f'Bearer {self.access_token}',
+                                                        'Accept':'application/json'})
+        uri = self.rest_url + endpoint
+        async with self.rest_session.request(method, uri, headers=headers, data=json) as response:
             if response.status // 100 != 2:
                 raise Exception(f'Error {response.status} on {method} {endpoint}: {response.reason}')
             return await response.json()
@@ -60,20 +61,20 @@ class TradierExchangeHandler(ExchangeHandler):
         self.session_id = session_id
 
     async def get_accounts(self, account_id=None):
-        accounts = await self.rest_query('get', self.rest_url+self.endpoints['accounts'])
+        accounts = await self.rest_query('GET', self.endpoints['accounts'])
         return accounts
     
     async def get_balances(self):
-        balances = await self.rest_query('get', self.rest_url+self.endpoints['balances'])
+        balances = await self.rest_query('GET', self.endpoints['balances'])
         return balances
     
     async def get_positions(self):
-        positions = await self.rest_query('get', self.rest_url+self.endpoints['positions'])
+        positions = await self.rest_query('GET', self.endpoints['positions'])
         return positions
 
     async def get_orders(self, order_id=None):
         order = '' if order_id is None else f'/{order_id}'
-        orders = await self.rest_query('get', self.rest_url+self.endpoints['orders']+order)
+        orders = await self.rest_query('GET', self.endpoints['orders']+order)
         return orders
     
     async def place_order(self, symbol, order_type, side, offset, price, quantity, tif, asset_class='option', exp=None, strike=None, callput=None):
@@ -120,14 +121,14 @@ class TradierExchangeHandler(ExchangeHandler):
             data['side'] = direction
             data['quantity'] = "1" #NOTE: tradier says number of shares, but we need to test #str(int(quantity)*100)
         
-        response = await self.rest_query('post', self.rest_url+self.endpoints['orders'], json=data)
+        response = await self.rest_query('POST', self.endpoints['orders'], json=data)
         return response
 
     async def modify_order(self, order_id, order_type, price, tif):
         raise NotImplementedError
 
     async def cancel_order(self, order_id):
-        response = await self.rest_query('delete', self.rest_url+self.endpoints['orders']+order_id)
+        response = await self.rest_query('DELETE', self.endpoints['orders']+order_id)
         return response
 
     def parse_msg(self, msg):
@@ -191,7 +192,7 @@ class TradierExchangeHandler(ExchangeHandler):
                                 if not self.client['order']:
                                     break
                         finally:
-                            logger.info(f"Exchange WS Handler Dhutting Down")
+                            logger.info(f"Exchange WS Handler Shutting Down")
             except (aiohttp.ClientError, aiohttp.WSServerHandshakeError, ConnectionResetError) as e:
                 logger.error(f"websocket connection closed; resetting. {e}")
             finally:

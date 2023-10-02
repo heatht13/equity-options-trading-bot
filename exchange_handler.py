@@ -21,8 +21,13 @@ logger.setLevel(logging.INFO)
 SUB_HANDLER_INTERVAL_SECS = 2
 
 class ExchangeHandler:
-    def __init__(self, client, **kwargs):
-        self.client = client
+    def __init__(self, exchange, **kwargs):
+        self.exchange = exchange
+        self.client = {
+            'queue': asyncio.Queue(),
+            'position': 0,
+            'order': False
+        }
         self.rest_session = None
         self.ws_session = None
         pass
@@ -71,9 +76,9 @@ class ExchangeHandler:
     async def exchange_position_handler(self):
         while True:
             try:
-                while self.client['positions'] > 0:
+                while self.client['position'] > 0:
                     positions = await self.get_positions()
-                    positions = positions['positions']['position']
+                    positions = positions.get('positions', {})
                     msg = {
                         'handler': 'exchange',
                         'type': 'update',
@@ -82,23 +87,25 @@ class ExchangeHandler:
                         'data': positions
                     }
                     await self.send_msg(msg)
-                    await asyncio.sleep(self.client['positions'])
+                    await asyncio.sleep(self.client['position'])
             finally:
                 await asyncio.sleep(SUB_HANDLER_INTERVAL_SECS)
 
-    async def exchange_handler_main(self, client):
+    async def exchange_handler_main(self):
         while True:
             try:
                 logger.info("Exchange Handler Starting")
                 exchange_handler_tasks = {
-                                        asyncio.create_task(self.exchange_ws_handler(), name=f'{client}_exchange_ws_handler'),
-                                        asyncio.create_task(self.exchange_position_handler(), name=f'{client}_exchange_position_handler')
+                                        asyncio.create_task(self.exchange_ws_handler(), name=f'{self.exchange}_exchange_ws_handler'),
+                                        asyncio.create_task(self.exchange_position_handler(), name=f'{self.exchange}_exchange_position_handler')
                                     }
                 await asyncio.wait(exchange_handler_tasks, return_when=asyncio.FIRST_COMPLETED)
             finally:
                 for task in exchange_handler_tasks:
                     task.cancel()
                 await asyncio.gather(*exchange_handler_tasks, return_exceptions=True)
+                self.client['position'] = 0
+                self.client['order'] = False
                 if self.rest_session and not self.rest_session.closed:
                     await self.rest_session.close()
                     self.rest_session = None
@@ -106,14 +113,14 @@ class ExchangeHandler:
                     await self.ws_session.close()
                     self.ws_session = None
                 logger.info("Exchange Handler Shutting Down")
+                await asyncio.sleep(SUB_HANDLER_INTERVAL_SECS)
 
 class ExchangeSocketServer:
     MSG_LENGTH_PREFIX_BYTES=4
     def __init__(self, socket, exchange, **exchange_handler_kwargs):
         self.socket = socket
         self.exchange = exchange
-        self.client = dict()
-        exchange_handler_kwargs['client'] = self.client
+        exchange_handler_kwargs['exchange'] = exchange
         self.exchange_handler_kwargs = exchange_handler_kwargs
 
     async def send_json(self, writer, msg):
@@ -127,8 +134,9 @@ class ExchangeSocketServer:
 
     async def msg_handler(self, writer):
         while True:
-            msg = await self.client['queue'].get()
+            msg = await self.exchange_handler.client['queue'].get()
             await self.send_json(writer, json.dumps(msg))
+            self.exchange_handler.client['queue'].task_done()
 
     async def request_handler(self, reader, writer):
         while True:
@@ -143,9 +151,9 @@ class ExchangeSocketServer:
             msg = json.loads(msg)
             logger.info(f"Received: {msg}")
             msg_type = msg.get('type', None)
-            channel = msg.get('channel', None)
             response = None
             if msg_type == 'request':
+                channel = msg.get('channel', None)
                 if channel == 'accounts':
                     response = await self.exchange_handler.get_accounts()
                 elif channel == 'positions':
@@ -167,35 +175,30 @@ class ExchangeSocketServer:
                 if msg_type == 'subscribe':
                     channels = msg.get('channels', [])
                     for channel in channels:
-                        if channel == 'position':
-                            self.client['position'] = int(msg['interval'])
+                        if channel == 'positions':
+                            self.exchange_handler.client['position'] = int(msg['interval'])
                             response = {'success': 'Subscribed positions'}
-                        elif channel == 'order':
-                            self.client['order'] = True
+                        elif channel == 'orders':
+                            self.exchange_handler.client['order'] = True
                             response = {'success': 'Subscribed order events'}
                         elif channel == 'all':
-                            self.client['position'] = int(msg['interval'])
-                            self.client['order'] = True
+                            self.exchange_handler.client['position'] = int(msg['interval'])
+                            self.exchange_handler.client['order'] = True
                             response = {'success': 'Subscribed positions and order events'}
                         else:
                             response = {'error': 'Invalid message channel. Must be either \'positions\', \'orders\', or \'all\''}
                 elif msg_type == 'unsubscribe':
                     channels = msg.get('channels', [])
                     for channel in channels:
-                        if channel == 'position':
-                            if self.client['position'] is not None:
-                                self.client['position'].cancel()
-                                try:
-                                    await self.client['position']
-                                except asyncio.CancelledError:
-                                    pass
+                        if channel == 'positions':
+                            self.exchange_handler.client['position'] = 0
                             response = {'success': 'Unsubscribed positions'}
-                        elif channel == 'order':
-                            self.client['order'] = False
+                        elif channel == 'orders':
+                            self.exchange_handler.client['order'] = False
                             response = {'success': 'Unsubscribed order events'}
                         elif channel == 'all':
-                            self.client['position'] = 0
-                            self.client['order'] = False
+                            self.exchange_handler.client['position'] = 0
+                            self.exchange_handler.client['order'] = False
                             response = {'success': 'Unsubscribed positions and order events'}
                         else:
                             response = {'error': 'Invalid message channel. Must be either \'positions\', \'orders\', or \'all\''}
@@ -214,36 +217,29 @@ class ExchangeSocketServer:
         
     async def on_connect(self, reader, writer):
         try:
-            client = str(writer.get_extra_info('peername'))
+            client = str(writer.get_extra_info('sockname'))
             logger.info(f"Client {client} connected")
-            self.exchange_handler = getattr(import_module(f'exchange_handlers.{self.exchange}_exchange_handler'),
-                                            f'{self.exchange.capitalize()}ExchangeHandler')(**self.exchange_handler_kwargs)
-            self.client = {
-                'queue': asyncio.Queue(),
-                'position': 0,
-                'order': False,
-            }
             client_handler_tasks = {
                                     asyncio.create_task(self.request_handler(reader, writer), name=f'{client}_request_handler'),
-                                    asyncio.create_task(self.msg_handler(writer), name=f'{client}_msg_handler'),
-                                    asyncio.create_task(self.exchange_handler.exchange_handler_main(), name=f'{client}_exchange_handler')
+                                    asyncio.create_task(self.msg_handler(writer), name=f'{client}_msg_handler')
                                 }
             await asyncio.wait(client_handler_tasks, return_when=asyncio.FIRST_COMPLETED)
-        #TODO: Need to catche relevant exceptions
         finally:
             logger.info(f"Client disconnected on {client}")
             for task in client_handler_tasks:
                 logger.debug(f"Cancelling task: {task.get_name()}")
                 task.cancel()
             await asyncio.gather(*client_handler_tasks, return_exceptions=True)
-            del self.client
+            self.exchange_handler.client['position']
+            self.exchange_handler.client['order'] = False
             writer.close()
             try:
                 await writer.wait_closed()
             except ConnectionResetError:
                 pass
+            await asyncio.sleep(SUB_HANDLER_INTERVAL_SECS)
 
-    async def main_task(self):
+    async def server_task(self):
         while True:
             try:
                 logger.info(f"Socket Server Starting")
@@ -255,6 +251,27 @@ class ExchangeSocketServer:
                 if server:
                     server.close()
                     await server.wait_closed()
+                await asyncio.sleep(SUB_HANDLER_INTERVAL_SECS)
+
+    async def main_task(self):
+        while True:
+            try:
+                logger.info("Exchange Starting")
+                self.running = True
+                self.exchange_handler = getattr(import_module(f'exchange_handlers.{self.exchange}_exchange_handler'),
+                                            f'{self.exchange.capitalize()}ExchangeHandler')(**self.exchange_handler_kwargs)
+                exchange_handler_tasks = {
+                                    asyncio.create_task(self.exchange_handler.exchange_handler_main(), name=f'{self.exchange} Exchange Handler'),
+                                    asyncio.create_task(self.server_task(), name=f'Exchange Socket Server')
+                                }
+                await asyncio.wait(exchange_handler_tasks, return_when=asyncio.FIRST_COMPLETED)
+            finally:
+                logger.info("Exchange Shutting Down")
+                self.running = False
+                for task in exchange_handler_tasks:
+                    logger.info(f"Cancelling task: {task.get_name()}")
+                    task.cancel()
+                await asyncio.gather(*exchange_handler_tasks, return_exceptions=True)
 
 def main():
     parser = ArgumentParser()

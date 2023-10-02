@@ -108,33 +108,33 @@ class DecisionEngine():
     #         asset_type=str(asset_type)
     #     )
     
-    async def signal_handler(self):
-        #TODO: This needs some work. Needs to handle every case/scenario. Currently, it does not.
-        logger.info(f"Decision Engine signal handler started")
-        try:
-            while True:
-                for symbol in self.symbols:
-                    if symbol not in self.quotes or symbol not in self.timesale or symbol not in self.mas or symbol not in self.lookback:
-                        continue
+    # async def signal_handler(self):
+    #     #TODO: This needs some work. Needs to handle every case/scenario. Currently, it does not.
+    #     logger.info(f"Decision Engine signal handler started")
+    #     try:
+    #         while True:
+    #             for symbol in self.symbols:
+    #                 if symbol not in self.quotes or symbol not in self.timesale or symbol not in self.mas or symbol not in self.lookback:
+    #                     continue
                     
-                    signal = self.generate_signal(symbol)
-                    if signal == Signal.HOLD:
-                        continue
+    #                 signal = self.generate_signal(symbol)
+    #                 if signal == Signal.HOLD:
+    #                     continue
 
-                    price = self.quotes[symbol]
-                    if signal == Signal.LONG:
-                        if symbol not in self.positions:
-                            self.orders.append(self.create_order(symbol, 'limit', 'buy', price, NUM_CONTRACTS, 'open', 'day', 'OPTION'))
-                        elif self.positions[symbol]['side'] == 'short':
-                            self.orders.append(self.create_order(symbol, 'limit', 'buy', price, NUM_CONTRACTS, 'close', 'day', 'OPTION'))
-                    else:
-                        if symbol not in self.positions:
-                            self.orders.append(self.create_order(symbol, 'limit', 'sell', price, NUM_CONTRACTS, 'open', 'day', 'OPTION'))
-                        elif self.positions[symbol]['side'] == 'long':
-                            self.orders.append(self.create_order(symbol, 'limit', 'sell', price, NUM_CONTRACTS, 'close', 'day', 'OPTION'))
-                asyncio.sleep(SIGNAL_PROC_INTERVAL_SEC)
-        finally:
-            logger.info(f"Decision Engine signal handler shutting down")
+    #                 price = self.quotes[symbol]
+    #                 if signal == Signal.LONG:
+    #                     if symbol not in self.positions:
+    #                         self.orders.append(self.create_order(symbol, 'limit', 'buy', price, NUM_CONTRACTS, 'open', 'day', 'OPTION'))
+    #                     elif self.positions[symbol]['side'] == 'short':
+    #                         self.orders.append(self.create_order(symbol, 'limit', 'buy', price, NUM_CONTRACTS, 'close', 'day', 'OPTION'))
+    #                 else:
+    #                     if symbol not in self.positions:
+    #                         self.orders.append(self.create_order(symbol, 'limit', 'sell', price, NUM_CONTRACTS, 'open', 'day', 'OPTION'))
+    #                     elif self.positions[symbol]['side'] == 'long':
+    #                         self.orders.append(self.create_order(symbol, 'limit', 'sell', price, NUM_CONTRACTS, 'close', 'day', 'OPTION'))
+    #             asyncio.sleep(SIGNAL_PROC_INTERVAL_SEC)
+    #     finally:
+    #         logger.info(f"Decision Engine signal handler shutting down")
 
     # async def send_orders(self, exchange_socket):
     #     try:
@@ -208,34 +208,14 @@ class DecisionEngine():
             try:
                 logger.info(f"Market Data Handler Starting")
                 async with ContextManagedAsyncUnixSocketClient(self.market_data_socket) as md_socket:
-                    quotes = {
+                    await md_socket.send_json(json.dumps({
                         'type': 'subscribe',
-                        'channel': 'quote',
+                        'channels': ['quote', 'timesale', 'ma', 'lookback'],
                         'symbols': list(self.symbols)
-                    }
-                    timesale = {
-                        'type': 'subscribe',
-                        'channel': 'timesale',
-                        'symbols': list(self.symbols)
-                    }
-                    mas = {
-                        'type': 'subscribe',
-                        'channel': 'ma',
-                        'symbols': list(self.symbols)
-                    }
-                    lookback = {
-                        'type': 'subscribe',
-                        'channel': 'lookback',
-                        'symbols': list(self.symbols)
-                    }
-                    subs = set()
-                    for sub in (quotes, timesale, mas, lookback):
-                        logger.info(f"Subscribing {sub['channel'].capitalize()}")
-                        subs.add(asyncio.create_task(md_socket.send_json(json.dumps(sub))))
-                    await asyncio.gather(*subs)
+                    }))
                     async for msg in md_socket.receive():
                         msg = json.loads(msg)
-                        #logger.info(f"Received message: {json.dumps(msg, indent=2)}")
+                        logger.info(f"Received message: {json.dumps(msg['channel'], indent=2)}")
                         if msg['type'] == 'update':
                             if msg['channel'] == 'quote':
                                 self.quotes[msg['symbol']] = msg['data']
@@ -247,39 +227,36 @@ class DecisionEngine():
                                 self.lookback[msg['symbol']] = msg['data']
                             else:
                                 logger.warning(f"Unhandled message type: {msg}")
-                        elif msg['type'] == 'success':
-                            logger.info(msg)
+                        elif msg['type'] == 'response':
+                            continue
                         elif msg['type'] == 'error':
                             logger.error(msg)
                             break
+                logger.info(f"Market Data Handler Shutting Down")
             except (ConnectionRefusedError, ConnectionResetError):
                 logger.error(f"Market Data Handler Unable to Connect. Resetting...")
                 await asyncio.sleep(SOCKET_CONN_INTERVAL_SEC)
-            finally:
-                for task in subs:
-                    task.cancel()
-                await asyncio.gather(*subs, return_exceptions=True)
-                logger.info(f"Market Data Shutting Down")
 
-    # async def test_exchange_handler(self):
-    #     while True:
-    #         try:
-    #             logger.info(f"Exchange Handler Starting")
-    #             async with ContextManagedAsyncUnixSocketClient(self.exchange_socket) as exchange:
-    #                 await exchange.send_json(json.dumps({
-    #                     'type': 'subscribe',
-    #                     'channel': 'positions',
-    #                     'interval': '4'
-    #                 }))
-    #                 await exchange.send_json(json.dumps({
-    #                     'type': 'request',
-    #                     'channel': 'balances'
-    #                 }))
-    #                 async for msg in exchange.receive():
-    #                     logger.info(f"Received response: {msg}")
-    #         except (ConnectionRefusedError, ConnectionResetError) as e:
-    #             logger.error(f"Exchange Handler Unable to Connect. Resetting...")
-    #             await asyncio.sleep(SOCKET_CONN_INTERVAL_SEC)
+    async def test_exchange_handler(self):
+        while True:
+            try:
+                logger.info(f"Exchange Handler Starting")
+                async with ContextManagedAsyncUnixSocketClient(self.exchange_socket) as exchange:
+                    await exchange.send_json(json.dumps({
+                        'type': 'subscribe',
+                        'channels': ['positions', 'orders'],
+                        'interval': '4'
+                    }))
+                    await exchange.send_json(json.dumps({
+                        'type': 'request',
+                        'channel': 'balances'
+                    }))
+                    async for msg in exchange.receive():
+                        logger.info(f"Received response: {msg}")
+                logger.info(f"Exchange Handler Shutting Down")
+            except (ConnectionRefusedError, ConnectionResetError) as e:
+                logger.error(f"Exchange Handler Unable to Connect. Resetting...")
+                await asyncio.sleep(SOCKET_CONN_INTERVAL_SEC)
 
     async def decision_engine_main(self):
         while True:
@@ -287,10 +264,9 @@ class DecisionEngine():
                 logger.info("Decision Engine Starting")
                 self.running = True
                 decision_engine_tasks = {
-                                        # decision_engine_tasks.add(asyncio.create_task(self.signal_handler()).add_done_callback(decision_engine_tasks.discard)),
-                                        # decision_engine_tasks.add(asyncio.create_task(self.exchange_handler()).add_done_callback(decision_engine_tasks.discard)),
-                                        #syncio.create_task(self.market_data_handler()),
-                                        asyncio.create_task(self.test_exchange_handler())
+                                        #asyncio.create_task(self.signal_handler(), name=f'Signal Handler'),
+                                        asyncio.create_task(self.market_data_handler(), name=f'Market Data Handler'),
+                                        asyncio.create_task(self.test_exchange_handler(), name=f'Exchange Handler')
                                     }
                 await asyncio.gather(*decision_engine_tasks)
                 # while self.running:

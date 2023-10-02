@@ -27,8 +27,15 @@ class MALookbackDataParser():
     class Error(Exception):
         pass
 
-    def __init__(self, clients, timeframe, symbols, indicator, period, lookback):
-        self.clients = clients
+    def __init__(self, timeframe, symbols, indicator, period, lookback):
+        self.client = {
+                'queue': asyncio.Queue(),
+                'quote': set(),
+                'timesale': set(),
+                'ma': set(),
+                'lookback': set(),
+                'trade': set()
+            }
         self.rest_session = None
         self.ws_session = None
         self.timeframe = TIMEFRAMES[timeframe]
@@ -41,12 +48,12 @@ class MALookbackDataParser():
         self.ohlc = OHLC.copy()
 
     def sma(self, candle, period, tick, price):
-        #NOTE: This is absolutely horrible but works for now
-        if tick != 0:
-            return sum((candle['c'] for candle in self.ma_queue)) - self.ma_queue[0] + price / self.ma_queue.maxlen
+        if tick != 0: #NOTE: This is absolutely horrible but works for now
+            if len(self.ma_queue) < period:
+                return None
+            return sum((candle['c'] for candle in self.ma_queue)) - self.ma_queue[0]['c'] + price / self.ma_queue.maxlen
         self.ma_queue.append(candle)
         if len(self.ma_queue) < period:
-            logger.info(f'Not enough data for {period} period sma')
             return None
         return sum((candle['c'] for candle in self.ma_queue)) / self.ma_queue.maxlen
 
@@ -56,11 +63,10 @@ class MALookbackDataParser():
     def lookback(self, candle, lookback):
         self.lookback_queue.append(candle)
         if len(self.lookback_queue) < lookback:
-            logger.info(f'Not enough data for {lookback} lookback period')
             return None, None
         return max((candle['h'] for candle in self.lookback_queue)), min((candle['l'] for candle in self.lookback_queue))
     
-    def update_indicators(self, msg):
+    async def update_indicators(self, msg):
         symbol = msg['symbol']
         price = msg['data']['price']
         quote_time = msg['data']['quote_time']
@@ -80,8 +86,7 @@ class MALookbackDataParser():
         elif tick == 0:
             self.ohlc['c'] = price
             lookback_high, lookback_low = self.lookback(self.ohlc, self.lookback_period)
-            logger.info(f"Lookback Q: {self.lookback_queue}")
-            channel = 'lookback'
+            #logger.info(f"Lookback Q: {self.lookback_queue}")
             msg = {
                 'handler': 'data',
                 'type': 'update',
@@ -99,8 +104,8 @@ class MALookbackDataParser():
                 }
             }
             self.ohlc = OHLC.copy()
-            logger.info(f"Lookback: {json.dumps(msg, indent=2)}")
-            self.send_msg(msg)
+            # logger.info(f"Lookback: {json.dumps(msg, indent=2)}")
+            await self.send_msg(msg)
         ma = self.sma(self.ohlc, self.period, tick, price) if self.indicator == 'sma' else self.ema(self.ohlc, self.period, tick, price)
         msg = {
             'handler': 'data',
@@ -114,10 +119,10 @@ class MALookbackDataParser():
                 'close_time': quote_time
             }
         }
-        self.send_msg(msg)
-        logger.info(f"MA Q: {self.ma_queue}")
-        logger.info(f"MA: {json.dumps(msg, indent=2)}")
-        logger.info(f"OHLC: {json.dumps(self.ohlc, indent=2)}")
+        await self.send_msg(msg)
+        # logger.info(f"MA Q: {self.ma_queue}")
+        # logger.info(f"MA: {json.dumps(msg, indent=2)}")
+        # logger.info(f"OHLC: {json.dumps(self.ohlc, indent=2)}")
         
     async def book(self, **kwargs):
         raise NotImplementedError
@@ -129,8 +134,7 @@ class MALookbackDataParser():
         raise NotImplementedError
     
     async def send_msg(self, msg):
-        for client in self.clients:
-            await self.clients[client]['queue'].put(msg)
+        await self.client['queue'].put(msg)
     
     async def handle_msg(self, msg):
         msg = self.parse_msg(msg)
@@ -138,14 +142,8 @@ class MALookbackDataParser():
             return
         await self.send_msg(msg)
         if msg['channel'] == 'quote':
-            #TODO: Need to pass MA msgs every seconds so DE can track where it is relative to price
-            #Might make more sense to have DE caculate MA. Lookback can stay here, idk.
-            #Going to pass MA inside price msgs for now. May decide to just create one msg that contains all data (indicators, timesale, quote, etc)
-            #and pass that every second. lookback will be repetitive though, so maybe not. Only price and MA will change every second.
             logger.info(f"TIME: {datetime.fromtimestamp(msg['data']['quote_time'])}")
-            update = self.update_indicators(msg)
-            if update is not None:
-                await self.send_msg(update)
+            await self.update_indicators(msg)
 
     async def data_handler_main(self):
         while True:
@@ -156,7 +154,12 @@ class MALookbackDataParser():
                 logger.info("Data Handler Shutting Down")
                 self.ma_queue.clear()
                 self.lookback_queue.clear()
-                self.ohlc = OHLC
+                self.ohlc = OHLC.copy()
+                self.client['quote'].clear()
+                self.client['timesale'].clear()
+                self.client['ma'].clear()
+                self.client['lookback'].clear()
+                self.client['trade'].clear()
 
 class MDSocketServer:
     MSG_LENGTH_PREFIX_BYTES=4
@@ -164,8 +167,6 @@ class MDSocketServer:
         self.socket = socket
         self.exchange = exchange
         self.running = True
-        self.clients = dict()
-        data_handler_kwargs['clients'] = self.clients
         self.data_handler_kwargs = data_handler_kwargs
 
     async def send_json(self, writer, msg):
@@ -177,15 +178,16 @@ class MDSocketServer:
         writer.write(msg_bytes)
         await writer.drain()
 
-    async def msg_handler(self, client, writer):
+    async def msg_handler(self, writer):
         while True:
-            msg = await self.clients[client]['queue'].get()
+            msg = await self.data_handler.client['queue'].get()
             channel = msg['channel']
             symbol = msg['symbol']
-            if symbol in self.clients[client][channel]:
+            if symbol in self.data_handler.client.get(channel, set()):
                 await self.send_json(writer, json.dumps(msg))
+            self.data_handler.client['queue'].task_done()
 
-    async def request_handler(self, client, reader, writer):
+    async def request_handler(self, reader, writer):
         while True:
             msg_length_prefix = await reader.read(self.MSG_LENGTH_PREFIX_BYTES)
             if not msg_length_prefix:
@@ -201,71 +203,78 @@ class MDSocketServer:
             if msg_type not in ('subscribe', 'unsubscribe'):
                 await self.send_json(writer, json.dumps({'error': 'Invalid message type. Must be either \'subscribe\' or \'unsubscribe\''}))
                 continue
+            response = None
             msg_channels = msg.get('channels', [])
             if msg_type == 'subscribe':
                 for channel in msg_channels:
                     if channel == 'quote':
-                        self.clients[client]['quote'].update(msg['symbols'])
-                        await self.send_json(writer, json.dumps({'type': 'success',
-                                                                'success': f'Subscribed quotes for {msg["symbols"]}'}))
+                        self.data_handler.client['quote'].update(msg['symbols'])
+                        response = {'success': f'Subscribed quotes for {msg["symbols"]}'}
                     elif channel == 'timesale':
-                        self.clients[client]['timesale'].update(msg['symbols'])
-                        await self.send_json(writer, json.dumps({'type': 'success',
-                                                                'Success': f'Subscribed timesale for {msg["symbols"]}'}))
+                        self.data_handler.client['timesale'].update(msg['symbols'])
+                        response = {'success': f'Subscribed timesale for {msg["symbols"]}'}
                     elif channel == 'ma':
-                        self.clients[client]['ma'].update(msg['symbols'])
-                        await self.send_json(writer, json.dumps({'type': 'success',
-                                                                'success': f'Subscribed ma for {msg["symbols"]}'}))
+                        self.data_handler.client['ma'].update(msg['symbols'])
+                        response = {'success': f'Subscribed ma for {msg["symbols"]}'}
                     elif channel == 'lookback':
-                        self.clients[client]['lookback'].update(msg['symbols'])
-                        await self.send_json(writer, json.dumps({'type': 'success',
-                                                                'success': f'Subscribed lookback for {msg["symbols"]}'}))
+                        self.data_handler.client['lookback'].update(msg['symbols'])
+                        response = {'success': f'Subscribed lookback for {msg["symbols"]}'}
+                    elif channel == 'trade':
+                        self.data_handler.client['trade'].update(msg['symbols'])
+                        response = {'success': f'Subscribed trade for {msg["symbols"]}'}
                     else:
-                        await self.send_json(writer, json.dumps({'error': 'Invalid message channel. Must be either \'quote\', \'timesale\', \'ma\', or \'lookback\''}))
+                        response = {'error': 'Invalid message channel. Must be either \'quote\', \'timesale\', \'ma\', \'lookback\', or \'trade\''}
             else:
                 for channel in msg_channels:
                     if channel == 'quote':
-                        self.clients[client]['quote'].difference_update(msg['symbols'])
-                        await self.send_json(writer, json.dumps({'type': 'success',
-                                                                'success': f'Unsubscibed quotes for {msg["symbols"]}'}))
+                        self.data_handler.client['quote'].difference_update(msg['symbols'])
+                        response = {'success': f'Unsubscibed quotes for {msg["symbols"]}'}
                     elif channel == 'timesale':
-                        self.clients[client]['timesale'].difference_update(msg['symbols'])
+                        self.data_handler.client['timesale'].difference_update(msg['symbols'])
                         await self.send_json(writer, json.dumps({'type': 'success',
                                                                 'Success': f'Unsubscibed timesale for {msg["symbols"]}'}))
                     elif channel == 'ma':
-                        self.clients[client]['ma'].difference_update(msg['symbols'])
-                        await self.send_json(writer, json.dumps({'type': 'success',
-                                                                'success': f'Unsubscibed ma for {msg["symbols"]}'}))
+                        self.data_handler.client['ma'].difference_update(msg['symbols'])
+                        response = {'success': f'Unsubscibed ma for {msg["symbols"]}'}
                     elif channel == 'lookback':
-                        self.clients[client]['lookback'].difference_update(msg['symbols'])
-                        await self.send_json(writer, json.dumps({'type': 'success',
-                                                                'success': f'Unsubscibed lookback for {msg["symbols"]}'}))
+                        self.data_handler.client['lookback'].difference_update(msg['symbols'])
+                        response = {'success': f'Unsubscibed lookback for {msg["symbols"]}'}
+                    elif channel == 'trade':
+                        self.data_handler.client['trade'].difference_update(msg['symbols'])
+                        response = {'success': f'Unsubscibed trade for {msg["symbols"]}'}
                     else:
-                        await self.send_json(writer, json.dumps({'error': 'Invalid message channel. Must be either \'quote\', \'timesale\', \'ma\', or \'lookback\''}))
-    
+                        response = {'error': 'Invalid message channel. Must be either \'quote\', \'timesale\', \'ma\', \'lookback\', or \'trade\''}
+            if response is not None:
+                msg = {
+                    'handler': 'data',
+                    'type': 'response',
+                    'channel': channel,
+                    'timestamp': datetime.utcnow().timestamp(),
+                    'data': response
+                }
+                await self.send_json(writer, json.dumps(msg))
+
+
     async def on_connect(self, reader, writer):
         try:
-            client = str(writer.get_extra_info('peername'))
+            client = str(writer.get_extra_info('sockname'))
             logger.info(f"Client connected on {client}")
-            self.clients[client] = {
-                'queue': asyncio.Queue(),
-                'quote': set(),
-                'timesale': set(),
-                'ma': set(),
-                'lookback': set()
-            }
             client_handler_tasks = {
-                                    asyncio.create_task(self.request_handler(client, reader, writer), name=f'{client}_request_handler'), 
-                                    asyncio.create_task(self.msg_handler(client, writer), name=f'{client}_msg_handler')
+                                    asyncio.create_task(self.request_handler(reader, writer), name=f'{client}_request_handler'), 
+                                    asyncio.create_task(self.msg_handler(writer), name=f'{client}_msg_handler')
                                 }
             await asyncio.wait(client_handler_tasks, return_when=asyncio.FIRST_COMPLETED)
         finally:
             logger.info(f"Client disconnected on {client}")
-            self.clients.pop(client, None) #TODO: do we need to wait for queue to empty before popping?
             for task in client_handler_tasks:
                 logger.debug(f"Cancelling task: {task.get_name()}")
                 task.cancel()
             await asyncio.gather(*client_handler_tasks, return_exceptions=True)
+            self.data_handler.client['quote'].clear()
+            self.data_handler.client['timesale'].clear()
+            self.data_handler.client['ma'].clear()
+            self.data_handler.client['lookback'].clear()
+            self.data_handler.client['trade'].clear()
             writer.close()
             try:
                 await writer.wait_closed()
@@ -300,7 +309,6 @@ class MDSocketServer:
             finally:
                 logger.info("Market Data Shutting Down")
                 self.running = False
-                self.clients.clear()
                 for task in md_handler_tasks:
                     logger.info(f"Cancelling task: {task.get_name()}")
                     task.cancel()
