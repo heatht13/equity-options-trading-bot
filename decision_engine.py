@@ -66,7 +66,6 @@ class DecisionEngine():
         self.exchange_socket = exchange_socket
         self.positions = dict()
         self.orders = deque(maxlen=MAX_ORDERS)
-        self.prices = dict()
         self.quotes = dict()
         self.timesale = dict()
         self.mas = dict()
@@ -75,8 +74,7 @@ class DecisionEngine():
         self.price_state = PriceState.UNSET
 
     def generate_signal(self, symbol):
-        price = self.prices[symbol]['price']
-        quote = self.quotes[symbol]['price']
+        price = self.quotes[symbol]['price']
         ma = self.mas[symbol]['ma']
         lookback = self.lookback[symbol]
         signal = Signal.HOLD
@@ -116,14 +114,14 @@ class DecisionEngine():
     #     try:
     #         while True:
     #             for symbol in self.symbols:
-    #                 if symbol not in self.prices or symbol not in self.quotes or symbol not in self.timesale or symbol not in self.mas or symbol not in self.lookback:
+    #                 if symbol not in self.quotes or symbol not in self.timesale or symbol not in self.mas or symbol not in self.lookback:
     #                     continue
                     
     #                 signal = self.generate_signal(symbol)
     #                 if signal == Signal.HOLD:
     #                     continue
 
-    #                 price = self.prices[symbol]
+    #                 price = self.quotes[symbol]
     #                 if signal == Signal.LONG:
     #                     if symbol not in self.positions:
     #                         self.orders.append(self.create_order(symbol, 'limit', 'buy', price, NUM_CONTRACTS, 'open', 'day', 'OPTION'))
@@ -212,19 +210,17 @@ class DecisionEngine():
                 async with ContextManagedAsyncUnixSocketClient(self.market_data_socket) as md_socket:
                     await md_socket.send_json(json.dumps({
                         'type': 'subscribe',
-                        'channels': ['price', 'ma', 'lookback'],
+                        'channels': ['quote', 'timesale', 'ma', 'lookback'],
                         'symbols': list(self.symbols)
                     }))
                     async for msg in md_socket.receive():
                         msg = json.loads(msg)
                         #logger.info(f"Received message: {json.dumps(msg['channel'], indent=2)}")
                         if msg['type'] == 'update':
-                            if msg['channel'] == 'price':
-                                self.prices[msg['symbol']] = msg['data']
-                            # elif msg['channel'] == 'quote':
-                            #     self.quotes[msg['symbol']] = msg['data']
-                            # elif msg['channel'] == 'timesale':
-                            #     self.timesale[msg['symbol']] = msg['data']
+                            if msg['channel'] == 'quote':
+                                self.quotes[msg['symbol']] = msg['data']
+                            elif msg['channel'] == 'timesale':
+                                self.timesale[msg['symbol']] = msg['data']
                             elif msg['channel'] == 'ma':
                                 self.mas[msg['symbol']] = msg['data']
                             elif msg['channel'] == 'lookback':

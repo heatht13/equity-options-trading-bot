@@ -31,7 +31,6 @@ class MALookbackDataParser():
     def __init__(self, timeframe, symbols, ma, period, lookback):
         self.client = {
                 'queue': asyncio.Queue(),
-                'price': set(),
                 'quote': set(),
                 'timesale': set(),
                 'ma': set(),
@@ -159,21 +158,13 @@ class MALookbackDataParser():
             return
         channel = msg['channel']
         symbol = msg['symbol']
-        if symbol in self.client.get(channel, set()):
-            await self.send_msg(msg)
         if msg['channel'] == 'quote':
-            if msg['price'] != self.symbols[symbol]['price'] and symbol in self.client['price']:
-                await self.send_msg({
-                    'type': 'update',
-                    'channel': 'price',
-                    'symbol': str(msg['symbol']).upper(),
-                    'timestamp': datetime.utcnow().timestamp(),
-                    'data': {
-                        'price': msg['price'],
-                    }
-                })
             logger.info(f"TIME: {datetime.fromtimestamp(msg['data']['quote_time'])}")
+            if msg['price'] != self.symbols[symbol]['price'] and symbol in self.client['quote']:
+                await self.send_msg(msg)
             await self.update_symbol_state(msg)
+        elif symbol in self.client.get(channel, set()):
+            await self.send_msg(msg)
 
     async def data_handler_main(self):
         while True:
@@ -184,7 +175,6 @@ class MALookbackDataParser():
                 logger.info("Data Handler Shutting Down")
                 self.ohlc = OHLC.copy()
                 self.symbols.clear()
-                self.client['price'].clear()
                 self.client['quote'].clear()
                 self.client['timesale'].clear()
                 self.client['ma'].clear()
@@ -234,10 +224,7 @@ class MDSocketServer:
             msg_channels = msg.get('channels', [])
             if msg_type == 'subscribe':
                 for channel in msg_channels:
-                    if channel == 'price':
-                        self.data_handler.client['price'].update(msg['symbols'])
-                        response = {'success': f'Subscribed prices for {msg["symbols"]}'}
-                    elif channel == 'quote':
+                    if channel == 'quote':
                         self.data_handler.client['quote'].update(msg['symbols'])
                         response = {'success': f'Subscribed quotes for {msg["symbols"]}'}
                     elif channel == 'timesale':
@@ -256,10 +243,7 @@ class MDSocketServer:
                         response = {'error': 'Invalid message channel. Must be either \'quote\', \'timesale\', \'ma\', \'lookback\', or \'trade\''}
             else:
                 for channel in msg_channels:
-                    if channel == 'price':
-                        self.data_handler.client['price'].difference_update(msg['symbols'])
-                        response = {'success': f'Unsubscibed prices for {msg["symbols"]}'}
-                    elif channel == 'quote':
+                    if channel == 'quote':
                         self.data_handler.client['quote'].difference_update(msg['symbols'])
                         response = {'success': f'Unsubscibed quotes for {msg["symbols"]}'}
                     elif channel == 'timesale':
@@ -302,7 +286,6 @@ class MDSocketServer:
                 logger.debug(f"Cancelling task: {task.get_name()}")
                 task.cancel()
             await asyncio.gather(*client_handler_tasks, return_exceptions=True)
-            self.data_handler.client['price'].clear()
             self.data_handler.client['quote'].clear()
             self.data_handler.client['timesale'].clear()
             self.data_handler.client['ma'].clear()
