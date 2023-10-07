@@ -22,7 +22,7 @@ ORDER_SOCKET_INTERVAL_SEC = 2
 SOCKET_CONN_INTERVAL_SEC = 2
 SIGNAL_PROC_INTERVAL_SEC = 1
 NUM_CONTRACTS = 1
-MAX_ORDERS = 5
+MAX_ORDERS = 2
 MSG_LENGTH_PREFIX_BYTES = 4
 
 Order = namedtuple('Order', (
@@ -34,6 +34,14 @@ Order = namedtuple('Order', (
     'offset',
     'tif',
     'asset_type',
+))
+
+SymbolState = namedtuple('SymbolState', (
+    'quote',
+    'timesale',
+    'ma',
+    'lookback',
+    'price_state'
 ))
 
 class PriceState(enum.Enum):
@@ -66,12 +74,13 @@ class DecisionEngine():
         self.exchange_socket = exchange_socket
         self.positions = dict()
         self.orders = deque(maxlen=MAX_ORDERS)
-        self.quotes = dict()
-        self.timesale = dict()
-        self.mas = dict()
-        self.lookback = dict()
-        self.symbols = symbols
-        self.price_state = PriceState.UNSET
+        self.symbols = {symbol:SymbolState(
+            quote=None,
+            timesale=None,
+            ma=None,
+            lookback=None,
+            price_state=PriceState.UNSET
+        ) for symbol in symbols}
 
     def generate_signal(self, symbol):
         price = self.quotes[symbol]['price']
@@ -113,7 +122,7 @@ class DecisionEngine():
     #     logger.info(f"Decision Engine signal handler started")
     #     try:
     #         while True:
-    #             for symbol in self.symbols:
+    #             for symbol in self.symbols.keys():
     #                 if symbol not in self.quotes or symbol not in self.timesale or symbol not in self.mas or symbol not in self.lookback:
     #                     continue
                     
@@ -211,7 +220,7 @@ class DecisionEngine():
                     await md_socket.send_json(json.dumps({
                         'type': 'subscribe',
                         'channels': ['quote', 'timesale', 'ma', 'lookback'],
-                        'symbols': list(self.symbols)
+                        'symbols': list(self.symbols.keys())
                     }))
                     async for msg in md_socket.receive():
                         msg = json.loads(msg)

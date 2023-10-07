@@ -127,11 +127,5 @@ class TradierDataHandler(MALookbackDataParser):
                                     logger.warning(f'Unknown message: {msg}')
                         finally:
                             logger.info(f"Stream Handler Shutting Down")
-                            if self.rest_session and not self.rest_session.closed:
-                                await self.rest_session.close()
-                                self.rest_session = None
-                            if self.ws_session and not self.ws_session.closed:
-                                await self.ws_session.close()
-                                self.ws_session = None
             except (aiohttp.ClientError, aiohttp.WSServerHandshakeError, ConnectionResetError) as e:
                 logger.error(f"websocket connection closed; resetting. {e}")
