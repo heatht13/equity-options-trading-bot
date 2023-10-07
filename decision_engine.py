@@ -64,29 +64,31 @@ class DecisionEngine():
     def __init__(self, market_data_socket, exchange_socket, symbols):
         self.market_data_socket = market_data_socket
         self.exchange_socket = exchange_socket
-        self.quotes = dict()
-        self.timesale = dict()
         self.positions = dict()
         self.orders = deque(maxlen=MAX_ORDERS)
+        self.prices = dict()
+        self.quotes = dict()
+        self.timesale = dict()
         self.mas = dict()
         self.lookback = dict()
         self.symbols = symbols
         self.price_state = PriceState.UNSET
 
     def generate_signal(self, symbol):
+        price = self.prices[symbol]['price']
         quote = self.quotes[symbol]['price']
         ma = self.mas[symbol]['ma']
         lookback = self.lookback[symbol]
         signal = Signal.HOLD
-        if quote > ma:
-            if quote > lookback['lookback_high']:
+        if price > ma:
+            if price > lookback['lookback_high']:
                 if self.price_state.is_pending_breakout_up():
                     signal = Signal.LONG
                 self.price_state = PriceState.UP
             else:
                 self.price_state = PriceState.PENDING_BREAKOUT_UP
-        elif quote < ma:
-            if quote < lookback['lookback_low']:
+        elif price < ma:
+            if price < lookback['lookback_low']:
                 if self.price_state.is_pending_breakout_down():
                     signal =  Signal.SHORT 
                 self.price_state = PriceState.DOWN
@@ -114,14 +116,14 @@ class DecisionEngine():
     #     try:
     #         while True:
     #             for symbol in self.symbols:
-    #                 if symbol not in self.quotes or symbol not in self.timesale or symbol not in self.mas or symbol not in self.lookback:
+    #                 if symbol not in self.prices or symbol not in self.quotes or symbol not in self.timesale or symbol not in self.mas or symbol not in self.lookback:
     #                     continue
                     
     #                 signal = self.generate_signal(symbol)
     #                 if signal == Signal.HOLD:
     #                     continue
 
-    #                 price = self.quotes[symbol]
+    #                 price = self.prices[symbol]
     #                 if signal == Signal.LONG:
     #                     if symbol not in self.positions:
     #                         self.orders.append(self.create_order(symbol, 'limit', 'buy', price, NUM_CONTRACTS, 'open', 'day', 'OPTION'))
@@ -210,20 +212,23 @@ class DecisionEngine():
                 async with ContextManagedAsyncUnixSocketClient(self.market_data_socket) as md_socket:
                     await md_socket.send_json(json.dumps({
                         'type': 'subscribe',
-                        'channels': ['quote', 'timesale', 'ma', 'lookback'],
+                        'channels': ['price', 'ma', 'lookback'],
                         'symbols': list(self.symbols)
                     }))
                     async for msg in md_socket.receive():
                         msg = json.loads(msg)
-                        logger.info(f"Received message: {json.dumps(msg['channel'], indent=2)}")
+                        #logger.info(f"Received message: {json.dumps(msg['channel'], indent=2)}")
                         if msg['type'] == 'update':
-                            if msg['channel'] == 'quote':
-                                self.quotes[msg['symbol']] = msg['data']
-                            elif msg['channel'] == 'timesale':
-                                self.timesale[msg['symbol']] = msg['data']
+                            if msg['channel'] == 'price':
+                                self.prices[msg['symbol']] = msg['data']
+                            # elif msg['channel'] == 'quote':
+                            #     self.quotes[msg['symbol']] = msg['data']
+                            # elif msg['channel'] == 'timesale':
+                            #     self.timesale[msg['symbol']] = msg['data']
                             elif msg['channel'] == 'ma':
                                 self.mas[msg['symbol']] = msg['data']
                             elif msg['channel'] == 'lookback':
+                                logger.info(f"Received lookback: {json.dumps(msg, indent=2)}")
                                 self.lookback[msg['symbol']] = msg['data']
                             else:
                                 logger.warning(f"Unhandled message type: {msg}")
@@ -266,7 +271,7 @@ class DecisionEngine():
                 decision_engine_tasks = {
                                         #asyncio.create_task(self.signal_handler(), name=f'Signal Handler'),
                                         asyncio.create_task(self.market_data_handler(), name=f'Market Data Handler'),
-                                        asyncio.create_task(self.test_exchange_handler(), name=f'Exchange Handler')
+                                        #asyncio.create_task(self.test_exchange_handler(), name=f'Exchange Handler')
                                     }
                 await asyncio.gather(*decision_engine_tasks)
                 # while self.running:

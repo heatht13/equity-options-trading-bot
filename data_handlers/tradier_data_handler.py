@@ -55,7 +55,7 @@ class TradierDataHandler(MALookbackDataParser):
     def parse_msg(self, msg):
         channel = msg['type']
         if channel == 'timesale':
-            if msg['cancel'] or msg['correction'] or msg['seq'] <= self.last_ts_seq:
+            if 'cancel' in msg or 'correction' in msg:
                 return None
             data = {
                 'bid': float(msg['bid']),
@@ -63,9 +63,7 @@ class TradierDataHandler(MALookbackDataParser):
                 'price': float(msg['last']),
                 'size': float(msg['size']),
                 'trade_time': float(msg['date']) / 10 ** 3,
-                'seq': msg['seq'],
             }
-            self.last_ts_seq = msg['seq']
         elif channel == 'quote':
             bid = decimal.Decimal(str(msg['bid']))
             ask = decimal.Decimal(str(msg['ask']))
@@ -76,7 +74,7 @@ class TradierDataHandler(MALookbackDataParser):
                 'price': price,
                 'bid_size': msg['bidsz'],
                 'ask_size': msg['asksz'],
-                'quote_time': float(msg['date']) / 10 ** 3
+                'quote_time': float(msg['biddate']) / 10 ** 3
             }
         elif channel == 'trade':
             data = {
@@ -87,7 +85,6 @@ class TradierDataHandler(MALookbackDataParser):
         else:
             return None
         return {
-                'handler': 'data',
                 'type': 'update',
                 'channel': channel,
                 'symbol': str(msg['symbol']).upper(),
@@ -106,16 +103,16 @@ class TradierDataHandler(MALookbackDataParser):
                                 await self.get_session_id()
                             sub_symbols = {
                                 'symbols': self.symbols,
-                                'filter': ['quote', 'timesale'], #trade,quote,summary,timesale,tradex, dont pass if want all.
+                                'filter': ['quote'],#, 'timesale'], #trade,quote,summary,timesale,tradex, dont pass if want all.
                                 'sessionid': self.session_id,
                                 'linebreak': True
                             }
                             await ws.send_str(json.dumps(sub_symbols))
                             async for msg in ws:
                                 msg = msg.json()
-                                logger.info(msg)
+                                logger.info(f"Received {json.dumps(msg, indent=2)}")
                                 if 'type' in msg:
-                                    if msg['type'] in ('quote', 'timesale'):
+                                    if msg['type'] in ('quote', 'timesale', 'summary'):
                                         await self.handle_msg(msg)
                                     else:
                                         logger.info(f'Unhandled message type: {msg}')

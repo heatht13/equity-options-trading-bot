@@ -80,7 +80,6 @@ class ExchangeHandler:
                     positions = await self.get_positions()
                     positions = positions.get('positions', {})
                     msg = {
-                        'handler': 'exchange',
                         'type': 'update',
                         'channel': 'positions',
                         'timestamp': datetime.utcnow().timestamp(),
@@ -207,7 +206,6 @@ class ExchangeSocketServer:
 
             if response is not None:
                 msg = {
-                    'handler': 'exchange',
                     'type': 'response',
                     'channel': channel,
                     'timestamp': datetime.utcnow().timestamp(),
