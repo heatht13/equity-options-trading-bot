@@ -5,7 +5,7 @@ import time
 from datetime import datetime
 from argparse import ArgumentParser
 from importlib import import_module
-from collections import deque
+from collections import namedtuple, deque
 
 #logger = Logger(__name__)
 logging.basicConfig(
@@ -19,6 +19,21 @@ logging.basicConfig(
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
+Client = namedtuple('Client', (
+    'queue',
+    'quote',
+    'timesale',
+    'ma',
+    'lookback',
+    'trade'
+))
+
+SymbolState = namedtuple('SymbolState', (
+    'ma_queue',
+    'lookback_queue',
+    'ohlc'
+))
+
 MA = {'sma', 'ema'}
 OHLC = {'o': 0, 'h': 0, 'l': 0, 'c': 0, 't': 0}
 TIMEFRAMES = {'1m': 60, '5m': 300, '15m': 900, '1h': 3600, '4h': 14400, '1d': 86400}
@@ -29,14 +44,14 @@ class MALookbackDataParser():
         pass
 
     def __init__(self, timeframe, symbols, ma, period, lookback):
-        self.client = {
-                'queue': asyncio.Queue(),
-                'quote': set(),
-                'timesale': set(),
-                'ma': set(),
-                'lookback': set(),
-                'trade': set()
-            }
+        self.client = Client(
+            queue=asyncio.Queue(),
+            quote=set(),
+            timesale=set(),
+            ma=set(),
+            lookback=set(),
+            trade=set()
+        )
         self.rest_session = None
         self.ws_session = None
         self.last_tick = None
@@ -44,27 +59,26 @@ class MALookbackDataParser():
         self.ma = ma
         self.period = period
         self.lookback_period = lookback
-        self.symbols = {symbol:{
-            'ma_queue': deque(maxlen=period),
-            'lookback_queue': deque(maxlen=lookback),
-            'ohlc': OHLC.copy(),
-            'price': None
-        } for symbol in symbols}
+        self.symbols = {symbol:SymbolState(
+            ma_queue=deque(maxlen=period),
+            lookback_queue=deque(maxlen=lookback),
+            ohlc=dict()
+        ) for symbol in symbols}
 
     def sma(self, symbol, period, tick, price):
-        ma_queue = self.symbols[symbol]['ma_queue']
+        ma_queue = self.symbols[symbol].ma_queue
         if tick != 0: #NOTE: This is absolutely horrible but works for now
             if len(ma_queue) < period:
                 return None
             return (sum((candle['c'] for candle in ma_queue)) - ma_queue[0]['c'] + price) / ma_queue.maxlen
         elif tick != self.last_tick:
-            ma_queue.append(self.symbols[symbol]['ohlc'])
+            ma_queue.append(self.symbols[symbol].ohlc)
         else:
             try:
                 ma_queue.pop()
             except IndexError:
                 pass
-            ma_queue.append(self.symbols[symbol]['ohlc'])
+            ma_queue.append(self.symbols[symbol].ohlc)
         if len(ma_queue) < period:
             return None
         return sum((candle['c'] for candle in ma_queue)) / ma_queue.maxlen
@@ -73,8 +87,8 @@ class MALookbackDataParser():
         raise NotImplementedError
 
     def lookback(self, symbol, lookback):
-        lookback_queue = self.symbols[symbol]['lookback_queue']
-        lookback_queue.append(self.symbols[symbol]['ohlc'])
+        lookback_queue = self.symbols[symbol].lookback_queue
+        lookback_queue.append(self.symbols[symbol].ohlc)
         if len(lookback_queue) < lookback:
             return None, None
         return max((candle['h'] for candle in lookback_queue)), min((candle['l'] for candle in lookback_queue))
@@ -86,13 +100,13 @@ class MALookbackDataParser():
         if symbol not in self.symbols:
             logger.error(f"Symbol {symbol} not found in symbols")
             return
-        ohlc = self.symbols[symbol]['ohlc']
+        ohlc = self.symbols[symbol].ohlc
         tick = quote_time % self.timeframe
         logger.info(f"Tick: {tick}")
         if tick < self.last_tick:
             #todo: fix lookback
             lookback_high, lookback_low = self.lookback(symbol, self.lookback_period)
-            logger.info(f"Lookback:{self.symbols[symbol]['lookback_queue']}")
+            logger.info(f"Lookback:{self.symbols[symbol].lookback_queue}")
             msg = {
                 'type': 'update',
                 'channel': 'lookback',
@@ -109,7 +123,7 @@ class MALookbackDataParser():
                 }
             }
             await self.send_msg(msg)
-            ohlc = OHLC.copy()
+            ohlc.clear()
             ohlc['o'] = price
             ohlc['h'] = price
             ohlc['l'] = price
@@ -117,15 +131,14 @@ class MALookbackDataParser():
             ohlc['t'] = self.timeframe // 60
             self.last_tick = tick
             return
-        if price != self.symbols[symbol]['price']:
-            self.symbols[symbol]['price'] = price
-            self.ohlc['c'] = price
+        if price != ohlc['c']:
+            ohlc['c'] = price
             if price > ohlc['h']:
                 ohlc['h'] = price
             elif price < ohlc['l']:
                 ohlc['l'] = price
             ma = self.sma(symbol, self.period, tick, price) if self.ma == 'sma' else self.ema(symbol, self.period, tick, price)
-            logger.info(f"MA:{self.symbols[symbol]['lookback_queue']}")
+            logger.info(f"MA:{self.symbols[symbol].lookback_queue}")
             msg = {
                 'type': 'update',
                 'channel': 'ma',
@@ -150,7 +163,7 @@ class MALookbackDataParser():
         raise NotImplementedError
     
     async def send_msg(self, msg):
-        await self.client['queue'].put(msg)
+        await self.client.queue.put(msg)
     
     async def handle_msg(self, msg):
         msg = self.parse_msg(msg)
@@ -160,7 +173,7 @@ class MALookbackDataParser():
         symbol = msg['symbol']
         if msg['channel'] == 'quote':
             logger.info(f"TIME: {datetime.fromtimestamp(msg['data']['quote_time'])}")
-            if msg['price'] != self.symbols[symbol]['price'] and symbol in self.client['quote']:
+            if msg['price'] != self.symbols[symbol].ohlc['c'] and symbol in self.client.quote:
                 await self.send_msg(msg)
             await self.update_symbol_state(msg)
         elif symbol in self.client.get(channel, set()):
@@ -172,14 +185,20 @@ class MALookbackDataParser():
                 logger.info("Data Handler Starting")
                 await self.stream_handler()
             finally:
+                if self.rest_session and not self.rest_session.closed:
+                    await self.rest_session.close()
+                    self.rest_session = None
+                if self.ws_session and not self.ws_session.closed:
+                    await self.ws_session.close()
+                    self.ws_session = None
                 logger.info("Data Handler Shutting Down")
                 self.ohlc = OHLC.copy()
                 self.symbols.clear()
-                self.client['quote'].clear()
-                self.client['timesale'].clear()
-                self.client['ma'].clear()
-                self.client['lookback'].clear()
-                self.client['trade'].clear()
+                self.client.quote.clear()
+                self.client.timesale.clear()
+                self.client.ma.clear()
+                self.client.lookback.clear()
+                self.client.trade.clear()
 
 class MDSocketServer:
     MSG_LENGTH_PREFIX_BYTES=4
@@ -200,9 +219,9 @@ class MDSocketServer:
 
     async def msg_handler(self, writer):
         while True:
-            msg = await self.data_handler.client['queue'].get()
+            msg = await self.data_handler.client.queue.get()
             await self.send_json(writer, json.dumps(msg))
-            self.data_handler.client['queue'].task_done()
+            self.data_handler.client.queue.task_done()
 
     async def request_handler(self, reader, writer):
         while True:
@@ -225,44 +244,43 @@ class MDSocketServer:
             if msg_type == 'subscribe':
                 for channel in msg_channels:
                     if channel == 'quote':
-                        self.data_handler.client['quote'].update(msg['symbols'])
+                        self.data_handler.client.quote.update(msg['symbols'])
                         response = {'success': f'Subscribed quotes for {msg["symbols"]}'}
                     elif channel == 'timesale':
-                        self.data_handler.client['timesale'].update(msg['symbols'])
+                        self.data_handler.client.timesale.update(msg['symbols'])
                         response = {'success': f'Subscribed timesale for {msg["symbols"]}'}
                     elif channel == 'ma':
-                        self.data_handler.client['ma'].update(msg['symbols'])
+                        self.data_handler.client.ma.update(msg['symbols'])
                         response = {'success': f'Subscribed ma for {msg["symbols"]}'}
                     elif channel == 'lookback':
-                        self.data_handler.client['lookback'].update(msg['symbols'])
+                        self.data_handler.client.lookback.update(msg['symbols'])
                         response = {'success': f'Subscribed lookback for {msg["symbols"]}'}
                     elif channel == 'trade':
-                        self.data_handler.client['trade'].update(msg['symbols'])
+                        self.data_handler.client.trade.update(msg['symbols'])
                         response = {'success': f'Subscribed trade for {msg["symbols"]}'}
                     else:
                         response = {'error': 'Invalid message channel. Must be either \'quote\', \'timesale\', \'ma\', \'lookback\', or \'trade\''}
             else:
                 for channel in msg_channels:
                     if channel == 'quote':
-                        self.data_handler.client['quote'].difference_update(msg['symbols'])
+                        self.data_handler.client.quote.difference_update(msg['symbols'])
                         response = {'success': f'Unsubscibed quotes for {msg["symbols"]}'}
                     elif channel == 'timesale':
-                        self.data_handler.client['timesale'].difference_update(msg['symbols'])
+                        self.data_handler.client.timesale.difference_update(msg['symbols'])
                         response = {'success': f'Unsubscibed timesale for {msg["symbols"]}'}
                     elif channel == 'ma':
-                        self.data_handler.client['ma'].difference_update(msg['symbols'])
+                        self.data_handler.client.ma.difference_update(msg['symbols'])
                         response = {'success': f'Unsubscibed ma for {msg["symbols"]}'}
                     elif channel == 'lookback':
-                        self.data_handler.client['lookback'].difference_update(msg['symbols'])
+                        self.data_handler.client.lookback.difference_update(msg['symbols'])
                         response = {'success': f'Unsubscibed lookback for {msg["symbols"]}'}
                     elif channel == 'trade':
-                        self.data_handler.client['trade'].difference_update(msg['symbols'])
+                        self.data_handler.client.trade.difference_update(msg['symbols'])
                         response = {'success': f'Unsubscibed trade for {msg["symbols"]}'}
                     else:
                         response = {'error': 'Invalid message channel. Must be either \'quote\', \'timesale\', \'ma\', \'lookback\', or \'trade\''}
             if response is not None:
                 msg = {
-                    'handler': 'data',
                     'type': 'response',
                     'channel': channel,
                     'timestamp': datetime.utcnow().timestamp(),
@@ -286,11 +304,11 @@ class MDSocketServer:
                 logger.debug(f"Cancelling task: {task.get_name()}")
                 task.cancel()
             await asyncio.gather(*client_handler_tasks, return_exceptions=True)
-            self.data_handler.client['quote'].clear()
-            self.data_handler.client['timesale'].clear()
-            self.data_handler.client['ma'].clear()
-            self.data_handler.client['lookback'].clear()
-            self.data_handler.client['trade'].clear()
+            self.data_handler.client.quote.clear()
+            self.data_handler.client.timesale.clear()
+            self.data_handler.client.ma.clear()
+            self.data_handler.client.lookback.clear()
+            self.data_handler.client.trade.clear()
             writer.close()
             try:
                 await writer.wait_closed()
