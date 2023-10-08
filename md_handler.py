@@ -38,6 +38,7 @@ MA = {'sma', 'ema'}
 OHLC = {'o': 0, 'h': 0, 'l': 0, 'c': 0, 't': 0}
 TIMEFRAMES = {'1m': 60, '5m': 300, '15m': 900, '1h': 3600, '4h': 14400, '1d': 86400}
 EXCHANGES = {'tradier', 'fake'}
+INIT_TICK = 100000
 
 class MALookbackDataParser():
     class Error(Exception):
@@ -54,7 +55,7 @@ class MALookbackDataParser():
         )
         self.rest_session = None
         self.ws_session = None
-        self.last_tick = None
+        self.last_tick = -1
         self.timeframe = TIMEFRAMES[timeframe]
         self.ma = ma
         self.period = period
@@ -62,7 +63,7 @@ class MALookbackDataParser():
         self.symbols = {symbol:SymbolState(
             ma_queue=deque(maxlen=period),
             lookback_queue=deque(maxlen=lookback),
-            ohlc=dict()
+            ohlc=OHLC.copy()
         ) for symbol in symbols}
 
     def sma(self, symbol, period, tick, price):
@@ -72,13 +73,13 @@ class MALookbackDataParser():
                 return None
             return (sum((candle['c'] for candle in ma_queue)) - ma_queue[0]['c'] + price) / ma_queue.maxlen
         elif tick != self.last_tick:
-            ma_queue.append(self.symbols[symbol].ohlc)
-        else:
+            ma_queue.append(self.symbols[symbol].ohlc.copy())
+        else: #Used to deal with multi msgs where tick == 0
             try:
                 ma_queue.pop()
             except IndexError:
                 pass
-            ma_queue.append(self.symbols[symbol].ohlc)
+            ma_queue.append(self.symbols[symbol].ohlc.copy())
         if len(ma_queue) < period:
             return None
         return sum((candle['c'] for candle in ma_queue)) / ma_queue.maxlen
@@ -88,7 +89,7 @@ class MALookbackDataParser():
 
     def lookback(self, symbol, lookback):
         lookback_queue = self.symbols[symbol].lookback_queue
-        lookback_queue.append(self.symbols[symbol].ohlc)
+        lookback_queue.append(self.symbols[symbol].ohlc.copy())
         if len(lookback_queue) < lookback:
             return None, None
         return max((candle['h'] for candle in lookback_queue)), min((candle['l'] for candle in lookback_queue))
@@ -103,10 +104,13 @@ class MALookbackDataParser():
         ohlc = self.symbols[symbol].ohlc
         tick = quote_time % self.timeframe
         logger.info(f"Tick: {tick}")
+        ohlc['c'] = price
+        if price > ohlc['h']:
+            ohlc['h'] = price
+        elif price < ohlc['l']:
+            ohlc['l'] = price
         if tick < self.last_tick:
-            #todo: fix lookback
             lookback_high, lookback_low = self.lookback(symbol, self.lookback_period)
-            logger.info(f"Lookback:{self.symbols[symbol].lookback_queue}")
             msg = {
                 'type': 'update',
                 'channel': 'lookback',
@@ -123,22 +127,7 @@ class MALookbackDataParser():
                 }
             }
             await self.send_msg(msg)
-            ohlc.clear()
-            ohlc['o'] = price
-            ohlc['h'] = price
-            ohlc['l'] = price
-            ohlc['c'] = price
-            ohlc['t'] = self.timeframe // 60
-            self.last_tick = tick
-            return
-        if price != ohlc['c']:
-            ohlc['c'] = price
-            if price > ohlc['h']:
-                ohlc['h'] = price
-            elif price < ohlc['l']:
-                ohlc['l'] = price
             ma = self.sma(symbol, self.period, tick, price) if self.ma == 'sma' else self.ema(symbol, self.period, tick, price)
-            logger.info(f"MA:{self.symbols[symbol].lookback_queue}")
             msg = {
                 'type': 'update',
                 'channel': 'ma',
@@ -151,6 +140,29 @@ class MALookbackDataParser():
                 }
             }
             await self.send_msg(msg)
+            ohlc.clear()
+            ohlc['o'] = price
+            ohlc['h'] = price
+            ohlc['l'] = price
+            ohlc['c'] = price
+            ohlc['t'] = self.timeframe // 60
+            self.last_tick = tick
+            return
+        ma = self.sma(symbol, self.period, tick, price) if self.ma == 'sma' else self.ema(symbol, self.period, tick, price)
+        # logger.info(f"Lookback:{self.symbols[symbol].lookback_queue}")
+        # logger.info(f"MA:{self.symbols[symbol].ma_queue}")
+        msg = {
+            'type': 'update',
+            'channel': 'ma',
+            'symbol': symbol,
+            'timestamp': datetime.utcnow().timestamp(),
+            'data': {
+                'ma': ma,
+                'ma_period': self.period,
+                'time': quote_time
+            }
+        }
+        await self.send_msg(msg)
         self.last_tick = tick
         
     async def book(self, **kwargs):
@@ -173,10 +185,11 @@ class MALookbackDataParser():
         symbol = msg['symbol']
         if msg['channel'] == 'quote':
             logger.info(f"TIME: {datetime.fromtimestamp(msg['data']['quote_time'])}")
-            if msg['price'] != self.symbols[symbol].ohlc['c'] and symbol in self.client.quote:
+            logger.info(self.symbols[symbol].ohlc)
+            if msg['data']['price'] != self.symbols[symbol].ohlc['c'] and symbol in self.client.quote:
                 await self.send_msg(msg)
             await self.update_symbol_state(msg)
-        elif symbol in self.client.get(channel, set()):
+        elif symbol in getattr(self.client, channel, set()):
             await self.send_msg(msg)
 
     async def data_handler_main(self):
@@ -359,8 +372,8 @@ def main():
     ma_strategy.add_argument('--timeframe', type=str, default='5m', choices=TIMEFRAMES.keys(), help="Timeframe for candles")
     ma_strategy.add_argument('--symbols', type=str.upper,  nargs='*', help="Symbols to trade")
     ma_strategy.add_argument('--ma', type=str, default='sma', choices=MA, help="Moving average: ether sma or ema")
-    ma_strategy.add_argument('--period', type=str, default='9', choices=[str(x) for x in range(1, 201)], help="Moving average period")
-    ma_strategy.add_argument('--lookback', type=str, default='5', choices=[str(x) for x in range(1, 21)], help="Lookback period")
+    ma_strategy.add_argument('--period', type=int, default='9', choices=[x for x in range(1, 201)], help="Moving average period")
+    ma_strategy.add_argument('--lookback', type=int, default='5', choices=[x for x in range(1, 21)], help="Lookback period")
     args = parser.parse_args()
     kwargs = vars(args)
     server = MDSocketServer(**kwargs)

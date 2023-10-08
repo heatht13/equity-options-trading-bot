@@ -70,6 +70,9 @@ class TradierExchangeHandler(ExchangeHandler):
     
     async def get_positions(self):
         positions = await self.rest_query('GET', self.endpoints['positions'])
+        if positions['positions'] == 'null':
+            return None
+        positions = {p['symbol']: p for p in positions['positions']['position']}
         return positions
 
     async def get_orders(self, order_id=None):
@@ -124,7 +127,7 @@ class TradierExchangeHandler(ExchangeHandler):
         response = await self.rest_query('POST', self.endpoints['orders'], json=data)
         return response
 
-    async def modify_order(self, order_id, order_type, price, tif):
+    async def modify_order(self, order_id, order_type, price, quantity, tif):
         raise NotImplementedError
 
     async def cancel_order(self, order_id):

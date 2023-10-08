@@ -41,13 +41,16 @@ class ExchangeHandler:
     async def get_positions(self, **kwargs):
         raise NotImplementedError
 
-    async def place_order(self, **kwargs):
+    async def place_order(self, symbol, order_type, side, price, quantity, offset, tif, asset_type, exp=None, strike=None, callput=None):
         raise NotImplementedError
     
-    async def cancel_order(self, **kwargs):
+    async def modify_order(self, order_id, order_type, price, quantity, tif):
         raise NotImplementedError
     
-    async def get_orders(self, **kwargs):
+    async def cancel_order(self, order_id):
+        raise NotImplementedError
+    
+    async def get_orders(self, order_id):
         raise NotImplementedError
     
     def parse_msg(self, msg):
@@ -78,7 +81,6 @@ class ExchangeHandler:
             try:
                 while self.client['position'] > 0:
                     positions = await self.get_positions()
-                    positions = positions.get('positions', {})
                     msg = {
                         'type': 'update',
                         'channel': 'positions',
@@ -112,7 +114,6 @@ class ExchangeHandler:
                     await self.ws_session.close()
                     self.ws_session = None
                 logger.info("Exchange Handler Shutting Down")
-                await asyncio.sleep(SUB_HANDLER_INTERVAL_SECS)
 
 class ExchangeSocketServer:
     MSG_LENGTH_PREFIX_BYTES=4
@@ -228,14 +229,13 @@ class ExchangeSocketServer:
                 logger.debug(f"Cancelling task: {task.get_name()}")
                 task.cancel()
             await asyncio.gather(*client_handler_tasks, return_exceptions=True)
-            self.exchange_handler.client['position']
+            self.exchange_handler.client['position'] = 0
             self.exchange_handler.client['order'] = False
             writer.close()
             try:
                 await writer.wait_closed()
             except ConnectionResetError:
                 pass
-            await asyncio.sleep(SUB_HANDLER_INTERVAL_SECS)
 
     async def server_task(self):
         while True:
@@ -249,7 +249,6 @@ class ExchangeSocketServer:
                 if server:
                     server.close()
                     await server.wait_closed()
-                await asyncio.sleep(SUB_HANDLER_INTERVAL_SECS)
 
     async def main_task(self):
         while True:
