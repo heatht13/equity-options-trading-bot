@@ -66,23 +66,17 @@ class MALookbackDataParser():
             ohlc=OHLC.copy()
         ) for symbol in symbols}
 
-    def sma(self, symbol, period, tick, price):
+    def sma(self, symbol, period, price, closed=False):
         ma_queue = self.symbols[symbol].ma_queue
-        if tick != 0: #NOTE: This is absolutely horrible but works for now
+        if not closed:
             if len(ma_queue) < period:
                 return None
             return (sum((candle['c'] for candle in ma_queue)) - ma_queue[0]['c'] + price) / ma_queue.maxlen
-        elif tick != self.last_tick:
+        else:
             ma_queue.append(self.symbols[symbol].ohlc.copy())
-        else: #Used to deal with multi msgs where tick == 0
-            try:
-                ma_queue.pop()
-            except IndexError:
-                pass
-            ma_queue.append(self.symbols[symbol].ohlc.copy())
-        if len(ma_queue) < period:
-            return None
-        return sum((candle['c'] for candle in ma_queue)) / ma_queue.maxlen
+            if len(ma_queue) < period:
+                return None
+            return sum((candle['c'] for candle in ma_queue)) / ma_queue.maxlen
 
     def ema(self, candle, period, ema_prev=None):
         raise NotImplementedError
@@ -127,7 +121,8 @@ class MALookbackDataParser():
                 }
             }
             await self.send_msg(msg)
-            ma = self.sma(symbol, self.period, tick, price) if self.ma == 'sma' else self.ema(symbol, self.period, tick, price)
+            logger.info(f"LOOKBACK: {self.symbols[symbol].lookback_queue}")
+            ma = self.sma(symbol, self.period, price, closed=True) if self.ma == 'sma' else self.ema(symbol, self.period, price)
             msg = {
                 'type': 'update',
                 'channel': 'ma',
@@ -139,6 +134,7 @@ class MALookbackDataParser():
                     'time': quote_time
                 }
             }
+            logger.info(f"MACLOSED: {self.symbols[symbol].ma_queue}")
             await self.send_msg(msg)
             ohlc.clear()
             ohlc['o'] = price
@@ -148,7 +144,7 @@ class MALookbackDataParser():
             ohlc['t'] = self.timeframe // 60
             self.last_tick = tick
             return
-        ma = self.sma(symbol, self.period, tick, price) if self.ma == 'sma' else self.ema(symbol, self.period, tick, price)
+        ma = self.sma(symbol, self.period, price) if self.ma == 'sma' else self.ema(symbol, self.period, price)
         # logger.info(f"Lookback:{self.symbols[symbol].lookback_queue}")
         # logger.info(f"MA:{self.symbols[symbol].ma_queue}")
         msg = {
@@ -162,6 +158,7 @@ class MALookbackDataParser():
                 'time': quote_time
             }
         }
+        logger.info(f"MA: {json.dumps(msg, indent=2)}")
         await self.send_msg(msg)
         self.last_tick = tick
         

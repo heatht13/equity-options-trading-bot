@@ -3,7 +3,7 @@ import asyncio
 import enum
 import logging
 from argparse import ArgumentParser
-from datetime import datetime
+import datetime
 from collections import namedtuple, deque
 from async_unix_socket import ContextManagedAsyncUnixSocketClient
 
@@ -24,6 +24,7 @@ SIGNAL_PROC_INTERVAL_SEC = 1
 POSITIONS_INTERVAL_SEC = 2
 NUM_CONTRACTS = 1
 MAX_ORDERS = 2
+NEW_ORDER_LOCK_SECS = 20
 MSG_LENGTH_PREFIX_BYTES = 4
 
 Order = namedtuple('Order', (
@@ -35,6 +36,9 @@ Order = namedtuple('Order', (
     'offset',
     'tif',
     'asset_class',
+    'exp',
+    'strike',
+    'callput'
 ))
 
 SymbolState = namedtuple('SymbolState', (
@@ -82,6 +86,8 @@ class DecisionEngine():
             'lookback':None,
             'price_state':PriceState.UNSET
          } for symbol in symbols}
+        self.new_long_lock_until = datetime.datetime.utcnow()
+        self.new_short_lock_until = datetime.datetime.utcnow()
 
     def generate_signal(self, symbol):
         price = self.symbols[symbol]['quote']['price']
@@ -89,25 +95,30 @@ class DecisionEngine():
         lookback = self.symbols[symbol]['lookback']
         price_state = self.symbols[symbol]['price_state']
         signal = Signal.HOLD
-        if price > ma:
-            if price > lookback['lookback_high']:
-                if price_state.is_pending_breakout_up():
-                    signal = Signal.LONG
-                self.symbols[symbol]['price_state'] = PriceState.UP
+        if price_state == PriceState.UNSET:
+            if price > ma:
+                if price > lookback['lookback_high']:
+                    if price_state.is_pending_breakout_up():
+                        signal = Signal.LONG
+                    self.symbols[symbol]['price_state'] = PriceState.UP
+                else:
+                    self.symbols[symbol]['price_state'] = PriceState.PENDING_BREAKOUT_UP
+            elif price < ma:
+                if price < lookback['lookback_low']:
+                    if price_state.is_pending_breakout_down():
+                        signal =  Signal.SHORT 
+                    self.symbols[symbol]['price_state'] = PriceState.DOWN
+                else:
+                    self.symbols[symbol]['price_state'] = PriceState.PENDING_BREAKOUT_DOWN
             else:
-                self.symbols[symbol]['price_state'] = PriceState.PENDING_BREAKOUT_UP
-        elif price < ma:
-            if price < lookback['lookback_low']:
-                if price_state.is_pending_breakout_down():
-                    signal =  Signal.SHORT 
-                self.symbols[symbol]['price_state'] = PriceState.DOWN
-            else:
-                self.symbols[symbol]['price_state'] = PriceState.PENDING_BREAKOUT_DOWN
-        else:
-            self.symbols[symbol]['price_state'] = PriceState.UNSET
+                self.symbols[symbol]['price_state'] = PriceState.UNSET
+        elif price_state.is_up():
+            pass
+        elif price_state.is_down():
+            pass
         return signal
 
-    def create_order(self, symbol, order_type, side, price, quantity, offset, tif, asset_type):
+    def create_order(self, symbol, order_type, side, price, quantity, offset, tif, asset_type, exp=None, strike=None, callput=None):
         return Order(
             symbol=str(symbol),
             order_type=str(order_type),
@@ -116,30 +127,44 @@ class DecisionEngine():
             quantity=f"{quantity:f}",
             offset=str(offset),
             tif=str(tif),
-            asset_class=str(asset_type)
+            asset_class=str(asset_type),
+            exp=str(exp) if exp is not None else None,
+            strike=str(strike) if strike is not None else None,
+            callput=str(callput) if callput is not None else None
         )
     
     async def signal_handler(self):
         #TODO: This needs some work. Needs to handle every case/scenario. Currently, it does not.
         logger.info(f"Decision Engine signal handler started")
+        expiration = (datetime.datetime.today() + datetime.timedelta(days=7)).strftime('%y%m%d')
         try:
             while True:
                 for symbol in self.symbols.keys():
                     signal = self.generate_signal(symbol)
                     if signal == Signal.HOLD:
                         continue
-
+                    if datetime.datetime.utcnow() < self.new_order_lock_until:
+                        logger.warning(f"New order lock in effect. Skipping signal: {signal} symbol: {symbol} state: {self.symbols[symbol]}")
+                        continue
                     price = self.symbols[symbol].quote['price']
                     if signal == Signal.LONG:
+                        if datetime.datetime.utcnow() < self.new_long_lock_until:
+                            logger.warning(f"New order lock in effect. Skipping signal: {signal} symbol: {symbol} state: {self.symbols[symbol]}")
+                            continue
                         if symbol not in self.positions:
-                            self.orders.append(self.create_order(symbol, 'limit', 'buy', price, NUM_CONTRACTS, 'open', 'day', 'OPTION'))
+                            self.orders.append(self.create_order(symbol, 'limit', 'buy', price, NUM_CONTRACTS, 'open', 'day', 'OPTION', expiration))
+                            self.new_long_lock_until = datetime.datetime.utcnow() + datetime.timedelta(seconds=NEW_ORDER_LOCK_SECS)
                         elif self.positions[symbol]['side'] == 'short':
-                            self.orders.append(self.create_order(symbol, 'limit', 'buy', price, NUM_CONTRACTS, 'close', 'day', 'OPTION'))
+                            self.orders.append(self.create_order(symbol, 'limit', 'buy', price, NUM_CONTRACTS, 'close', 'day', 'OPTION', expiration))
                     else:
+                        if datetime.datetime.utcnow() < self.new_short_lock_until:
+                            logger.warning(f"New order lock in effect. Skipping signal: {signal} symbol: {symbol} state: {self.symbols[symbol]}")
+                            continue
                         if symbol not in self.positions:
-                            self.orders.append(self.create_order(symbol, 'limit', 'sell', price, NUM_CONTRACTS, 'open', 'day', 'OPTION'))
+                            self.orders.append(self.create_order(symbol, 'limit', 'sell', price, NUM_CONTRACTS, 'open', 'day', 'OPTION', expiration))
+                            self.new_short_lock_until = datetime.datetime.utcnow() + datetime.timedelta(seconds=NEW_ORDER_LOCK_SECS)
                         elif self.positions[symbol]['side'] == 'long':
-                            self.orders.append(self.create_order(symbol, 'limit', 'sell', price, NUM_CONTRACTS, 'close', 'day', 'OPTION'))
+                            self.orders.append(self.create_order(symbol, 'limit', 'sell', price, NUM_CONTRACTS, 'close', 'day', 'OPTION', expiration))
                 asyncio.sleep(SIGNAL_PROC_INTERVAL_SEC)
         finally:
             logger.info(f"Decision Engine signal handler shutting down")
@@ -215,7 +240,7 @@ class DecisionEngine():
                 async with ContextManagedAsyncUnixSocketClient(self.market_data_socket) as md_socket:
                     await md_socket.send_json(json.dumps({
                         'type': 'subscribe',
-                        'channels': ['quote', 'timesale', 'ma', 'lookback'],
+                        'channels': ['quote'], #, 'timesale', 'ma', 'lookback'],
                         'symbols': list(self.symbols.keys())
                     }))
                     async for msg in md_socket.receive():

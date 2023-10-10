@@ -102,7 +102,7 @@ class TradierDataHandler(MALookbackDataParser):
                             if self.session_id is None:
                                 await self.get_session_id()
                             sub_symbols = {
-                                'symbols': self.symbols,
+                                'symbols': list(self.symbols.keys()),
                                 'filter': ['quote'],#, 'timesale'], #trade,quote,summary,timesale,tradex, dont pass if want all.
                                 'sessionid': self.session_id,
                                 'linebreak': True
@@ -110,7 +110,7 @@ class TradierDataHandler(MALookbackDataParser):
                             await ws.send_str(json.dumps(sub_symbols))
                             async for msg in ws:
                                 msg = msg.json()
-                                logger.info(f"Received {json.dumps(msg, indent=2)}")
+                                # logger.info(f"Received {json.dumps(msg, indent=2)}")
                                 if 'type' in msg:
                                     if msg['type'] in ('quote', 'timesale', 'summary'):
                                         await self.handle_msg(msg)
