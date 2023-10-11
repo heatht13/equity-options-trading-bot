@@ -61,22 +61,19 @@ class MALookbackDataParser():
         self.period = period
         self.lookback_period = lookback
         self.symbols = {symbol:SymbolState(
-            ma_queue=deque(maxlen=period),
+            ma_queue=deque(maxlen=period-1),
             lookback_queue=deque(maxlen=lookback),
             ohlc=OHLC.copy()
         ) for symbol in symbols}
 
     def sma(self, symbol, period, price, closed=False):
         ma_queue = self.symbols[symbol].ma_queue
-        if not closed:
-            if len(ma_queue) < period:
-                return None
-            return (sum((candle['c'] for candle in ma_queue)) - ma_queue[0]['c'] + price) / ma_queue.maxlen
-        else:
+        ma = (sum((candle['c'] for candle in ma_queue)) + price) / period
+        if closed:
             ma_queue.append(self.symbols[symbol].ohlc.copy())
-            if len(ma_queue) < period:
-                return None
-            return sum((candle['c'] for candle in ma_queue)) / ma_queue.maxlen
+        if len(ma_queue)+1 < period:
+            return None
+        return ma
 
     def ema(self, candle, period, ema_prev=None):
         raise NotImplementedError
