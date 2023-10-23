@@ -44,7 +44,6 @@ class AsyncUnixSocketClient():
 
     async def connect(self):
         self.reader, self.writer = await asyncio.open_unix_connection(path=self.unix_socket_path)
-        await self.receive()
         
     async def close(self):
         self.writer.close()

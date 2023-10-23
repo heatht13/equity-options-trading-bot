@@ -1,5 +1,6 @@
 import aiohttp
 import asyncio
+import re
 import json
 import logging
 from argparse import ArgumentParser
@@ -19,6 +20,7 @@ logging.basicConfig(
 logger = logging.getLogger()
 
 POSITIONS_HANDLER_INTERVAL_SECS = 2
+OCC_REGEX = r'(\d{6})([PC])(\d{8})'
 
 class TradierExchangeHandler(ExchangeHandler):
     def __init__(self, account_id, access_token, **kwargs):
@@ -69,10 +71,28 @@ class TradierExchangeHandler(ExchangeHandler):
         return balances
     
     async def get_positions(self):
-        positions = await self.rest_query('GET', self.endpoints['positions'])
-        if positions['positions'] == 'null':
+        positions_resp = await self.rest_query('GET', self.endpoints['positions'])
+        if positions_resp['positions'] == 'null':
             return None
-        positions = {p['symbol']: p for p in positions['positions']['position']}
+        positions = dict()
+        for pos in positions_resp['positions']['position']:
+            position = {
+                'symbol': pos['symbol'],
+                'quantity': float(pos['quantity']),
+                'cost_basis': float(pos['cost_basis']),
+                'side': 'long' if position['quantity'] > 0 else 'short',
+                'date_acquired': float(datetime.strptime(pos['date_acquired'], '%Y-%m-%dT%H:%M:%S.%fZ').timestamp()),
+            }
+            symbol = re.search(OCC_REGEX+'$', pos['symbol'])
+            if symbol is None:
+                position['asset_class'] = 'stock'
+                positions[position['symbol']] = position
+            else:
+                position['asset_class'] = 'option'
+                position['expiration'] = symbol.group(1)
+                position['strike'] = float(symbol.group(3))/10**3
+                position['callput'] = 'call' if symbol.group(2) == 'C' else 'put'
+                positions[str(position['symbol']).split(symbol.group(1))[0]] = position
         return positions
 
     async def get_orders(self, order_id=None):
@@ -124,8 +144,10 @@ class TradierExchangeHandler(ExchangeHandler):
             data['side'] = direction
             data['quantity'] = "1" #NOTE: tradier says number of shares, but we need to test #str(int(quantity)*100)
         
-        response = await self.rest_query('POST', self.endpoints['orders'], json=data)
-        return response
+        logger.info(json.dumps(data, indent=4))
+        return data
+        #response = await self.rest_query('POST', self.endpoints['orders'], json=data)
+        #return response
 
     async def modify_order(self, order_id, order_type, price, quantity, tif):
         raise NotImplementedError

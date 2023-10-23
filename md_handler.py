@@ -25,7 +25,8 @@ Client = namedtuple('Client', (
     'timesale',
     'ma',
     'lookback',
-    'trade'
+    'trade',
+    'candle'
 ))
 
 SymbolState = namedtuple('SymbolState', (
@@ -51,7 +52,8 @@ class MALookbackDataParser():
             timesale=set(),
             ma=set(),
             lookback=set(),
-            trade=set()
+            trade=set(),
+            candle=set()
         )
         self.rest_session = None
         self.ws_session = None
@@ -102,37 +104,55 @@ class MALookbackDataParser():
             ohlc['l'] = price
         if tick < self.last_tick:
             lookback_high, lookback_low = self.lookback(symbol, self.lookback_period)
-            msg = {
-                'type': 'update',
-                'channel': 'lookback',
-                'symbol': symbol,
-                'timestamp': datetime.utcnow().timestamp(),
-                'data': {
-                    # 'ohlc': self.ohlc,
-                    #'ma_period': self.period,
-                    #'ma': self.ma,
-                    'lookback_high': lookback_high, 
-                    'lookback_low': lookback_low,
-                    #'look_back_period': self.lookback_period,
-                    'time': quote_time
+            if symbol in self.client.lookback and lookback_high is not None and lookback_low is not None:
+                msg = {
+                    'type': 'update',
+                    'channel': 'lookback',
+                    'symbol': symbol,
+                    'timestamp': datetime.utcnow().timestamp(),
+                    'data': {
+                        # 'ohlc': self.ohlc,
+                        #'ma_period': self.period,
+                        #'ma': self.ma,
+                        'lookback_high': lookback_high, 
+                        'lookback_low': lookback_low,
+                        #'look_back_period': self.lookback_period,
+                        'time': quote_time
+                    }
                 }
-            }
-            await self.send_msg(msg)
-            logger.info(f"LOOKBACK: {self.symbols[symbol].lookback_queue}")
+                await self.send_msg(msg)
+                logger.info(f"LOOKBACK: {self.symbols[symbol].lookback_queue}")
             ma = self.sma(symbol, self.period, price, closed=True) if self.ma == 'sma' else self.ema(symbol, self.period, price)
-            msg = {
-                'type': 'update',
-                'channel': 'ma',
-                'symbol': symbol,
-                'timestamp': datetime.utcnow().timestamp(),
-                'data': {
-                    'ma': ma,
-                    'ma_period': self.period,
-                    'time': quote_time
+            if symbol in self.client.ma and ma is not None:
+                msg = {
+                    'type': 'update',
+                    'channel': 'ma',
+                    'symbol': symbol,
+                    'timestamp': datetime.utcnow().timestamp(),
+                    'data': {
+                        'ma': ma,
+                        'ma_period': self.period,
+                        'time': quote_time
+                    }
                 }
-            }
-            logger.info(f"MACLOSED: {self.symbols[symbol].ma_queue}")
-            await self.send_msg(msg)
+                logger.info(f"MACLOSED: {self.symbols[symbol].ma_queue}")
+                await self.send_msg(msg)
+            if symbol in self.client.candle and None not in ohlc.values():
+                msg = {
+                    'type': 'update',
+                    'channel': 'candle',
+                    'symbol': symbol,
+                    'timestamp': datetime.utcnow().timestamp(),
+                    'data': {
+                        'open': ohlc['o'],
+                        'high': ohlc['h'],
+                        'low': ohlc['l'],
+                        'close': ohlc['c'],
+                        'time': quote_time
+                    }
+                }
+                logger.info(f"CANDLE: {json.dumps(msg, indent=2)}")
+                await self.send_msg(msg)
             ohlc.clear()
             ohlc['o'] = price
             ohlc['h'] = price
@@ -144,19 +164,20 @@ class MALookbackDataParser():
         ma = self.sma(symbol, self.period, price) if self.ma == 'sma' else self.ema(symbol, self.period, price)
         # logger.info(f"Lookback:{self.symbols[symbol].lookback_queue}")
         # logger.info(f"MA:{self.symbols[symbol].ma_queue}")
-        msg = {
-            'type': 'update',
-            'channel': 'ma',
-            'symbol': symbol,
-            'timestamp': datetime.utcnow().timestamp(),
-            'data': {
-                'ma': ma,
-                'ma_period': self.period,
-                'time': quote_time
+        if ma is not None:
+            msg = {
+                'type': 'update',
+                'channel': 'ma',
+                'symbol': symbol,
+                'timestamp': datetime.utcnow().timestamp(),
+                'data': {
+                    'ma': ma,
+                    'ma_period': self.period,
+                    'time': quote_time
+                }
             }
-        }
-        logger.info(f"MA: {json.dumps(msg, indent=2)}")
-        await self.send_msg(msg)
+            logger.info(f"MA: {json.dumps(msg, indent=2)}")
+            await self.send_msg(msg)
         self.last_tick = tick
         
     async def book(self, **kwargs):
@@ -265,6 +286,9 @@ class MDSocketServer:
                     elif channel == 'trade':
                         self.data_handler.client.trade.update(msg['symbols'])
                         response = {'success': f'Subscribed trade for {msg["symbols"]}'}
+                    elif channel == 'candle':
+                        self.data_handler.client.candle.update(msg['symbols'])
+                        response = {'success': f'Subscribed candle for {msg["symbols"]}'}
                     else:
                         response = {'error': 'Invalid message channel. Must be either \'quote\', \'timesale\', \'ma\', \'lookback\', or \'trade\''}
             else:
@@ -284,6 +308,9 @@ class MDSocketServer:
                     elif channel == 'trade':
                         self.data_handler.client.trade.difference_update(msg['symbols'])
                         response = {'success': f'Unsubscibed trade for {msg["symbols"]}'}
+                    elif channel == 'candle':
+                        self.data_handler.client.candle.difference_update(msg['symbols'])
+                        response = {'success': f'Unsubscibed candle for {msg["symbols"]}'}
                     else:
                         response = {'error': 'Invalid message channel. Must be either \'quote\', \'timesale\', \'ma\', \'lookback\', or \'trade\''}
             if response is not None:

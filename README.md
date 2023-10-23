@@ -3,10 +3,10 @@
 ## Strategy
 
 * Stream real-time tick data (1s aggregation is fine) and build OHLC candles at 5 minute intervals
-* When price crosses 9MA upwards, flatten position and go long (buy signal)
-* When price crosses 9MA downwards, flatten position and go short (sell signal)
+* Direction is determined by the close of the last candle. Short if close is below 9MA else Long
+* After we have determined direction, we wait for price (does not have to be a candle close) to break out of x candles highs (if long) or lows (if short). Assuming 5min candles, x should probably be somewhere between 5 and 10. This ensures the move is worthy and helps mitigate the downfalls below
+* If these criteria are met, we will enter a position. Once in a position, if price (not candle close) crosses 9MA, flatten position.
 * Marketable limit orders should be priority here although we are more focused on getting into a position than saving 1 level.
-* After we see either of the two signals above, wait to enter until we are breaking out of previous x number candles' H-L range (or MA slope). Assuming 5min candles, x should probably be somewhere between 5 and 10. This ensures the move is worthy and helps mitigate the downfalls below
 
 * ### Pitfalls
 
@@ -18,7 +18,7 @@
 * ### Startup
 
   * Market Data Server: `.py311/bin/python md_handler.py --symbols SPY QQQ --exchange fake`
-  * Exchange Router: `.py311/bin/python exchange_router.py --exchange fake`
+  * Exchange Router: `.py311/bin/python exchange_handler.py --exchange fake **kwargs`
   * Decision Engine: `.py311/bin/python decision_engine.py --symbols SPY QQQ`
   
 * ### Decision Engine (Client)
