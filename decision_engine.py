@@ -62,6 +62,9 @@ class PriceState(enum.Enum):
     def is_down(self):
         return self in (PriceState.DOWN, PriceState.PENDING_BREAKOUT_DOWN)
     
+class Error(Exception):
+    pass
+    
 class Signal(enum.Enum):    
     LONG = enum.auto()
     SHORT = enum.auto()
@@ -83,6 +86,7 @@ class DecisionEngine():
             'new_order_short_lock': datetime.datetime.utcnow(),
             'new_order_long_lock': datetime.datetime.utcnow()
          } for symbol in symbols}
+        self.exchange_tasks = set()
 
     def generate_signal(self, symbol):
         price = self.symbols[symbol]['quote'].get('price')
@@ -183,85 +187,119 @@ class DecisionEngine():
                         self.orders.append(self.create_order(symbol, 'market', 'sell', price, NUM_CONTRACTS, 'open', 'day', 'OPTION', expiration))
                         self.new_short_lock_until = datetime.datetime.utcnow() + datetime.timedelta(seconds=NEW_ORDER_LOCK_SECS)
                 await asyncio.sleep(SIGNAL_PROC_INTERVAL_SEC)
+        except asyncio.CancelledError:
+            logger.info(f"Decision Handler Cancelled")
+            raise e
+        except Exception as e:
+            logger.exception(f"Decision Handler Exception: {str(e)}")
+            raise e
         finally:
             logger.info(f"Decision Engine signal handler shutting down")
 
-    async def order_handler(self, exchange_socket):
+    async def exchange_order_handler(self, exchange_socket):
         try:
             while True:
-                # while self.orders.count() > 0:
-                #     order = self.orders.popleft()
-                #     logger.info(f"Sending order: {json.dumps(order._asdict(), indent=2)}")
-                #     await exchange_socket.send_json(json.dumps({
-                #         'type': 'request',
-                #         'channel': 'new_order',
-                #         'order': {
-                #             'symbol': order.symbol,
-                #             'order_type': order.order_type,
-                #             'side': order.side,
-                #             'price': order.price,
-                #             'quantity': order.quantity,
-                #             'offset': order.offset,
-                #             'tif': order.tif,
-                #             'asset_class': order.asset_class,
-                #             'exp': order.exp,
-                #             'strike': order.strike,
-                #             'callput': order.callput
-                #         }
-                #     }))
-                # logger.info(f"BREAKIN")
+                while len(self.orders)> 0:
+                    order = self.orders.popleft()
+                    logger.info(f"Sending order: {json.dumps(order._asdict(), indent=2)}")
+                    await exchange_socket.send_json(json.dumps({
+                        'type': 'request',
+                        'channel': 'new_order',
+                        'order': {
+                            'symbol': order.symbol,
+                            'order_type': order.order_type,
+                            'side': order.side,
+                            'price': order.price,
+                            'quantity': order.quantity,
+                            'offset': order.offset,
+                            'tif': order.tif,
+                            'asset_class': order.asset_class,
+                            'exp': order.exp,
+                            'strike': order.strike,
+                            'callput': order.callput
+                        }
+                    }))
                 await asyncio.sleep(ORDER_SOCKET_INTERVAL_SEC)
         except ConnectionError as e:
-            logger.error(f'Exchange socket disconnected; exchange handler orders task resetting: {e}')
+            logger.error(f'Exchange socket disconnected; Exchange Order Handler resetting: {e}')
+        except asyncio.CancelledError:
+            logger.info(f"Exchange Order Handler Cancelled")
+            raise e
+        except Exception as e:
+            logger.exception(f"Exchange Order Handler Exception: {str(e)}")
+            raise e
     
-    async def handle_exchange_msgs(self, exchange_socket):
+    async def exchange_msg_handler(self, exchange_socket):
         try:
             while True:
-                # await exchange_socket.send_json(json.dumps({
-                #         'type': 'subscribe',
-                #         'channels': ['positions', 'orders'],
-                #         'interval': POSITIONS_INTERVAL_SEC
-                # }))
-                # await exchange_socket.send_json(json.dumps({
-                #     'type': 'request',
-                #     'channel': 'balances'
-                # }))
-                # async for msg in exchange_socket.receive():
-                #     msg = json.loads(msg)
-                #     if msg['type'] == 'update':
-                #         if msg['channel'] == 'positions':
-                #             self.positions = msg['data']
-                #         elif msg['channel'] == 'orders':
-                #             logger.info(f"Received order update: {msg['data']}")
-                #     elif msg['type'] == 'success':
-                #         logger.info(msg)
-                #     elif msg['type'] == 'error':
-                #         logger.error(msg)
-                #         raise Exception(msg)
-                # logger.info(f"BREAKIN")
+                await exchange_socket.send_json(json.dumps({
+                        'type': 'subscribe',
+                        'channels': ['positions', 'orders'],
+                        'interval': POSITIONS_INTERVAL_SEC
+                }))
+                await exchange_socket.send_json(json.dumps({
+                    'type': 'request',
+                    'channel': 'balances'
+                }))
+                async for msg in exchange_socket.receive():
+                    msg = json.loads(msg)
+                    logger.info(f"Received Exchange message: {msg}")
+                    if msg['type'] == 'update':
+                        if msg['channel'] == 'positions':
+                            self.positions = msg['data']
+                        elif msg['channel'] == 'orders':
+                            logger.info(f"Received order update: {msg['data']}")
+                    elif msg['type'] == 'success':
+                        logger.info(msg)
+                    elif msg['type'] == 'error':
+                        logger.error(msg)
+                        raise Exception(msg)
                 await asyncio.sleep(ORDER_SOCKET_INTERVAL_SEC)
         except ConnectionError as e:
-            logger.error(f'Exchange socket disconnected; exchange handler message task resetting: {e}')
+            logger.error(f'Exchange socket disconnected; Exchange Message Handler task resetting: {e}')
+        except asyncio.CancelledError:
+            logger.info(f"Exchange Message Handler Cancelled")
+            raise e
+        except Exception as e:
+            logger.exception(f"Exchange Message Handler Exception: {str(e)}")
+            raise e
 
     async def exchange_handler(self):
-        while True:
-            try:
-                logger.info(f"Exchange Handler Starting")
-                async with ContextManagedAsyncUnixSocketClient(self.exchange_socket) as exchange_socket:
-                    self.exchange_tasks = {
-                        asyncio.create_task(self.handle_exchange_msgs(exchange_socket), name=f'Exchange Message Handler'),
-                        asyncio.create_task(self.order_handler(exchange_socket), name=f'Order Handler')
-                    }
-                    await asyncio.wait(self.exchange_tasks, return_when=asyncio.FIRST_COMPLETED)
-            except (ConnectionRefusedError, ConnectionResetError):
-                logger.error(f"Exchange Handler Unable to Connect. Resetting...")
-                await asyncio.sleep(SOCKET_CONN_INTERVAL_SEC)
-            finally:
-                for task in self.exchange_tasks:
-                    logger.info(f"Cancelling task: {task}")
-                    task.cancel()
-                await asyncio.gather(*self.exchange_tasks, return_exceptions=True)
-                logger.info(f"Exchange Handler Shutting Down")
+        methods = {
+            'msg_handler': self.exchange_msg_handler,
+            'order_handler': self.exchange_order_handler
+        }
+        self.exchange_tasks.clear()
+        try:
+            logger.info(f"Exchange Handler Starting")
+            async with ContextManagedAsyncUnixSocketClient(self.exchange_socket) as exchange_socket:
+                self.exchange_tasks = {
+                    asyncio.create_task(self.exchange_msg_handler(exchange_socket), name='msg_handler'),
+                    asyncio.create_task(self.exchange_order_handler(exchange_socket), name='order_handler')
+                }
+                while True:
+                    #TODO: Remove when confident number of tasks doesnt increase over time
+                    logger.info(f"{len(asyncio.all_tasks())} tasks running")
+                    done, pending = await asyncio.wait(self.exchange_tasks, return_when=asyncio.FIRST_COMPLETED)
+                    for task in done:
+                        task_name = task.get_name()
+                        logger.info(f"Exchange {task_name} task completed. Respawning...")
+                        self.exchange_tasks.remove(task)
+                        self.exchange_tasks.add(asyncio.create_task(methods[task_name](exchange_socket), name=task_name))
+        except (ConnectionRefusedError, ConnectionResetError):
+            logger.error(f"Exchange Handler Unable to Connect. Resetting...")
+            await asyncio.sleep(SOCKET_CONN_INTERVAL_SEC)
+        except asyncio.CancelledError:
+                logger.info(f"Exchange Handler Cancelled")
+                raise e
+        except Exception as e:
+            logger.exception(f"Exchange Handler Exception: {str(e)}")
+            raise e
+        finally:
+            for task in self.exchange_tasks:
+                logger.info(f"Cancelling task: {task.get_name()}")
+                task.cancel()
+            await asyncio.gather(*self.exchange_tasks, return_exceptions=True)
 
     async def market_data_handler(self):
         while True:
@@ -275,7 +313,7 @@ class DecisionEngine():
                     }))
                     async for msg in md_socket.receive():
                         msg = json.loads(msg)
-                        logger.info(f"Received message: {msg['channel']}")
+                        logger.info(f"Received  MD message: {msg['channel']}")
                         if msg['type'] == 'update' and msg['symbol'] in self.symbols:
                             if msg['channel'] == 'quote':
                                 self.symbols[msg['symbol']]['quote'] = msg['data']
@@ -298,6 +336,12 @@ class DecisionEngine():
             except (ConnectionRefusedError, ConnectionResetError):
                 logger.error(f"Market Data Handler Unable to Connect. Resetting...")
                 await asyncio.sleep(SOCKET_CONN_INTERVAL_SEC)
+            except asyncio.CancelledError:
+                logger.info(f"Market Data Handler Cancelled")
+                raise e
+            except Exception as e:
+                logger.exception(f"Market Data Handler Exception: {str(e)}")
+                raise e
 
     async def test_exchange_handler(self):
         while True:
@@ -324,18 +368,31 @@ class DecisionEngine():
     async def decision_engine_main(self):
         while True:
             try:
+                methods = {
+                    'decision_handler': self.decision_handler,
+                    'market_data_handler': self.market_data_handler,
+                    'exchange_handler': self.exchange_handler
+                }
                 logger.info("Decision Engine Starting")
                 self.running = True
                 decision_engine_tasks = {
-                    asyncio.create_task(self.decision_handler(), name=f'Order Handler'),
-                    asyncio.create_task(self.market_data_handler(), name=f'Market Data Handler'),
-                    asyncio.create_task(self.exchange_handler(), name=f'Exchange Handler')
+                    asyncio.create_task(self.decision_handler(), name=f'decision_handler'),
+                    asyncio.create_task(self.market_data_handler(), name=f'market_data_handler'),
+                    asyncio.create_task(self.exchange_handler(), name=f'exchange_handler')
                 }
-                await asyncio.wait(decision_engine_tasks, return_when=asyncio.FIRST_COMPLETED)
+                while True:
+                    #TODO: Remove when confident number of tasks doesnt increase over time
+                    logger.info(f"{len(asyncio.all_tasks())} tasks running")
+                    done, pending = await asyncio.wait(decision_engine_tasks, return_when=asyncio.FIRST_COMPLETED)
+                    for task in done:
+                        task_name = task.get_name()
+                        logger.info(f"Exchange {task_name} task completed. Respawning...")
+                        decision_engine_tasks.remove(task)
+                        decision_engine_tasks.add(asyncio.create_task(methods[task_name](), name=task_name))
             finally:
                 logger.info("Decision Engine Shutting Down")
                 for task in decision_engine_tasks:
-                    logger.info(f"Cancelling task: {task}")
+                    logger.info(f"Cancelling task: {task.get_name()}")
                     task.cancel()
                 await asyncio.gather(*decision_engine_tasks, return_exceptions=True)
 
