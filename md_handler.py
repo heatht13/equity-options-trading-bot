@@ -164,7 +164,7 @@ class MALookbackDataParser():
         ma = self.sma(symbol, self.period, price) if self.ma == 'sma' else self.ema(symbol, self.period, price)
         # logger.info(f"Lookback:{self.symbols[symbol].lookback_queue}")
         # logger.info(f"MA:{self.symbols[symbol].ma_queue}")
-        if ma is not None:
+        if symbol in self.client.ma and ma is not None:
             msg = {
                 'type': 'update',
                 'channel': 'ma',
@@ -176,7 +176,7 @@ class MALookbackDataParser():
                     'time': quote_time
                 }
             }
-            logger.info(f"MA: {json.dumps(msg, indent=2)}")
+            #logger.info(f"MA: {json.dumps(msg, indent=2)}")
             await self.send_msg(msg)
         self.last_tick = tick
         

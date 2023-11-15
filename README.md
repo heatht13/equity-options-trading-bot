@@ -57,6 +57,8 @@
 
 ## To Do
 
+* Determine how to select Strike prices when placing order
+* Write MD and exchange task management like i do in decision handler
 * Have server respond with list of symbols that fail to subscribe
 * Have client send name so server can better track who the client is
 * Potentially add some timeout logic to the queues and sockets

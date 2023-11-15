@@ -72,9 +72,9 @@ class TradierExchangeHandler(ExchangeHandler):
     
     async def get_positions(self):
         positions_resp = await self.rest_query('GET', self.endpoints['positions'])
-        if positions_resp['positions'] == 'null':
-            return None
         positions = dict()
+        if positions_resp['positions'] == 'null':
+            return positions
         for pos in positions_resp['positions']['position']:
             position = {
                 'symbol': pos['symbol'],
@@ -133,7 +133,9 @@ class TradierExchangeHandler(ExchangeHandler):
         }
 
         if asset_class == 'option':
-            option_type = 'C' if callput == 'call' else 'P'
+            strike = 400 #TODO: remove this, just testing for now
+            option_type = 'C' if callput == 'call' else 'P' if callput == 'put' else None
+            option_type = 'C' if option_type is None else option_type
             strike = f"{int(strike*10**3):0>{8}}"
             data['option_symbol'] = symbol+exp+option_type+strike
 

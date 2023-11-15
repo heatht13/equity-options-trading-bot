@@ -20,7 +20,7 @@ logger = logging.getLogger()
 
 ORDER_SOCKET_INTERVAL_SEC = 2
 SOCKET_CONN_INTERVAL_SEC = 2
-SIGNAL_PROC_INTERVAL_SEC = 1
+SIGNAL_PROC_INTERVAL_SEC = 0.1
 POSITIONS_INTERVAL_SEC = 2
 NUM_CONTRACTS = 1
 MAX_ORDERS = 2
@@ -104,40 +104,49 @@ class DecisionEngine():
 
         #Handle candle close
         if candle is not None:
+            logger.info(f"Handling candle close: {candle}")
             close_price = float(candle['close'])
             if close_price > ma:
                 if close_price > lookback_high:
                     self.symbols[symbol]['price_state'] = PriceState.UP
+                    logger.info(f"Setting Symbol PriceState: {symbol} State: {self.symbols[symbol]['price_state']}")
                     if price_state == PriceState.PENDING_BREAKOUT_UP:
                         return Signal.LONG
                 else:
                     self.symbols[symbol]['price_state'] = PriceState.PENDING_BREAKOUT_UP
+                    logger.info(f"Setting Symbol PriceState: {symbol} State: {self.symbols[symbol]['price_state']}")
             elif close_price < ma:
                 if close_price < lookback_low:
                     self.symbols[symbol]['price_state'] = PriceState.DOWN
+                    logger.info(f"Setting Symbol PriceState: {symbol} State: {self.symbols[symbol]['price_state']}")
                     if price_state == PriceState.PENDING_BREAKOUT_DOWN:
                         return Signal.SHORT
                 else:
                     self.symbols[symbol]['price_state'] = PriceState.PENDING_BREAKOUT_DOWN
+                    logger.info(f"Setting Symbol PriceState: {symbol} State: {self.symbols[symbol]['price_state']}")
             self.symbols[symbol]['candle'] = None
-            return
+            return None
         
         #Handle price
         if price_state.is_up():
             if price_state == PriceState.UP:
                 if price < lookback_high:
                     self.symbols[symbol]['price_state'] = PriceState.PENDING_BREAKOUT_UP
+                    logger.info(f"Setting Symbol PriceState: {symbol} State: {self.symbols[symbol]['price_state']}")
             else:
                 if price > lookback_high:
                     self.symbols[symbol]['price_state'] = PriceState.UP
+                    logger.info(f"Setting Symbol PriceState: {symbol} State: {self.symbols[symbol]['price_state']}")
                     return Signal.LONG
         elif price_state.is_down():
             if price_state == PriceState.DOWN:
                 if price > lookback_low:
                     self.symbols[symbol]['price_state'] = PriceState.PENDING_BREAKOUT_DOWN
+                    logger.info(f"Setting Symbol PriceState: {symbol} State: {self.symbols[symbol]['price_state']}")
             else:
                 if price < lookback_low:
                     self.symbols[symbol]['price_state'] = PriceState.DOWN
+                    logger.info(f"Setting Symbol PriceState: {symbol} State: {self.symbols[symbol]['price_state']}")
                     return Signal.SHORT
         return Signal.HOLD
 
@@ -159,33 +168,39 @@ class DecisionEngine():
     async def decision_handler(self):
         logger.info(f"Decision Engine signal handler started")
         expiration = (datetime.datetime.today() + datetime.timedelta(days=7)).strftime('%y%m%d')
+        #TODO Define Strike price
         try:
             while True:
                 for symbol in self.symbols.keys():
                     signal = self.generate_signal(symbol)
                     if signal is None:
                         continue
+                    if signal != Signal.HOLD:
+                        logger.info(f"FOUND SIGNAL: Symbol: {symbol} Signal: {signal} State: {self.symbols[symbol]}")
                     price = float(self.symbols[symbol]['quote'].get('price'))
                     if symbol in self.positions: #NOTE: Long only options strategy
                         ma = float(self.symbols[symbol]['ma'].get('ma'))
+                        expiration = self.positions[symbol]['expiration']
+                        strike = float(self.positions[symbol]['strike'])
+                        callput = self.positions[symbol]['callput']
                         if price < ma and self.positions[symbol]['callput'] == 'call':
-                            self.orders.append(self.create_order(symbol, 'market', 'sell', price, NUM_CONTRACTS, 'close', 'day', 'OPTION', expiration))
+                            self.orders.append(self.create_order(symbol, 'market', 'sell', price, NUM_CONTRACTS, 'close', 'day', 'option', expiration, strike, callput))
                         elif price > ma and self.positions[symbol]['callput'] == 'put':
-                            self.orders.append(self.create_order(symbol, 'market', 'sell', price, NUM_CONTRACTS, 'close', 'day', 'OPTION', expiration))
+                            self.orders.append(self.create_order(symbol, 'market', 'sell', price, NUM_CONTRACTS, 'close', 'day', 'option', expiration, strike, callput))
                     if signal == Signal.HOLD:
                         continue
                     elif signal == Signal.LONG:
-                        if datetime.datetime.utcnow() < self.new_long_lock_until:
+                        if datetime.datetime.utcnow() < self.symbols[symbol]['new_order_long_lock']:
                             logger.warning(f"New long order lock in effect. Skipping signal: {signal} symbol: {symbol} state: {self.symbols[symbol]}")
                             continue
-                        self.orders.append(self.create_order(symbol, 'market', 'buy', price, NUM_CONTRACTS, 'open', 'day', 'OPTION', expiration))
-                        self.new_long_lock_until = datetime.datetime.utcnow() + datetime.timedelta(seconds=NEW_ORDER_LOCK_SECS)
+                        self.orders.append(self.create_order(symbol, 'market', 'buy', price, NUM_CONTRACTS, 'open', 'day', 'option', expiration, callput='call'))
+                        self.symbols[symbol]['new_order_long_lock'] = datetime.datetime.utcnow() + datetime.timedelta(seconds=NEW_ORDER_LOCK_SECS)
                     else:
-                        if datetime.datetime.utcnow() < self.new_short_lock_until:
+                        if datetime.datetime.utcnow() < self.symbols[symbol]['new_order_short_lock']:
                             logger.warning(f"New short order lock in effect. Skipping signal: {signal} symbol: {symbol} state: {self.symbols[symbol]}")
                             continue
-                        self.orders.append(self.create_order(symbol, 'market', 'sell', price, NUM_CONTRACTS, 'open', 'day', 'OPTION', expiration))
-                        self.new_short_lock_until = datetime.datetime.utcnow() + datetime.timedelta(seconds=NEW_ORDER_LOCK_SECS)
+                        self.orders.append(self.create_order(symbol, 'market', 'buy', price, NUM_CONTRACTS, 'open', 'day', 'option', expiration, callput='put'))
+                        self.symbols[symbol]['new_order_short_lock'] = datetime.datetime.utcnow() + datetime.timedelta(seconds=NEW_ORDER_LOCK_SECS)
                 await asyncio.sleep(SIGNAL_PROC_INTERVAL_SEC)
         except asyncio.CancelledError:
             logger.info(f"Decision Handler Cancelled")
@@ -243,7 +258,7 @@ class DecisionEngine():
                 }))
                 async for msg in exchange_socket.receive():
                     msg = json.loads(msg)
-                    logger.info(f"Received Exchange message: {msg}")
+                    #logger.info(f"Received Exchange message: {msg}")
                     if msg['type'] == 'update':
                         if msg['channel'] == 'positions':
                             self.positions = msg['data']
@@ -308,12 +323,12 @@ class DecisionEngine():
                 async with ContextManagedAsyncUnixSocketClient(self.market_data_socket) as md_socket:
                     await md_socket.send_json(json.dumps({
                         'type': 'subscribe',
-                        'channels': ['quote', 'candle'], #, 'timesale', 'ma', 'lookback'],
+                        'channels': ['quote', 'candle', 'ma', 'lookback'],
                         'symbols': list(self.symbols.keys())
                     }))
                     async for msg in md_socket.receive():
                         msg = json.loads(msg)
-                        logger.info(f"Received  MD message: {msg['channel']}")
+                        #logger.info(f"Received  MD message: {msg['channel']}")
                         if msg['type'] == 'update' and msg['symbol'] in self.symbols:
                             if msg['channel'] == 'quote':
                                 self.symbols[msg['symbol']]['quote'] = msg['data']
