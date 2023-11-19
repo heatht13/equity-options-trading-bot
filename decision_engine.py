@@ -26,6 +26,9 @@ NUM_CONTRACTS = 1
 MAX_ORDERS = 2
 NEW_ORDER_LOCK_SECS = 20
 MSG_LENGTH_PREFIX_BYTES = 4
+DAYS_TO_EXPIRATION = 7
+MAX_OPTION_PRICE = 1.5
+MIN_OPTION_PRICE = 0.4
 
 Order = namedtuple('Order', (
     'symbol',
@@ -74,6 +77,8 @@ class DecisionEngine():
     def __init__(self, market_data_socket, exchange_socket, symbols):
         self.market_data_socket = market_data_socket
         self.exchange_socket = exchange_socket
+        self.expiration = (datetime.datetime.today() + datetime.timedelta(days=DAYS_TO_EXPIRATION)).strftime('%y%m%d')
+        self.options_chain = dict()
         self.positions = dict()
         self.orders = deque(maxlen=MAX_ORDERS)
         self.symbols = {symbol:{
@@ -167,16 +172,15 @@ class DecisionEngine():
     
     async def decision_handler(self):
         logger.info(f"Decision Engine signal handler started")
-        expiration = (datetime.datetime.today() + datetime.timedelta(days=7)).strftime('%y%m%d')
         #TODO Define Strike price
+        #TODO: Create tasks for each symbol
         try:
             while True:
                 for symbol in self.symbols.keys():
                     signal = self.generate_signal(symbol)
                     if signal is None:
                         continue
-                    if signal != Signal.HOLD:
-                        logger.info(f"FOUND SIGNAL: Symbol: {symbol} Signal: {signal} State: {self.symbols[symbol]}")
+                    #TODO: this only allows us to have 1 open position at a time for SPY. Need to make more robust
                     price = float(self.symbols[symbol]['quote'].get('price'))
                     if symbol in self.positions: #NOTE: Long only options strategy
                         ma = float(self.symbols[symbol]['ma'].get('ma'))
@@ -189,17 +193,26 @@ class DecisionEngine():
                             self.orders.append(self.create_order(symbol, 'market', 'sell', price, NUM_CONTRACTS, 'close', 'day', 'option', expiration, strike, callput))
                     if signal == Signal.HOLD:
                         continue
-                    elif signal == Signal.LONG:
+                    logger.info(f"FOUND SIGNAL: Symbol: {symbol} Signal: {signal} State: {self.symbols[symbol]}")
+                    if symbol in self.positions:
+                        logger.warning(f"Already have position. Skipping Signal {signal}. Position Side: {self.positions[symbol]['callput']} Positon: {self.positions[symbol]}")
+                        continue
+                    if self.options_chain[symbol] is None:
+                        logger.warning(f"Options chain not found. Skipping Signal {signal}")
+                        continue
+                    if signal == Signal.LONG:
                         if datetime.datetime.utcnow() < self.symbols[symbol]['new_order_long_lock']:
-                            logger.warning(f"New long order lock in effect. Skipping signal: {signal} symbol: {symbol} state: {self.symbols[symbol]}")
+                            logger.warning(f"New long order lock in effect. Skipping signal: {signal} symbol: {symbol} state: {self.symbols[symbol]} postions: {self.positions}")
                             continue
-                        self.orders.append(self.create_order(symbol, 'market', 'buy', price, NUM_CONTRACTS, 'open', 'day', 'option', expiration, callput='call'))
+                        strike = float(self.options_chain[symbol]['call'][0]['strike']) #NOTE: gets strike with highest volum
+                        self.orders.append(self.create_order(symbol, 'market', 'buy', price, NUM_CONTRACTS, 'open', 'day', 'option', self.expiration, strike, 'call'))
                         self.symbols[symbol]['new_order_long_lock'] = datetime.datetime.utcnow() + datetime.timedelta(seconds=NEW_ORDER_LOCK_SECS)
                     else:
                         if datetime.datetime.utcnow() < self.symbols[symbol]['new_order_short_lock']:
                             logger.warning(f"New short order lock in effect. Skipping signal: {signal} symbol: {symbol} state: {self.symbols[symbol]}")
                             continue
-                        self.orders.append(self.create_order(symbol, 'market', 'buy', price, NUM_CONTRACTS, 'open', 'day', 'option', expiration, callput='put'))
+                        strike = float(self.options_chain[symbol]['put'][0]['strike']) #NOTE: gets strike with highest volume
+                        self.orders.append(self.create_order(symbol, 'market', 'buy', price, NUM_CONTRACTS, 'open', 'day', 'option', self.expiration, strike, 'put'))
                         self.symbols[symbol]['new_order_short_lock'] = datetime.datetime.utcnow() + datetime.timedelta(seconds=NEW_ORDER_LOCK_SECS)
                 await asyncio.sleep(SIGNAL_PROC_INTERVAL_SEC)
         except asyncio.CancelledError:
@@ -246,6 +259,7 @@ class DecisionEngine():
     
     async def exchange_msg_handler(self, exchange_socket):
         try:
+            #TODO: modify to support sending msgs anytime decision engine wants. use queues and tasks
             while True:
                 await exchange_socket.send_json(json.dumps({
                         'type': 'subscribe',
@@ -256,6 +270,17 @@ class DecisionEngine():
                     'type': 'request',
                     'channel': 'balances'
                 }))
+                for symbol in self.symbols.keys():
+                    await exchange_socket.send_json(json.dumps({
+                        'type': 'request',
+                        'channel': 'options_chains',
+                        'data': {
+                            'underlying': symbol,
+                            'expiration': self.expiration,
+                            'max_price': MAX_OPTION_PRICE,
+                            'min_price': MIN_OPTION_PRICE
+                        }
+                    }))
                 async for msg in exchange_socket.receive():
                     msg = json.loads(msg)
                     #logger.info(f"Received Exchange message: {msg}")
@@ -264,11 +289,17 @@ class DecisionEngine():
                             self.positions = msg['data']
                         elif msg['channel'] == 'orders':
                             logger.info(f"Received order update: {msg['data']}")
-                    elif msg['type'] == 'success':
-                        logger.info(msg)
-                    elif msg['type'] == 'error':
-                        logger.error(msg)
-                        raise Exception(msg)
+                    elif msg['type'] == 'response':
+                        if msg['type'] == 'success':
+                            logger.info(msg)
+                            if msg['channel'] == 'balances':
+                                self.balances = msg['data']
+                            elif msg['channel'] == 'options_chains':
+                                if 'error' in msg['data'] or not msg['data']:
+                                    raise Exception(f"Failed to retrieve options chain: {msg['data']}")
+                                self.options_chain[msg['data']['underlying']] = msg['data']['options_chain']
+                        elif msg['type'] == 'error':
+                            logger.error(msg)
                 await asyncio.sleep(ORDER_SOCKET_INTERVAL_SEC)
         except ConnectionError as e:
             logger.error(f'Exchange socket disconnected; Exchange Message Handler task resetting: {e}')

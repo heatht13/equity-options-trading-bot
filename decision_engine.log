@@ -1,0 +1,1450 @@
+(.py311) heath@DESKTOP-009HMFQ:~/systematic-trading$ python decision_engine.py --symbols SPY
+2023-11-16 10:08:02,204 [DEBUG] [selector_events.py:54]: Using selector: EpollSelector
+2023-11-16 10:08:02,205 [INFO] [decision_engine.py:391]: Decision Engine Starting
+2023-11-16 10:08:02,205 [INFO] [decision_engine.py:400]: 4 tasks running
+2023-11-16 10:08:02,205 [INFO] [decision_engine.py:169]: Decision Engine signal handler started
+2023-11-16 10:08:02,205 [INFO] [decision_engine.py:322]: Market Data Handler Starting
+2023-11-16 10:08:02,205 [INFO] [decision_engine.py:289]: Exchange Handler Starting
+2023-11-16 10:08:02,205 [INFO] [decision_engine.py:297]: 6 tasks running
+2023-11-16 10:45:00,365 [INFO] [decision_engine.py:107]: Handling candle close: {'open': 449.325, 'high': 449.395, 'low': 448.835, 'close': 448.975, 'time': 1700149500.0}
+2023-11-16 10:45:00,365 [INFO] [decision_engine.py:117]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 10:50:00,521 [INFO] [decision_engine.py:107]: Handling candle close: {'open': 448.975, 'high': 449.595, 'low': 448.915, 'close': 449.415, 'time': 1700149800.0}
+2023-11-16 10:50:00,521 [INFO] [decision_engine.py:126]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_DOWN
+2023-11-16 10:55:00,345 [INFO] [decision_engine.py:107]: Handling candle close: {'open': 449.415, 'high': 449.415, 'low': 448.895, 'close': 448.915, 'time': 1700150100.0}
+2023-11-16 10:55:00,346 [INFO] [decision_engine.py:126]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_DOWN
+2023-11-16 10:56:11,525 [INFO] [decision_engine.py:149]: Setting Symbol PriceState: SPY State: PriceState.DOWN
+2023-11-16 10:56:11,525 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.SHORT State: {'quote': {'bid': 448.82, 'ask': 448.83, 'price': 448.825, 'bid_size': 10, 'ask_size': 12, 'quote_time': 1700150171.0}, 'timesale': {}, 'ma': {'ma': 449.3605555555555, 'ma_period': 9, 'time': 1700150171.0}, 'lookback': {'lookback_high': 450.305, 'lookback_low': 448.835, 'time': 1700150100.0}, 'candle': None, 'price_state': <PriceState.DOWN: 3>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 15, 8, 2, 204935), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 15, 8, 2, 204937)}
+2023-11-16 10:56:13,299 [INFO] [decision_engine.py:219]: Sending order: {
+  "symbol": "SPY",
+  "order_type": "market",
+  "side": "buy",
+  "price": "448.825000",
+  "quantity": "1.000000",
+  "offset": "open",
+  "tif": "day",
+  "asset_class": "option",
+  "exp": "231123",
+  "strike": null,
+  "callput": "put"
+}
+2023-11-16 10:56:13,537 [INFO] [decision_engine.py:145]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_DOWN
+2023-11-16 10:56:17,764 [INFO] [decision_engine.py:149]: Setting Symbol PriceState: SPY State: PriceState.DOWN
+2023-11-16 10:56:17,764 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.SHORT State: {'quote': {'bid': 448.82, 'ask': 448.83, 'price': 448.825, 'bid_size': 7, 'ask_size': 17, 'quote_time': 1700150177.0}, 'timesale': {}, 'ma': {'ma': 449.3605555555555, 'ma_period': 9, 'time': 1700150177.0}, 'lookback': {'lookback_high': 450.305, 'lookback_low': 448.835, 'time': 1700150100.0}, 'candle': None, 'price_state': <PriceState.DOWN: 3>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 15, 56, 31, 525498), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 15, 8, 2, 204937)}
+2023-11-16 10:56:17,764 [WARNING] [decision_engine.py:200]: New short order lock in effect. Skipping signal: Signal.SHORT symbol: SPY state: {'quote': {'bid': 448.82, 'ask': 448.83, 'price': 448.825, 'bid_size': 7, 'ask_size': 17, 'quote_time': 1700150177.0}, 'timesale': {}, 'ma': {'ma': 449.3605555555555, 'ma_period': 9, 'time': 1700150177.0}, 'lookback': {'lookback_high': 450.305, 'lookback_low': 448.835, 'time': 1700150100.0}, 'candle': None, 'price_state': <PriceState.DOWN: 3>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 15, 56, 31, 525498), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 15, 8, 2, 204937)}
+2023-11-16 10:56:19,271 [INFO] [decision_engine.py:145]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_DOWN
+2023-11-16 10:56:23,598 [INFO] [decision_engine.py:149]: Setting Symbol PriceState: SPY State: PriceState.DOWN
+2023-11-16 10:56:23,598 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.SHORT State: {'quote': {'bid': 448.82, 'ask': 448.83, 'price': 448.825, 'bid_size': 7, 'ask_size': 20, 'quote_time': 1700150183.0}, 'timesale': {}, 'ma': {'ma': 449.3605555555555, 'ma_period': 9, 'time': 1700150183.0}, 'lookback': {'lookback_high': 450.305, 'lookback_low': 448.835, 'time': 1700150100.0}, 'candle': None, 'price_state': <PriceState.DOWN: 3>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 15, 56, 31, 525498), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 15, 8, 2, 204937)}
+2023-11-16 10:56:23,598 [WARNING] [decision_engine.py:200]: New short order lock in effect. Skipping signal: Signal.SHORT symbol: SPY state: {'quote': {'bid': 448.82, 'ask': 448.83, 'price': 448.825, 'bid_size': 7, 'ask_size': 20, 'quote_time': 1700150183.0}, 'timesale': {}, 'ma': {'ma': 449.3605555555555, 'ma_period': 9, 'time': 1700150183.0}, 'lookback': {'lookback_high': 450.305, 'lookback_low': 448.835, 'time': 1700150100.0}, 'candle': None, 'price_state': <PriceState.DOWN: 3>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 15, 56, 31, 525498), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 15, 8, 2, 204937)}
+2023-11-16 10:56:50,266 [INFO] [decision_engine.py:145]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_DOWN
+2023-11-16 10:56:57,820 [INFO] [decision_engine.py:149]: Setting Symbol PriceState: SPY State: PriceState.DOWN
+2023-11-16 10:56:57,820 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.SHORT State: {'quote': {'bid': 448.82, 'ask': 448.83, 'price': 448.825, 'bid_size': 6, 'ask_size': 9, 'quote_time': 1700150217.0}, 'timesale': {}, 'ma': {'ma': 449.3605555555555, 'ma_period': 9, 'time': 1700150217.0}, 'lookback': {'lookback_high': 450.305, 'lookback_low': 448.835, 'time': 1700150100.0}, 'candle': None, 'price_state': <PriceState.DOWN: 3>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 15, 56, 31, 525498), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 15, 8, 2, 204937)}
+2023-11-16 10:56:58,022 [INFO] [decision_engine.py:145]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_DOWN
+2023-11-16 10:56:58,726 [INFO] [decision_engine.py:149]: Setting Symbol PriceState: SPY State: PriceState.DOWN
+2023-11-16 10:56:58,726 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.SHORT State: {'quote': {'bid': 448.82, 'ask': 448.83, 'price': 448.825, 'bid_size': 5, 'ask_size': 13, 'quote_time': 1700150218.0}, 'timesale': {}, 'ma': {'ma': 449.3605555555555, 'ma_period': 9, 'time': 1700150218.0}, 'lookback': {'lookback_high': 450.305, 'lookback_low': 448.835, 'time': 1700150100.0}, 'candle': None, 'price_state': <PriceState.DOWN: 3>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 15, 57, 17, 820193), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 15, 8, 2, 204937)}
+2023-11-16 10:56:58,726 [WARNING] [decision_engine.py:200]: New short order lock in effect. Skipping signal: Signal.SHORT symbol: SPY state: {'quote': {'bid': 448.82, 'ask': 448.83, 'price': 448.825, 'bid_size': 5, 'ask_size': 13, 'quote_time': 1700150218.0}, 'timesale': {}, 'ma': {'ma': 449.3605555555555, 'ma_period': 9, 'time': 1700150218.0}, 'lookback': {'lookback_high': 450.305, 'lookback_low': 448.835, 'time': 1700150100.0}, 'candle': None, 'price_state': <PriceState.DOWN: 3>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 15, 57, 17, 820193), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 15, 8, 2, 204937)}
+2023-11-16 10:56:59,318 [INFO] [decision_engine.py:219]: Sending order: {
+  "symbol": "SPY",
+  "order_type": "market",
+  "side": "buy",
+  "price": "448.825000",
+  "quantity": "1.000000",
+  "offset": "open",
+  "tif": "day",
+  "asset_class": "option",
+  "exp": "231123",
+  "strike": null,
+  "callput": "put"
+}
+2023-11-16 10:57:03,258 [INFO] [decision_engine.py:145]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_DOWN
+2023-11-16 11:00:00,404 [INFO] [decision_engine.py:107]: Handling candle close: {'open': 448.915, 'high': 449.155, 'low': 448.765, 'close': 449.025, 'time': 1700150400.0}
+2023-11-16 11:00:00,404 [INFO] [decision_engine.py:126]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_DOWN
+2023-11-16 11:05:00,319 [INFO] [decision_engine.py:107]: Handling candle close: {'open': 449.025, 'high': 449.255, 'low': 448.835, 'close': 449.115, 'time': 1700150700.0}
+2023-11-16 11:05:00,319 [INFO] [decision_engine.py:126]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_DOWN
+2023-11-16 11:10:00,459 [INFO] [decision_engine.py:107]: Handling candle close: {'open': 449.115, 'high': 449.275, 'low': 448.805, 'close': 448.885, 'time': 1700151000.0}
+2023-11-16 11:10:00,459 [INFO] [decision_engine.py:126]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_DOWN
+2023-11-16 11:10:33,770 [INFO] [decision_engine.py:149]: Setting Symbol PriceState: SPY State: PriceState.DOWN
+2023-11-16 11:10:33,770 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.SHORT State: {'quote': {'bid': 448.75, 'ask': 448.76, 'price': 448.755, 'bid_size': 8, 'ask_size': 3, 'quote_time': 1700151033.0}, 'timesale': {}, 'ma': {'ma': 449.1005555555556, 'ma_period': 9, 'time': 1700151033.0}, 'lookback': {'lookback_high': 449.595, 'lookback_low': 448.765, 'time': 1700151000.0}, 'candle': None, 'price_state': <PriceState.DOWN: 3>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 15, 57, 17, 820193), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 15, 8, 2, 204937)}
+2023-11-16 11:10:34,676 [INFO] [decision_engine.py:145]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_DOWN
+2023-11-16 11:10:35,627 [INFO] [decision_engine.py:219]: Sending order: {
+  "symbol": "SPY",
+  "order_type": "market",
+  "side": "buy",
+  "price": "448.755000",
+  "quantity": "1.000000",
+  "offset": "open",
+  "tif": "day",
+  "asset_class": "option",
+  "exp": "231123",
+  "strike": null,
+  "callput": "put"
+}
+2023-11-16 11:12:37,545 [INFO] [decision_engine.py:149]: Setting Symbol PriceState: SPY State: PriceState.DOWN
+2023-11-16 11:12:37,545 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.SHORT State: {'quote': {'bid': 448.74, 'ask': 448.75, 'price': 448.745, 'bid_size': 7, 'ask_size': 7, 'quote_time': 1700151157.0}, 'timesale': {}, 'ma': {'ma': 449.0994444444445, 'ma_period': 9, 'time': 1700151157.0}, 'lookback': {'lookback_high': 449.595, 'lookback_low': 448.765, 'time': 1700151000.0}, 'candle': None, 'price_state': <PriceState.DOWN: 3>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 16, 10, 53, 770549), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 15, 8, 2, 204937)}
+2023-11-16 11:12:37,679 [INFO] [decision_engine.py:219]: Sending order: {
+  "symbol": "SPY",
+  "order_type": "market",
+  "side": "buy",
+  "price": "448.745000",
+  "quantity": "1.000000",
+  "offset": "open",
+  "tif": "day",
+  "asset_class": "option",
+  "exp": "231123",
+  "strike": null,
+  "callput": "put"
+}
+2023-11-16 11:12:40,570 [INFO] [decision_engine.py:145]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_DOWN
+2023-11-16 11:12:54,452 [INFO] [decision_engine.py:149]: Setting Symbol PriceState: SPY State: PriceState.DOWN
+2023-11-16 11:12:54,452 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.SHORT State: {'quote': {'bid': 448.75, 'ask': 448.76, 'price': 448.755, 'bid_size': 5, 'ask_size': 8, 'quote_time': 1700151173.0}, 'timesale': {}, 'ma': {'ma': 449.1005555555556, 'ma_period': 9, 'time': 1700151173.0}, 'lookback': {'lookback_high': 449.595, 'lookback_low': 448.765, 'time': 1700151000.0}, 'candle': None, 'price_state': <PriceState.DOWN: 3>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 16, 12, 57, 545668), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 15, 8, 2, 204937)}
+2023-11-16 11:12:54,452 [WARNING] [decision_engine.py:200]: New short order lock in effect. Skipping signal: Signal.SHORT symbol: SPY state: {'quote': {'bid': 448.75, 'ask': 448.76, 'price': 448.755, 'bid_size': 5, 'ask_size': 8, 'quote_time': 1700151173.0}, 'timesale': {}, 'ma': {'ma': 449.1005555555556, 'ma_period': 9, 'time': 1700151173.0}, 'lookback': {'lookback_high': 449.595, 'lookback_low': 448.765, 'time': 1700151000.0}, 'candle': None, 'price_state': <PriceState.DOWN: 3>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 16, 12, 57, 545668), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 15, 8, 2, 204937)}
+2023-11-16 11:13:41,075 [INFO] [decision_engine.py:145]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_DOWN
+2023-11-16 11:13:41,477 [INFO] [decision_engine.py:149]: Setting Symbol PriceState: SPY State: PriceState.DOWN
+2023-11-16 11:13:41,478 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.SHORT State: {'quote': {'bid': 448.74, 'ask': 448.75, 'price': 448.745, 'bid_size': 3, 'ask_size': 19, 'quote_time': 1700151221.0}, 'timesale': {}, 'ma': {'ma': 449.0994444444445, 'ma_period': 9, 'time': 1700151221.0}, 'lookback': {'lookback_high': 449.595, 'lookback_low': 448.765, 'time': 1700151000.0}, 'candle': None, 'price_state': <PriceState.DOWN: 3>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 16, 12, 57, 545668), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 15, 8, 2, 204937)}
+2023-11-16 11:13:41,699 [INFO] [decision_engine.py:219]: Sending order: {
+  "symbol": "SPY",
+  "order_type": "market",
+  "side": "buy",
+  "price": "448.745000",
+  "quantity": "1.000000",
+  "offset": "open",
+  "tif": "day",
+  "asset_class": "option",
+  "exp": "231123",
+  "strike": null,
+  "callput": "put"
+}
+2023-11-16 11:13:49,119 [INFO] [decision_engine.py:145]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_DOWN
+2023-11-16 11:15:00,291 [INFO] [decision_engine.py:107]: Handling candle close: {'open': 448.885, 'high': 449.125, 'low': 448.445, 'close': 449.095, 'time': 1700151300.0}
+2023-11-16 11:15:00,291 [INFO] [decision_engine.py:126]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_DOWN
+2023-11-16 11:17:33,036 [INFO] [decision_engine.py:149]: Setting Symbol PriceState: SPY State: PriceState.DOWN
+2023-11-16 11:17:33,036 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.SHORT State: {'quote': {'bid': 448.43, 'ask': 448.44, 'price': 448.435, 'bid_size': 4, 'ask_size': 5, 'quote_time': 1700151452.0}, 'timesale': {}, 'ma': {'ma': 449.0205555555556, 'ma_period': 9, 'time': 1700151452.0}, 'lookback': {'lookback_high': 449.415, 'lookback_low': 448.445, 'time': 1700151300.0}, 'candle': None, 'price_state': <PriceState.DOWN: 3>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 16, 14, 1, 478034), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 15, 8, 2, 204937)}
+2023-11-16 11:17:33,238 [INFO] [decision_engine.py:145]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_DOWN
+2023-11-16 11:17:33,785 [INFO] [decision_engine.py:219]: Sending order: {
+  "symbol": "SPY",
+  "order_type": "market",
+  "side": "buy",
+  "price": "448.435000",
+  "quantity": "1.000000",
+  "offset": "open",
+  "tif": "day",
+  "asset_class": "option",
+  "exp": "231123",
+  "strike": null,
+  "callput": "put"
+}
+2023-11-16 11:17:44,815 [INFO] [decision_engine.py:149]: Setting Symbol PriceState: SPY State: PriceState.DOWN
+2023-11-16 11:17:44,815 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.SHORT State: {'quote': {'bid': 448.43, 'ask': 448.44, 'price': 448.435, 'bid_size': 6, 'ask_size': 4, 'quote_time': 1700151464.0}, 'timesale': {}, 'ma': {'ma': 449.0205555555556, 'ma_period': 9, 'time': 1700151464.0}, 'lookback': {'lookback_high': 449.415, 'lookback_low': 448.445, 'time': 1700151300.0}, 'candle': None, 'price_state': <PriceState.DOWN: 3>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 16, 17, 53, 36362), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 15, 8, 2, 204937)}
+2023-11-16 11:17:44,816 [WARNING] [decision_engine.py:200]: New short order lock in effect. Skipping signal: Signal.SHORT symbol: SPY state: {'quote': {'bid': 448.43, 'ask': 448.44, 'price': 448.435, 'bid_size': 6, 'ask_size': 4, 'quote_time': 1700151464.0}, 'timesale': {}, 'ma': {'ma': 449.0205555555556, 'ma_period': 9, 'time': 1700151464.0}, 'lookback': {'lookback_high': 449.415, 'lookback_low': 448.445, 'time': 1700151300.0}, 'candle': None, 'price_state': <PriceState.DOWN: 3>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 16, 17, 53, 36362), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 15, 8, 2, 204937)}
+2023-11-16 11:17:45,117 [INFO] [decision_engine.py:145]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_DOWN
+2023-11-16 11:20:00,427 [INFO] [decision_engine.py:107]: Handling candle close: {'open': 449.095, 'high': 449.155, 'low': 448.435, 'close': 448.605, 'time': 1700151600.0}
+2023-11-16 11:20:00,427 [INFO] [decision_engine.py:126]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_DOWN
+2023-11-16 11:24:43,439 [INFO] [decision_engine.py:149]: Setting Symbol PriceState: SPY State: PriceState.DOWN
+2023-11-16 11:24:43,439 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.SHORT State: {'quote': {'bid': 448.42, 'ask': 448.43, 'price': 448.425, 'bid_size': 19, 'ask_size': 2, 'quote_time': 1700151883.0}, 'timesale': {}, 'ma': {'ma': 448.93944444444446, 'ma_period': 9, 'time': 1700151883.0}, 'lookback': {'lookback_high': 449.275, 'lookback_low': 448.435, 'time': 1700151600.0}, 'candle': None, 'price_state': <PriceState.DOWN: 3>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 16, 17, 53, 36362), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 15, 8, 2, 204937)}
+2023-11-16 11:24:43,842 [INFO] [decision_engine.py:145]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_DOWN
+2023-11-16 11:24:43,954 [INFO] [decision_engine.py:219]: Sending order: {
+  "symbol": "SPY",
+  "order_type": "market",
+  "side": "buy",
+  "price": "448.425000",
+  "quantity": "1.000000",
+  "offset": "open",
+  "tif": "day",
+  "asset_class": "option",
+  "exp": "231123",
+  "strike": null,
+  "callput": "put"
+}
+2023-11-16 11:24:45,152 [INFO] [decision_engine.py:149]: Setting Symbol PriceState: SPY State: PriceState.DOWN
+2023-11-16 11:24:45,152 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.SHORT State: {'quote': {'bid': 448.42, 'ask': 448.43, 'price': 448.425, 'bid_size': 11, 'ask_size': 7, 'quote_time': 1700151884.0}, 'timesale': {}, 'ma': {'ma': 448.93944444444446, 'ma_period': 9, 'time': 1700151884.0}, 'lookback': {'lookback_high': 449.275, 'lookback_low': 448.435, 'time': 1700151600.0}, 'candle': None, 'price_state': <PriceState.DOWN: 3>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 16, 25, 3, 439782), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 15, 8, 2, 204937)}
+2023-11-16 11:24:45,152 [WARNING] [decision_engine.py:200]: New short order lock in effect. Skipping signal: Signal.SHORT symbol: SPY state: {'quote': {'bid': 448.42, 'ask': 448.43, 'price': 448.425, 'bid_size': 11, 'ask_size': 7, 'quote_time': 1700151884.0}, 'timesale': {}, 'ma': {'ma': 448.93944444444446, 'ma_period': 9, 'time': 1700151884.0}, 'lookback': {'lookback_high': 449.275, 'lookback_low': 448.435, 'time': 1700151600.0}, 'candle': None, 'price_state': <PriceState.DOWN: 3>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 16, 25, 3, 439782), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 15, 8, 2, 204937)}
+2023-11-16 11:25:00,457 [INFO] [decision_engine.py:107]: Handling candle close: {'open': 448.605, 'high': 448.675, 'low': 448.395, 'close': 448.425, 'time': 1700151900.0}
+2023-11-16 11:25:00,457 [INFO] [decision_engine.py:126]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_DOWN
+2023-11-16 11:28:51,814 [INFO] [decision_engine.py:149]: Setting Symbol PriceState: SPY State: PriceState.DOWN
+2023-11-16 11:28:51,814 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.SHORT State: {'quote': {'bid': 448.38, 'ask': 448.39, 'price': 448.385, 'bid_size': 16, 'ask_size': 6, 'quote_time': 1700152131.0}, 'timesale': {}, 'ma': {'ma': 448.87388888888887, 'ma_period': 9, 'time': 1700152131.0}, 'lookback': {'lookback_high': 449.275, 'lookback_low': 448.395, 'time': 1700151900.0}, 'candle': None, 'price_state': <PriceState.DOWN: 3>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 16, 25, 3, 439782), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 15, 8, 2, 204937)}
+2023-11-16 11:28:52,045 [INFO] [decision_engine.py:219]: Sending order: {
+  "symbol": "SPY",
+  "order_type": "market",
+  "side": "buy",
+  "price": "448.385000",
+  "quantity": "1.000000",
+  "offset": "open",
+  "tif": "day",
+  "asset_class": "option",
+  "exp": "231123",
+  "strike": null,
+  "callput": "put"
+}
+2023-11-16 11:29:02,368 [INFO] [decision_engine.py:145]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_DOWN
+2023-11-16 11:29:12,334 [INFO] [decision_engine.py:149]: Setting Symbol PriceState: SPY State: PriceState.DOWN
+2023-11-16 11:29:12,334 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.SHORT State: {'quote': {'bid': 448.38, 'ask': 448.39, 'price': 448.385, 'bid_size': 10, 'ask_size': 2, 'quote_time': 1700152152.0}, 'timesale': {}, 'ma': {'ma': 448.87388888888887, 'ma_period': 9, 'time': 1700152152.0}, 'lookback': {'lookback_high': 449.275, 'lookback_low': 448.395, 'time': 1700151900.0}, 'candle': None, 'price_state': <PriceState.DOWN: 3>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 16, 29, 11, 814386), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 15, 8, 2, 204937)}
+2023-11-16 11:29:13,341 [INFO] [decision_engine.py:145]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_DOWN
+2023-11-16 11:29:14,054 [INFO] [decision_engine.py:219]: Sending order: {
+  "symbol": "SPY",
+  "order_type": "market",
+  "side": "buy",
+  "price": "448.385000",
+  "quantity": "1.000000",
+  "offset": "open",
+  "tif": "day",
+  "asset_class": "option",
+  "exp": "231123",
+  "strike": null,
+  "callput": "put"
+}
+2023-11-16 11:29:27,418 [INFO] [decision_engine.py:149]: Setting Symbol PriceState: SPY State: PriceState.DOWN
+2023-11-16 11:29:27,418 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.SHORT State: {'quote': {'bid': 448.38, 'ask': 448.39, 'price': 448.385, 'bid_size': 9, 'ask_size': 6, 'quote_time': 1700152167.0}, 'timesale': {}, 'ma': {'ma': 448.87388888888887, 'ma_period': 9, 'time': 1700152167.0}, 'lookback': {'lookback_high': 449.275, 'lookback_low': 448.395, 'time': 1700151900.0}, 'candle': None, 'price_state': <PriceState.DOWN: 3>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 16, 29, 32, 334460), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 15, 8, 2, 204937)}
+2023-11-16 11:29:27,418 [WARNING] [decision_engine.py:200]: New short order lock in effect. Skipping signal: Signal.SHORT symbol: SPY state: {'quote': {'bid': 448.38, 'ask': 448.39, 'price': 448.385, 'bid_size': 9, 'ask_size': 6, 'quote_time': 1700152167.0}, 'timesale': {}, 'ma': {'ma': 448.87388888888887, 'ma_period': 9, 'time': 1700152167.0}, 'lookback': {'lookback_high': 449.275, 'lookback_low': 448.395, 'time': 1700151900.0}, 'candle': None, 'price_state': <PriceState.DOWN: 3>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 16, 29, 32, 334460), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 15, 8, 2, 204937)}
+2023-11-16 11:29:28,324 [INFO] [decision_engine.py:145]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_DOWN
+2023-11-16 11:29:31,044 [INFO] [decision_engine.py:149]: Setting Symbol PriceState: SPY State: PriceState.DOWN
+2023-11-16 11:29:31,044 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.SHORT State: {'quote': {'bid': 448.38, 'ask': 448.39, 'price': 448.385, 'bid_size': 5, 'ask_size': 7, 'quote_time': 1700152170.0}, 'timesale': {}, 'ma': {'ma': 448.87388888888887, 'ma_period': 9, 'time': 1700152170.0}, 'lookback': {'lookback_high': 449.275, 'lookback_low': 448.395, 'time': 1700151900.0}, 'candle': None, 'price_state': <PriceState.DOWN: 3>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 16, 29, 32, 334460), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 15, 8, 2, 204937)}
+2023-11-16 11:29:31,044 [WARNING] [decision_engine.py:200]: New short order lock in effect. Skipping signal: Signal.SHORT symbol: SPY state: {'quote': {'bid': 448.38, 'ask': 448.39, 'price': 448.385, 'bid_size': 5, 'ask_size': 7, 'quote_time': 1700152170.0}, 'timesale': {}, 'ma': {'ma': 448.87388888888887, 'ma_period': 9, 'time': 1700152170.0}, 'lookback': {'lookback_high': 449.275, 'lookback_low': 448.395, 'time': 1700151900.0}, 'candle': None, 'price_state': <PriceState.DOWN: 3>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 16, 29, 32, 334460), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 15, 8, 2, 204937)}
+2023-11-16 11:30:00,333 [INFO] [decision_engine.py:107]: Handling candle close: {'open': 448.425, 'high': 448.575, 'low': 448.295, 'close': 448.325, 'time': 1700152200.0}
+2023-11-16 11:30:00,333 [INFO] [decision_engine.py:126]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_DOWN
+2023-11-16 11:30:19,458 [INFO] [decision_engine.py:149]: Setting Symbol PriceState: SPY State: PriceState.DOWN
+2023-11-16 11:30:19,458 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.SHORT State: {'quote': {'bid': 448.27, 'ask': 448.28, 'price': 448.275, 'bid_size': 9, 'ask_size': 13, 'quote_time': 1700152219.0}, 'timesale': {}, 'ma': {'ma': 448.74055555555555, 'ma_period': 9, 'time': 1700152219.0}, 'lookback': {'lookback_high': 449.275, 'lookback_low': 448.295, 'time': 1700152200.0}, 'candle': None, 'price_state': <PriceState.DOWN: 3>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 16, 29, 32, 334460), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 15, 8, 2, 204937)}
+2023-11-16 11:30:20,080 [INFO] [decision_engine.py:219]: Sending order: {
+  "symbol": "SPY",
+  "order_type": "market",
+  "side": "buy",
+  "price": "448.275000",
+  "quantity": "1.000000",
+  "offset": "open",
+  "tif": "day",
+  "asset_class": "option",
+  "exp": "231123",
+  "strike": null,
+  "callput": "put"
+}
+2023-11-16 11:30:46,629 [INFO] [decision_engine.py:145]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_DOWN
+2023-11-16 11:30:48,339 [INFO] [decision_engine.py:149]: Setting Symbol PriceState: SPY State: PriceState.DOWN
+2023-11-16 11:30:48,339 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.SHORT State: {'quote': {'bid': 448.24, 'ask': 448.25, 'price': 448.245, 'bid_size': 6, 'ask_size': 3, 'quote_time': 1700152248.0}, 'timesale': {}, 'ma': {'ma': 448.7372222222222, 'ma_period': 9, 'time': 1700152248.0}, 'lookback': {'lookback_high': 449.275, 'lookback_low': 448.295, 'time': 1700152200.0}, 'candle': None, 'price_state': <PriceState.DOWN: 3>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 16, 30, 39, 458632), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 15, 8, 2, 204937)}
+2023-11-16 11:30:50,092 [INFO] [decision_engine.py:219]: Sending order: {
+  "symbol": "SPY",
+  "order_type": "market",
+  "side": "buy",
+  "price": "448.245000",
+  "quantity": "1.000000",
+  "offset": "open",
+  "tif": "day",
+  "asset_class": "option",
+  "exp": "231123",
+  "strike": null,
+  "callput": "put"
+}
+2023-11-16 11:31:04,857 [INFO] [decision_engine.py:145]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_DOWN
+2023-11-16 11:31:09,285 [INFO] [decision_engine.py:149]: Setting Symbol PriceState: SPY State: PriceState.DOWN
+2023-11-16 11:31:09,285 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.SHORT State: {'quote': {'bid': 448.27, 'ask': 448.28, 'price': 448.275, 'bid_size': 5, 'ask_size': 7, 'quote_time': 1700152269.0}, 'timesale': {}, 'ma': {'ma': 448.74055555555555, 'ma_period': 9, 'time': 1700152269.0}, 'lookback': {'lookback_high': 449.275, 'lookback_low': 448.295, 'time': 1700152200.0}, 'candle': None, 'price_state': <PriceState.DOWN: 3>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 16, 31, 8, 339677), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 15, 8, 2, 204937)}
+2023-11-16 11:31:10,102 [INFO] [decision_engine.py:219]: Sending order: {
+  "symbol": "SPY",
+  "order_type": "market",
+  "side": "buy",
+  "price": "448.275000",
+  "quantity": "1.000000",
+  "offset": "open",
+  "tif": "day",
+  "asset_class": "option",
+  "exp": "231123",
+  "strike": null,
+  "callput": "put"
+}
+2023-11-16 11:31:10,394 [INFO] [decision_engine.py:145]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_DOWN
+2023-11-16 11:31:11,601 [INFO] [decision_engine.py:149]: Setting Symbol PriceState: SPY State: PriceState.DOWN
+2023-11-16 11:31:11,601 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.SHORT State: {'quote': {'bid': 448.28, 'ask': 448.29, 'price': 448.285, 'bid_size': 7, 'ask_size': 6, 'quote_time': 1700152271.0}, 'timesale': {}, 'ma': {'ma': 448.7416666666666, 'ma_period': 9, 'time': 1700152271.0}, 'lookback': {'lookback_high': 449.275, 'lookback_low': 448.295, 'time': 1700152200.0}, 'candle': None, 'price_state': <PriceState.DOWN: 3>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 16, 31, 29, 285737), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 15, 8, 2, 204937)}
+2023-11-16 11:31:11,601 [WARNING] [decision_engine.py:200]: New short order lock in effect. Skipping signal: Signal.SHORT symbol: SPY state: {'quote': {'bid': 448.28, 'ask': 448.29, 'price': 448.285, 'bid_size': 7, 'ask_size': 6, 'quote_time': 1700152271.0}, 'timesale': {}, 'ma': {'ma': 448.7416666666666, 'ma_period': 9, 'time': 1700152271.0}, 'lookback': {'lookback_high': 449.275, 'lookback_low': 448.295, 'time': 1700152200.0}, 'candle': None, 'price_state': <PriceState.DOWN: 3>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 16, 31, 29, 285737), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 15, 8, 2, 204937)}
+2023-11-16 11:31:12,908 [INFO] [decision_engine.py:145]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_DOWN
+2023-11-16 11:35:00,355 [INFO] [decision_engine.py:107]: Handling candle close: {'open': 448.325, 'high': 448.655, 'low': 448.205, 'close': 448.555, 'time': 1700152500.0}
+2023-11-16 11:35:00,355 [INFO] [decision_engine.py:126]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_DOWN
+2023-11-16 11:36:40,510 [INFO] [decision_engine.py:149]: Setting Symbol PriceState: SPY State: PriceState.DOWN
+2023-11-16 11:36:40,510 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.SHORT State: {'quote': {'bid': 448.19, 'ask': 448.2, 'price': 448.195, 'bid_size': 4, 'ask_size': 4, 'quote_time': 1700152600.0}, 'timesale': {}, 'ma': {'ma': 448.6916666666667, 'ma_period': 9, 'time': 1700152600.0}, 'lookback': {'lookback_high': 449.155, 'lookback_low': 448.205, 'time': 1700152500.0}, 'candle': None, 'price_state': <PriceState.DOWN: 3>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 16, 31, 29, 285737), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 15, 8, 2, 204937)}
+2023-11-16 11:36:41,415 [INFO] [decision_engine.py:145]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_DOWN
+2023-11-16 11:36:42,232 [INFO] [decision_engine.py:219]: Sending order: {
+  "symbol": "SPY",
+  "order_type": "market",
+  "side": "buy",
+  "price": "448.195000",
+  "quantity": "1.000000",
+  "offset": "open",
+  "tif": "day",
+  "asset_class": "option",
+  "exp": "231123",
+  "strike": null,
+  "callput": "put"
+}
+2023-11-16 11:36:42,423 [INFO] [decision_engine.py:149]: Setting Symbol PriceState: SPY State: PriceState.DOWN
+2023-11-16 11:36:42,423 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.SHORT State: {'quote': {'bid': 448.19, 'ask': 448.2, 'price': 448.195, 'bid_size': 4, 'ask_size': 4, 'quote_time': 1700152602.0}, 'timesale': {}, 'ma': {'ma': 448.6916666666667, 'ma_period': 9, 'time': 1700152602.0}, 'lookback': {'lookback_high': 449.155, 'lookback_low': 448.205, 'time': 1700152500.0}, 'candle': None, 'price_state': <PriceState.DOWN: 3>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 16, 37, 0, 510428), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 15, 8, 2, 204937)}
+2023-11-16 11:36:42,423 [WARNING] [decision_engine.py:200]: New short order lock in effect. Skipping signal: Signal.SHORT symbol: SPY state: {'quote': {'bid': 448.19, 'ask': 448.2, 'price': 448.195, 'bid_size': 4, 'ask_size': 4, 'quote_time': 1700152602.0}, 'timesale': {}, 'ma': {'ma': 448.6916666666667, 'ma_period': 9, 'time': 1700152602.0}, 'lookback': {'lookback_high': 449.155, 'lookback_low': 448.205, 'time': 1700152500.0}, 'candle': None, 'price_state': <PriceState.DOWN: 3>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 16, 37, 0, 510428), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 15, 8, 2, 204937)}
+2023-11-16 11:36:43,529 [INFO] [decision_engine.py:145]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_DOWN
+2023-11-16 11:38:02,324 [INFO] [decision_engine.py:149]: Setting Symbol PriceState: SPY State: PriceState.DOWN
+2023-11-16 11:38:02,324 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.SHORT State: {'quote': {'bid': 448.19, 'ask': 448.2, 'price': 448.195, 'bid_size': 2, 'ask_size': 5, 'quote_time': 1700152681.0}, 'timesale': {}, 'ma': {'ma': 448.6916666666667, 'ma_period': 9, 'time': 1700152681.0}, 'lookback': {'lookback_high': 449.155, 'lookback_low': 448.205, 'time': 1700152500.0}, 'candle': None, 'price_state': <PriceState.DOWN: 3>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 16, 37, 0, 510428), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 15, 8, 2, 204937)}
+2023-11-16 11:38:04,257 [INFO] [decision_engine.py:219]: Sending order: {
+  "symbol": "SPY",
+  "order_type": "market",
+  "side": "buy",
+  "price": "448.195000",
+  "quantity": "1.000000",
+  "offset": "open",
+  "tif": "day",
+  "asset_class": "option",
+  "exp": "231123",
+  "strike": null,
+  "callput": "put"
+}
+2023-11-16 11:38:59,374 [INFO] [decision_engine.py:145]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_DOWN
+2023-11-16 11:39:01,286 [INFO] [decision_engine.py:149]: Setting Symbol PriceState: SPY State: PriceState.DOWN
+2023-11-16 11:39:01,286 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.SHORT State: {'quote': {'bid': 448.19, 'ask': 448.2, 'price': 448.195, 'bid_size': 10, 'ask_size': 2, 'quote_time': 1700152740.0}, 'timesale': {}, 'ma': {'ma': 448.6916666666667, 'ma_period': 9, 'time': 1700152740.0}, 'lookback': {'lookback_high': 449.155, 'lookback_low': 448.205, 'time': 1700152500.0}, 'candle': None, 'price_state': <PriceState.DOWN: 3>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 16, 38, 22, 324967), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 15, 8, 2, 204937)}
+2023-11-16 11:39:01,387 [INFO] [decision_engine.py:145]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_DOWN
+2023-11-16 11:39:02,279 [INFO] [decision_engine.py:219]: Sending order: {
+  "symbol": "SPY",
+  "order_type": "market",
+  "side": "buy",
+  "price": "448.195000",
+  "quantity": "1.000000",
+  "offset": "open",
+  "tif": "day",
+  "asset_class": "option",
+  "exp": "231123",
+  "strike": null,
+  "callput": "put"
+}
+2023-11-16 11:39:02,995 [INFO] [decision_engine.py:149]: Setting Symbol PriceState: SPY State: PriceState.DOWN
+2023-11-16 11:39:02,995 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.SHORT State: {'quote': {'bid': 448.19, 'ask': 448.2, 'price': 448.195, 'bid_size': 2, 'ask_size': 39, 'quote_time': 1700152742.0}, 'timesale': {}, 'ma': {'ma': 448.6916666666667, 'ma_period': 9, 'time': 1700152742.0}, 'lookback': {'lookback_high': 449.155, 'lookback_low': 448.205, 'time': 1700152500.0}, 'candle': None, 'price_state': <PriceState.DOWN: 3>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 16, 39, 21, 286588), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 15, 8, 2, 204937)}
+2023-11-16 11:39:02,995 [WARNING] [decision_engine.py:200]: New short order lock in effect. Skipping signal: Signal.SHORT symbol: SPY state: {'quote': {'bid': 448.19, 'ask': 448.2, 'price': 448.195, 'bid_size': 2, 'ask_size': 39, 'quote_time': 1700152742.0}, 'timesale': {}, 'ma': {'ma': 448.6916666666667, 'ma_period': 9, 'time': 1700152742.0}, 'lookback': {'lookback_high': 449.155, 'lookback_low': 448.205, 'time': 1700152500.0}, 'candle': None, 'price_state': <PriceState.DOWN: 3>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 16, 39, 21, 286588), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 15, 8, 2, 204937)}
+2023-11-16 11:39:04,402 [INFO] [decision_engine.py:145]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_DOWN
+2023-11-16 11:40:00,432 [INFO] [decision_engine.py:107]: Handling candle close: {'open': 448.555, 'high': 448.565, 'low': 448.125, 'close': 448.345, 'time': 1700152800.0}
+2023-11-16 11:40:00,432 [INFO] [decision_engine.py:126]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_DOWN
+2023-11-16 11:45:00,389 [INFO] [decision_engine.py:107]: Handling candle close: {'open': 448.345, 'high': 448.565, 'low': 448.255, 'close': 448.365, 'time': 1700153100.0}
+2023-11-16 11:45:00,389 [INFO] [decision_engine.py:126]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_DOWN
+2023-11-16 11:50:00,293 [INFO] [decision_engine.py:107]: Handling candle close: {'open': 448.365, 'high': 448.765, 'low': 448.365, 'close': 448.725, 'time': 1700153400.0}
+2023-11-16 11:50:00,293 [INFO] [decision_engine.py:117]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 11:50:45,764 [INFO] [decision_engine.py:139]: Setting Symbol PriceState: SPY State: PriceState.UP
+2023-11-16 11:50:45,764 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.LONG State: {'quote': {'bid': 448.77, 'ask': 448.78, 'price': 448.775, 'bid_size': 8, 'ask_size': 7, 'quote_time': 1700153445.0}, 'timesale': {}, 'ma': {'ma': 448.57944444444445, 'ma_period': 9, 'time': 1700153445.0}, 'lookback': {'lookback_high': 448.765, 'lookback_low': 448.125, 'time': 1700153400.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 16, 39, 21, 286588), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 15, 8, 2, 204937)}
+2023-11-16 11:50:46,368 [INFO] [decision_engine.py:135]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 11:50:46,531 [INFO] [decision_engine.py:219]: Sending order: {
+  "symbol": "SPY",
+  "order_type": "market",
+  "side": "buy",
+  "price": "448.775000",
+  "quantity": "1.000000",
+  "offset": "open",
+  "tif": "day",
+  "asset_class": "option",
+  "exp": "231123",
+  "strike": null,
+  "callput": "call"
+}
+2023-11-16 11:50:52,906 [INFO] [decision_engine.py:139]: Setting Symbol PriceState: SPY State: PriceState.UP
+2023-11-16 11:50:52,907 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.LONG State: {'quote': {'bid': 448.77, 'ask': 448.78, 'price': 448.775, 'bid_size': 6, 'ask_size': 5, 'quote_time': 1700153452.0}, 'timesale': {}, 'ma': {'ma': 448.57944444444445, 'ma_period': 9, 'time': 1700153452.0}, 'lookback': {'lookback_high': 448.765, 'lookback_low': 448.125, 'time': 1700153400.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 16, 39, 21, 286588), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 16, 51, 5, 764635)}
+2023-11-16 11:50:52,907 [WARNING] [decision_engine.py:194]: New long order lock in effect. Skipping signal: Signal.LONG symbol: SPY state: {'quote': {'bid': 448.77, 'ask': 448.78, 'price': 448.775, 'bid_size': 6, 'ask_size': 5, 'quote_time': 1700153452.0}, 'timesale': {}, 'ma': {'ma': 448.57944444444445, 'ma_period': 9, 'time': 1700153452.0}, 'lookback': {'lookback_high': 448.765, 'lookback_low': 448.125, 'time': 1700153400.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 16, 39, 21, 286588), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 16, 51, 5, 764635)}
+2023-11-16 11:52:05,947 [INFO] [decision_engine.py:135]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 11:52:11,180 [INFO] [decision_engine.py:139]: Setting Symbol PriceState: SPY State: PriceState.UP
+2023-11-16 11:52:11,180 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.LONG State: {'quote': {'bid': 448.77, 'ask': 448.78, 'price': 448.775, 'bid_size': 11, 'ask_size': 4, 'quote_time': 1700153530.0}, 'timesale': {}, 'ma': {'ma': 448.57944444444445, 'ma_period': 9, 'time': 1700153530.0}, 'lookback': {'lookback_high': 448.765, 'lookback_low': 448.125, 'time': 1700153400.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 16, 39, 21, 286588), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 16, 51, 5, 764635)}
+2023-11-16 11:52:11,583 [INFO] [decision_engine.py:135]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 11:52:12,387 [INFO] [decision_engine.py:139]: Setting Symbol PriceState: SPY State: PriceState.UP
+2023-11-16 11:52:12,387 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.LONG State: {'quote': {'bid': 448.77, 'ask': 448.78, 'price': 448.775, 'bid_size': 12, 'ask_size': 6, 'quote_time': 1700153532.0}, 'timesale': {}, 'ma': {'ma': 448.57944444444445, 'ma_period': 9, 'time': 1700153532.0}, 'lookback': {'lookback_high': 448.765, 'lookback_low': 448.125, 'time': 1700153400.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 16, 39, 21, 286588), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 16, 52, 31, 180248)}
+2023-11-16 11:52:12,388 [WARNING] [decision_engine.py:194]: New long order lock in effect. Skipping signal: Signal.LONG symbol: SPY state: {'quote': {'bid': 448.77, 'ask': 448.78, 'price': 448.775, 'bid_size': 12, 'ask_size': 6, 'quote_time': 1700153532.0}, 'timesale': {}, 'ma': {'ma': 448.57944444444445, 'ma_period': 9, 'time': 1700153532.0}, 'lookback': {'lookback_high': 448.765, 'lookback_low': 448.125, 'time': 1700153400.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 16, 39, 21, 286588), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 16, 52, 31, 180248)}
+2023-11-16 11:52:12,565 [INFO] [decision_engine.py:219]: Sending order: {
+  "symbol": "SPY",
+  "order_type": "market",
+  "side": "buy",
+  "price": "448.775000",
+  "quantity": "1.000000",
+  "offset": "open",
+  "tif": "day",
+  "asset_class": "option",
+  "exp": "231123",
+  "strike": null,
+  "callput": "call"
+}
+2023-11-16 11:52:31,200 [INFO] [decision_engine.py:135]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 11:52:41,571 [INFO] [decision_engine.py:139]: Setting Symbol PriceState: SPY State: PriceState.UP
+2023-11-16 11:52:41,571 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.LONG State: {'quote': {'bid': 448.77, 'ask': 448.78, 'price': 448.775, 'bid_size': 13, 'ask_size': 5, 'quote_time': 1700153561.0}, 'timesale': {}, 'ma': {'ma': 448.57944444444445, 'ma_period': 9, 'time': 1700153561.0}, 'lookback': {'lookback_high': 448.765, 'lookback_low': 448.125, 'time': 1700153400.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 16, 39, 21, 286588), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 16, 52, 31, 180248)}
+2023-11-16 11:52:42,576 [INFO] [decision_engine.py:219]: Sending order: {
+  "symbol": "SPY",
+  "order_type": "market",
+  "side": "buy",
+  "price": "448.775000",
+  "quantity": "1.000000",
+  "offset": "open",
+  "tif": "day",
+  "asset_class": "option",
+  "exp": "231123",
+  "strike": null,
+  "callput": "call"
+}
+2023-11-16 11:52:56,052 [INFO] [decision_engine.py:135]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 11:55:00,368 [INFO] [decision_engine.py:107]: Handling candle close: {'open': 448.725, 'high': 448.905, 'low': 448.585, 'close': 448.625, 'time': 1700153700.0}
+2023-11-16 11:55:00,368 [INFO] [decision_engine.py:117]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 12:00:00,389 [INFO] [decision_engine.py:107]: Handling candle close: {'open': 448.625, 'high': 448.835, 'low': 448.535, 'close': 448.775, 'time': 1700154000.0}
+2023-11-16 12:00:00,389 [INFO] [decision_engine.py:117]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 12:01:40,461 [INFO] [decision_engine.py:139]: Setting Symbol PriceState: SPY State: PriceState.UP
+2023-11-16 12:01:40,461 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.LONG State: {'quote': {'bid': 448.92, 'ask': 448.93, 'price': 448.925, 'bid_size': 10, 'ask_size': 4, 'quote_time': 1700154100.0}, 'timesale': {}, 'ma': {'ma': 448.56277777777785, 'ma_period': 9, 'time': 1700154100.0}, 'lookback': {'lookback_high': 448.905, 'lookback_low': 448.125, 'time': 1700154000.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 16, 39, 21, 286588), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 16, 53, 1, 571551)}
+2023-11-16 12:01:40,784 [INFO] [decision_engine.py:219]: Sending order: {
+  "symbol": "SPY",
+  "order_type": "market",
+  "side": "buy",
+  "price": "448.925000",
+  "quantity": "1.000000",
+  "offset": "open",
+  "tif": "day",
+  "asset_class": "option",
+  "exp": "231123",
+  "strike": null,
+  "callput": "call"
+}
+2023-11-16 12:01:48,719 [INFO] [decision_engine.py:135]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 12:01:49,121 [INFO] [decision_engine.py:139]: Setting Symbol PriceState: SPY State: PriceState.UP
+2023-11-16 12:01:49,121 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.LONG State: {'quote': {'bid': 448.91, 'ask': 448.92, 'price': 448.915, 'bid_size': 10, 'ask_size': 1, 'quote_time': 1700154108.0}, 'timesale': {}, 'ma': {'ma': 448.5616666666667, 'ma_period': 9, 'time': 1700154108.0}, 'lookback': {'lookback_high': 448.905, 'lookback_low': 448.125, 'time': 1700154000.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 16, 39, 21, 286588), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 17, 2, 0, 461780)}
+2023-11-16 12:01:49,121 [WARNING] [decision_engine.py:194]: New long order lock in effect. Skipping signal: Signal.LONG symbol: SPY state: {'quote': {'bid': 448.91, 'ask': 448.92, 'price': 448.915, 'bid_size': 10, 'ask_size': 1, 'quote_time': 1700154108.0}, 'timesale': {}, 'ma': {'ma': 448.5616666666667, 'ma_period': 9, 'time': 1700154108.0}, 'lookback': {'lookback_high': 448.905, 'lookback_low': 448.125, 'time': 1700154000.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 16, 39, 21, 286588), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 17, 2, 0, 461780)}
+2023-11-16 12:01:58,680 [INFO] [decision_engine.py:135]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 12:05:00,325 [INFO] [decision_engine.py:107]: Handling candle close: {'open': 448.775, 'high': 448.955, 'low': 448.655, 'close': 448.775, 'time': 1700154300.0}
+2023-11-16 12:05:00,325 [INFO] [decision_engine.py:117]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 12:06:12,823 [INFO] [decision_engine.py:139]: Setting Symbol PriceState: SPY State: PriceState.UP
+2023-11-16 12:06:12,823 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.LONG State: {'quote': {'bid': 448.96, 'ask': 448.97, 'price': 448.965, 'bid_size': 6, 'ask_size': 16, 'quote_time': 1700154372.0}, 'timesale': {}, 'ma': {'ma': 448.60611111111115, 'ma_period': 9, 'time': 1700154372.0}, 'lookback': {'lookback_high': 448.955, 'lookback_low': 448.255, 'time': 1700154300.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 16, 39, 21, 286588), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 17, 2, 0, 461780)}
+2023-11-16 12:06:12,883 [INFO] [decision_engine.py:219]: Sending order: {
+  "symbol": "SPY",
+  "order_type": "market",
+  "side": "buy",
+  "price": "448.965000",
+  "quantity": "1.000000",
+  "offset": "open",
+  "tif": "day",
+  "asset_class": "option",
+  "exp": "231123",
+  "strike": null,
+  "callput": "call"
+}
+2023-11-16 12:06:53,080 [INFO] [decision_engine.py:135]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 12:06:54,287 [INFO] [decision_engine.py:139]: Setting Symbol PriceState: SPY State: PriceState.UP
+2023-11-16 12:06:54,287 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.LONG State: {'quote': {'bid': 448.96, 'ask': 448.97, 'price': 448.965, 'bid_size': 6, 'ask_size': 15, 'quote_time': 1700154413.0}, 'timesale': {}, 'ma': {'ma': 448.60611111111115, 'ma_period': 9, 'time': 1700154413.0}, 'lookback': {'lookback_high': 448.955, 'lookback_low': 448.255, 'time': 1700154300.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 16, 39, 21, 286588), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 17, 6, 32, 823300)}
+2023-11-16 12:06:54,899 [INFO] [decision_engine.py:219]: Sending order: {
+  "symbol": "SPY",
+  "order_type": "market",
+  "side": "buy",
+  "price": "448.965000",
+  "quantity": "1.000000",
+  "offset": "open",
+  "tif": "day",
+  "asset_class": "option",
+  "exp": "231123",
+  "strike": null,
+  "callput": "call"
+}
+2023-11-16 12:07:03,845 [INFO] [decision_engine.py:135]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 12:07:26,684 [INFO] [decision_engine.py:139]: Setting Symbol PriceState: SPY State: PriceState.UP
+2023-11-16 12:07:26,684 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.LONG State: {'quote': {'bid': 448.96, 'ask': 448.97, 'price': 448.965, 'bid_size': 6, 'ask_size': 17, 'quote_time': 1700154446.0}, 'timesale': {}, 'ma': {'ma': 448.60611111111115, 'ma_period': 9, 'time': 1700154446.0}, 'lookback': {'lookback_high': 448.955, 'lookback_low': 448.255, 'time': 1700154300.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 16, 39, 21, 286588), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 17, 7, 14, 287919)}
+2023-11-16 12:07:26,910 [INFO] [decision_engine.py:219]: Sending order: {
+  "symbol": "SPY",
+  "order_type": "market",
+  "side": "buy",
+  "price": "448.965000",
+  "quantity": "1.000000",
+  "offset": "open",
+  "tif": "day",
+  "asset_class": "option",
+  "exp": "231123",
+  "strike": null,
+  "callput": "call"
+}
+2023-11-16 12:07:51,631 [INFO] [decision_engine.py:135]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 12:08:17,998 [INFO] [decision_engine.py:139]: Setting Symbol PriceState: SPY State: PriceState.UP
+2023-11-16 12:08:17,998 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.LONG State: {'quote': {'bid': 448.96, 'ask': 448.97, 'price': 448.965, 'bid_size': 5, 'ask_size': 17, 'quote_time': 1700154497.0}, 'timesale': {}, 'ma': {'ma': 448.60611111111115, 'ma_period': 9, 'time': 1700154497.0}, 'lookback': {'lookback_high': 448.955, 'lookback_low': 448.255, 'time': 1700154300.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 16, 39, 21, 286588), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 17, 7, 46, 684748)}
+2023-11-16 12:08:18,927 [INFO] [decision_engine.py:219]: Sending order: {
+  "symbol": "SPY",
+  "order_type": "market",
+  "side": "buy",
+  "price": "448.965000",
+  "quantity": "1.000000",
+  "offset": "open",
+  "tif": "day",
+  "asset_class": "option",
+  "exp": "231123",
+  "strike": null,
+  "callput": "call"
+}
+2023-11-16 12:08:27,756 [INFO] [decision_engine.py:135]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 12:08:49,474 [INFO] [decision_engine.py:139]: Setting Symbol PriceState: SPY State: PriceState.UP
+2023-11-16 12:08:49,474 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.LONG State: {'quote': {'bid': 448.96, 'ask': 448.97, 'price': 448.965, 'bid_size': 7, 'ask_size': 5, 'quote_time': 1700154529.0}, 'timesale': {}, 'ma': {'ma': 448.60611111111115, 'ma_period': 9, 'time': 1700154529.0}, 'lookback': {'lookback_high': 448.955, 'lookback_low': 448.255, 'time': 1700154300.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 16, 39, 21, 286588), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 17, 8, 37, 998781)}
+2023-11-16 12:08:50,938 [INFO] [decision_engine.py:219]: Sending order: {
+  "symbol": "SPY",
+  "order_type": "market",
+  "side": "buy",
+  "price": "448.965000",
+  "quantity": "1.000000",
+  "offset": "open",
+  "tif": "day",
+  "asset_class": "option",
+  "exp": "231123",
+  "strike": null,
+  "callput": "call"
+}
+2023-11-16 12:08:50,981 [INFO] [decision_engine.py:135]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 12:09:14,315 [INFO] [decision_engine.py:139]: Setting Symbol PriceState: SPY State: PriceState.UP
+2023-11-16 12:09:14,315 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.LONG State: {'quote': {'bid': 448.96, 'ask': 448.97, 'price': 448.965, 'bid_size': 8, 'ask_size': 9, 'quote_time': 1700154554.0}, 'timesale': {}, 'ma': {'ma': 448.60611111111115, 'ma_period': 9, 'time': 1700154554.0}, 'lookback': {'lookback_high': 448.955, 'lookback_low': 448.255, 'time': 1700154300.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 16, 39, 21, 286588), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 17, 9, 9, 474905)}
+2023-11-16 12:09:14,947 [INFO] [decision_engine.py:219]: Sending order: {
+  "symbol": "SPY",
+  "order_type": "market",
+  "side": "buy",
+  "price": "448.965000",
+  "quantity": "1.000000",
+  "offset": "open",
+  "tif": "day",
+  "asset_class": "option",
+  "exp": "231123",
+  "strike": null,
+  "callput": "call"
+}
+2023-11-16 12:09:47,796 [INFO] [decision_engine.py:135]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 12:09:54,028 [INFO] [decision_engine.py:139]: Setting Symbol PriceState: SPY State: PriceState.UP
+2023-11-16 12:09:54,028 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.LONG State: {'quote': {'bid': 448.96, 'ask': 448.97, 'price': 448.965, 'bid_size': 5, 'ask_size': 15, 'quote_time': 1700154593.0}, 'timesale': {}, 'ma': {'ma': 448.60611111111115, 'ma_period': 9, 'time': 1700154593.0}, 'lookback': {'lookback_high': 448.955, 'lookback_low': 448.255, 'time': 1700154300.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 16, 39, 21, 286588), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 17, 9, 34, 315163)}
+2023-11-16 12:09:54,959 [INFO] [decision_engine.py:219]: Sending order: {
+  "symbol": "SPY",
+  "order_type": "market",
+  "side": "buy",
+  "price": "448.965000",
+  "quantity": "1.000000",
+  "offset": "open",
+  "tif": "day",
+  "asset_class": "option",
+  "exp": "231123",
+  "strike": null,
+  "callput": "call"
+}
+2023-11-16 12:10:00,467 [INFO] [decision_engine.py:107]: Handling candle close: {'open': 448.775, 'high': 449.065, 'low': 448.735, 'close': 449.005, 'time': 1700154600.0}
+2023-11-16 12:10:00,467 [INFO] [decision_engine.py:117]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 12:11:26,083 [INFO] [decision_engine.py:139]: Setting Symbol PriceState: SPY State: PriceState.UP
+2023-11-16 12:11:26,083 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.LONG State: {'quote': {'bid': 449.07, 'ask': 449.08, 'price': 449.075, 'bid_size': 4, 'ask_size': 4, 'quote_time': 1700154685.0}, 'timesale': {}, 'ma': {'ma': 448.6938888888889, 'ma_period': 9, 'time': 1700154685.0}, 'lookback': {'lookback_high': 449.065, 'lookback_low': 448.365, 'time': 1700154600.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 16, 39, 21, 286588), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 17, 10, 14, 28476)}
+2023-11-16 12:11:26,486 [INFO] [decision_engine.py:135]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 12:11:26,992 [INFO] [decision_engine.py:219]: Sending order: {
+  "symbol": "SPY",
+  "order_type": "market",
+  "side": "buy",
+  "price": "449.075000",
+  "quantity": "1.000000",
+  "offset": "open",
+  "tif": "day",
+  "asset_class": "option",
+  "exp": "231123",
+  "strike": null,
+  "callput": "call"
+}
+2023-11-16 12:11:27,393 [INFO] [decision_engine.py:139]: Setting Symbol PriceState: SPY State: PriceState.UP
+2023-11-16 12:11:27,393 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.LONG State: {'quote': {'bid': 449.07, 'ask': 449.08, 'price': 449.075, 'bid_size': 6, 'ask_size': 4, 'quote_time': 1700154687.0}, 'timesale': {}, 'ma': {'ma': 448.6938888888889, 'ma_period': 9, 'time': 1700154687.0}, 'lookback': {'lookback_high': 449.065, 'lookback_low': 448.365, 'time': 1700154600.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 16, 39, 21, 286588), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 17, 11, 46, 83768)}
+2023-11-16 12:11:27,393 [WARNING] [decision_engine.py:194]: New long order lock in effect. Skipping signal: Signal.LONG symbol: SPY state: {'quote': {'bid': 449.07, 'ask': 449.08, 'price': 449.075, 'bid_size': 6, 'ask_size': 4, 'quote_time': 1700154687.0}, 'timesale': {}, 'ma': {'ma': 448.6938888888889, 'ma_period': 9, 'time': 1700154687.0}, 'lookback': {'lookback_high': 449.065, 'lookback_low': 448.365, 'time': 1700154600.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 16, 39, 21, 286588), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 17, 11, 46, 83768)}
+2023-11-16 12:11:30,609 [INFO] [decision_engine.py:135]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 12:11:35,135 [INFO] [decision_engine.py:139]: Setting Symbol PriceState: SPY State: PriceState.UP
+2023-11-16 12:11:35,135 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.LONG State: {'quote': {'bid': 449.07, 'ask': 449.08, 'price': 449.075, 'bid_size': 5, 'ask_size': 7, 'quote_time': 1700154694.0}, 'timesale': {}, 'ma': {'ma': 448.6938888888889, 'ma_period': 9, 'time': 1700154694.0}, 'lookback': {'lookback_high': 449.065, 'lookback_low': 448.365, 'time': 1700154600.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 16, 39, 21, 286588), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 17, 11, 46, 83768)}
+2023-11-16 12:11:35,135 [WARNING] [decision_engine.py:194]: New long order lock in effect. Skipping signal: Signal.LONG symbol: SPY state: {'quote': {'bid': 449.07, 'ask': 449.08, 'price': 449.075, 'bid_size': 5, 'ask_size': 7, 'quote_time': 1700154694.0}, 'timesale': {}, 'ma': {'ma': 448.6938888888889, 'ma_period': 9, 'time': 1700154694.0}, 'lookback': {'lookback_high': 449.065, 'lookback_low': 448.365, 'time': 1700154600.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 16, 39, 21, 286588), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 17, 11, 46, 83768)}
+2023-11-16 12:11:39,057 [INFO] [decision_engine.py:135]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 12:11:43,890 [INFO] [decision_engine.py:139]: Setting Symbol PriceState: SPY State: PriceState.UP
+2023-11-16 12:11:43,891 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.LONG State: {'quote': {'bid': 449.07, 'ask': 449.08, 'price': 449.075, 'bid_size': 10, 'ask_size': 9, 'quote_time': 1700154703.0}, 'timesale': {}, 'ma': {'ma': 448.6938888888889, 'ma_period': 9, 'time': 1700154703.0}, 'lookback': {'lookback_high': 449.065, 'lookback_low': 448.365, 'time': 1700154600.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 16, 39, 21, 286588), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 17, 11, 46, 83768)}
+2023-11-16 12:11:43,891 [WARNING] [decision_engine.py:194]: New long order lock in effect. Skipping signal: Signal.LONG symbol: SPY state: {'quote': {'bid': 449.07, 'ask': 449.08, 'price': 449.075, 'bid_size': 10, 'ask_size': 9, 'quote_time': 1700154703.0}, 'timesale': {}, 'ma': {'ma': 448.6938888888889, 'ma_period': 9, 'time': 1700154703.0}, 'lookback': {'lookback_high': 449.065, 'lookback_low': 448.365, 'time': 1700154600.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 16, 39, 21, 286588), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 17, 11, 46, 83768)}
+2023-11-16 12:12:01,588 [INFO] [decision_engine.py:135]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 12:12:54,023 [INFO] [decision_engine.py:139]: Setting Symbol PriceState: SPY State: PriceState.UP
+2023-11-16 12:12:54,023 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.LONG State: {'quote': {'bid': 449.07, 'ask': 449.08, 'price': 449.075, 'bid_size': 7, 'ask_size': 5, 'quote_time': 1700154773.0}, 'timesale': {}, 'ma': {'ma': 448.6938888888889, 'ma_period': 9, 'time': 1700154773.0}, 'lookback': {'lookback_high': 449.065, 'lookback_low': 448.365, 'time': 1700154600.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 16, 39, 21, 286588), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 17, 11, 46, 83768)}
+2023-11-16 12:12:55,024 [INFO] [decision_engine.py:219]: Sending order: {
+  "symbol": "SPY",
+  "order_type": "market",
+  "side": "buy",
+  "price": "449.075000",
+  "quantity": "1.000000",
+  "offset": "open",
+  "tif": "day",
+  "asset_class": "option",
+  "exp": "231123",
+  "strike": null,
+  "callput": "call"
+}
+2023-11-16 12:13:45,214 [INFO] [decision_engine.py:135]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 12:14:17,833 [INFO] [decision_engine.py:139]: Setting Symbol PriceState: SPY State: PriceState.UP
+2023-11-16 12:14:17,833 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.LONG State: {'quote': {'bid': 449.07, 'ask': 449.08, 'price': 449.075, 'bid_size': 9, 'ask_size': 11, 'quote_time': 1700154857.0}, 'timesale': {}, 'ma': {'ma': 448.6938888888889, 'ma_period': 9, 'time': 1700154857.0}, 'lookback': {'lookback_high': 449.065, 'lookback_low': 448.365, 'time': 1700154600.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 16, 39, 21, 286588), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 17, 13, 14, 23570)}
+2023-11-16 12:14:19,053 [INFO] [decision_engine.py:219]: Sending order: {
+  "symbol": "SPY",
+  "order_type": "market",
+  "side": "buy",
+  "price": "449.075000",
+  "quantity": "1.000000",
+  "offset": "open",
+  "tif": "day",
+  "asset_class": "option",
+  "exp": "231123",
+  "strike": null,
+  "callput": "call"
+}
+2023-11-16 12:14:23,869 [INFO] [decision_engine.py:135]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 12:14:29,600 [INFO] [decision_engine.py:139]: Setting Symbol PriceState: SPY State: PriceState.UP
+2023-11-16 12:14:29,600 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.LONG State: {'quote': {'bid': 449.07, 'ask': 449.08, 'price': 449.075, 'bid_size': 9, 'ask_size': 5, 'quote_time': 1700154869.0}, 'timesale': {}, 'ma': {'ma': 448.6938888888889, 'ma_period': 9, 'time': 1700154869.0}, 'lookback': {'lookback_high': 449.065, 'lookback_low': 448.365, 'time': 1700154600.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 16, 39, 21, 286588), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 17, 14, 37, 833305)}
+2023-11-16 12:14:29,600 [WARNING] [decision_engine.py:194]: New long order lock in effect. Skipping signal: Signal.LONG symbol: SPY state: {'quote': {'bid': 449.07, 'ask': 449.08, 'price': 449.075, 'bid_size': 9, 'ask_size': 5, 'quote_time': 1700154869.0}, 'timesale': {}, 'ma': {'ma': 448.6938888888889, 'ma_period': 9, 'time': 1700154869.0}, 'lookback': {'lookback_high': 449.065, 'lookback_low': 448.365, 'time': 1700154600.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 16, 39, 21, 286588), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 17, 14, 37, 833305)}
+2023-11-16 12:14:38,752 [INFO] [decision_engine.py:135]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 12:14:42,981 [INFO] [decision_engine.py:139]: Setting Symbol PriceState: SPY State: PriceState.UP
+2023-11-16 12:14:42,981 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.LONG State: {'quote': {'bid': 449.07, 'ask': 449.08, 'price': 449.075, 'bid_size': 5, 'ask_size': 10, 'quote_time': 1700154882.0}, 'timesale': {}, 'ma': {'ma': 448.6938888888889, 'ma_period': 9, 'time': 1700154882.0}, 'lookback': {'lookback_high': 449.065, 'lookback_low': 448.365, 'time': 1700154600.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 16, 39, 21, 286588), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 17, 14, 37, 833305)}
+2023-11-16 12:14:43,061 [INFO] [decision_engine.py:219]: Sending order: {
+  "symbol": "SPY",
+  "order_type": "market",
+  "side": "buy",
+  "price": "449.075000",
+  "quantity": "1.000000",
+  "offset": "open",
+  "tif": "day",
+  "asset_class": "option",
+  "exp": "231123",
+  "strike": null,
+  "callput": "call"
+}
+2023-11-16 12:14:58,870 [INFO] [decision_engine.py:135]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 12:15:00,382 [INFO] [decision_engine.py:107]: Handling candle close: {'open': 449.005, 'high': 449.155, 'low': 448.945, 'close': 449.045, 'time': 1700154900.0}
+2023-11-16 12:15:00,382 [INFO] [decision_engine.py:117]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 12:15:56,110 [INFO] [decision_engine.py:139]: Setting Symbol PriceState: SPY State: PriceState.UP
+2023-11-16 12:15:56,110 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.LONG State: {'quote': {'bid': 449.17, 'ask': 449.18, 'price': 449.175, 'bid_size': 11, 'ask_size': 3, 'quote_time': 1700154955.0}, 'timesale': {}, 'ma': {'ma': 448.7594444444445, 'ma_period': 9, 'time': 1700154955.0}, 'lookback': {'lookback_high': 449.155, 'lookback_low': 448.535, 'time': 1700154900.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 16, 39, 21, 286588), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 17, 15, 2, 981893)}
+2023-11-16 12:15:57,086 [INFO] [decision_engine.py:219]: Sending order: {
+  "symbol": "SPY",
+  "order_type": "market",
+  "side": "buy",
+  "price": "449.175000",
+  "quantity": "1.000000",
+  "offset": "open",
+  "tif": "day",
+  "asset_class": "option",
+  "exp": "231123",
+  "strike": null,
+  "callput": "call"
+}
+2023-11-16 12:16:03,359 [INFO] [decision_engine.py:135]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 12:16:06,482 [INFO] [decision_engine.py:139]: Setting Symbol PriceState: SPY State: PriceState.UP
+2023-11-16 12:16:06,482 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.LONG State: {'quote': {'bid': 449.16, 'ask': 449.17, 'price': 449.165, 'bid_size': 7, 'ask_size': 22, 'quote_time': 1700154966.0}, 'timesale': {}, 'ma': {'ma': 448.7583333333334, 'ma_period': 9, 'time': 1700154966.0}, 'lookback': {'lookback_high': 449.155, 'lookback_low': 448.535, 'time': 1700154900.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 16, 39, 21, 286588), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 17, 16, 16, 110405)}
+2023-11-16 12:16:06,482 [WARNING] [decision_engine.py:194]: New long order lock in effect. Skipping signal: Signal.LONG symbol: SPY state: {'quote': {'bid': 449.16, 'ask': 449.17, 'price': 449.165, 'bid_size': 7, 'ask_size': 22, 'quote_time': 1700154966.0}, 'timesale': {}, 'ma': {'ma': 448.7583333333334, 'ma_period': 9, 'time': 1700154966.0}, 'lookback': {'lookback_high': 449.155, 'lookback_low': 448.535, 'time': 1700154900.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 16, 39, 21, 286588), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 17, 16, 16, 110405)}
+2023-11-16 12:16:11,307 [INFO] [decision_engine.py:135]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 12:16:54,565 [INFO] [decision_engine.py:139]: Setting Symbol PriceState: SPY State: PriceState.UP
+2023-11-16 12:16:54,565 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.LONG State: {'quote': {'bid': 449.16, 'ask': 449.16, 'price': 449.16, 'bid_size': 3, 'ask_size': 1, 'quote_time': 1700155014.0}, 'timesale': {}, 'ma': {'ma': 448.7577777777778, 'ma_period': 9, 'time': 1700155014.0}, 'lookback': {'lookback_high': 449.155, 'lookback_low': 448.535, 'time': 1700154900.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 16, 39, 21, 286588), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 17, 16, 16, 110405)}
+2023-11-16 12:16:55,111 [INFO] [decision_engine.py:219]: Sending order: {
+  "symbol": "SPY",
+  "order_type": "market",
+  "side": "buy",
+  "price": "449.160000",
+  "quantity": "1.000000",
+  "offset": "open",
+  "tif": "day",
+  "asset_class": "option",
+  "exp": "231123",
+  "strike": null,
+  "callput": "call"
+}
+2023-11-16 12:16:56,478 [INFO] [decision_engine.py:135]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 12:17:43,251 [INFO] [decision_engine.py:139]: Setting Symbol PriceState: SPY State: PriceState.UP
+2023-11-16 12:17:43,251 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.LONG State: {'quote': {'bid': 449.16, 'ask': 449.17, 'price': 449.165, 'bid_size': 13, 'ask_size': 3, 'quote_time': 1700155062.0}, 'timesale': {}, 'ma': {'ma': 448.7583333333334, 'ma_period': 9, 'time': 1700155062.0}, 'lookback': {'lookback_high': 449.155, 'lookback_low': 448.535, 'time': 1700154900.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 16, 39, 21, 286588), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 17, 17, 14, 565203)}
+2023-11-16 12:17:44,960 [INFO] [decision_engine.py:135]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 12:17:45,124 [INFO] [decision_engine.py:219]: Sending order: {
+  "symbol": "SPY",
+  "order_type": "market",
+  "side": "buy",
+  "price": "449.165000",
+  "quantity": "1.000000",
+  "offset": "open",
+  "tif": "day",
+  "asset_class": "option",
+  "exp": "231123",
+  "strike": null,
+  "callput": "call"
+}
+2023-11-16 12:17:48,884 [INFO] [decision_engine.py:139]: Setting Symbol PriceState: SPY State: PriceState.UP
+2023-11-16 12:17:48,884 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.LONG State: {'quote': {'bid': 449.17, 'ask': 449.18, 'price': 449.175, 'bid_size': 5, 'ask_size': 13, 'quote_time': 1700155068.0}, 'timesale': {}, 'ma': {'ma': 448.7594444444445, 'ma_period': 9, 'time': 1700155068.0}, 'lookback': {'lookback_high': 449.155, 'lookback_low': 448.535, 'time': 1700154900.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 16, 39, 21, 286588), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 17, 18, 3, 251261)}
+2023-11-16 12:17:48,884 [WARNING] [decision_engine.py:194]: New long order lock in effect. Skipping signal: Signal.LONG symbol: SPY state: {'quote': {'bid': 449.17, 'ask': 449.18, 'price': 449.175, 'bid_size': 5, 'ask_size': 13, 'quote_time': 1700155068.0}, 'timesale': {}, 'ma': {'ma': 448.7594444444445, 'ma_period': 9, 'time': 1700155068.0}, 'lookback': {'lookback_high': 449.155, 'lookback_low': 448.535, 'time': 1700154900.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 16, 39, 21, 286588), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 17, 18, 3, 251261)}
+2023-11-16 12:18:00,850 [INFO] [decision_engine.py:135]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 12:18:34,918 [INFO] [decision_engine.py:139]: Setting Symbol PriceState: SPY State: PriceState.UP
+2023-11-16 12:18:34,919 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.LONG State: {'quote': {'bid': 449.16, 'ask': 449.17, 'price': 449.165, 'bid_size': 10, 'ask_size': 14, 'quote_time': 1700155114.0}, 'timesale': {}, 'ma': {'ma': 448.7583333333334, 'ma_period': 9, 'time': 1700155114.0}, 'lookback': {'lookback_high': 449.155, 'lookback_low': 448.535, 'time': 1700154900.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 16, 39, 21, 286588), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 17, 18, 3, 251261)}
+2023-11-16 12:18:35,144 [INFO] [decision_engine.py:219]: Sending order: {
+  "symbol": "SPY",
+  "order_type": "market",
+  "side": "buy",
+  "price": "449.165000",
+  "quantity": "1.000000",
+  "offset": "open",
+  "tif": "day",
+  "asset_class": "option",
+  "exp": "231123",
+  "strike": null,
+  "callput": "call"
+}
+2023-11-16 12:19:59,612 [INFO] [decision_engine.py:135]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 12:20:00,319 [INFO] [decision_engine.py:107]: Handling candle close: {'open': 449.045, 'high': 449.315, 'low': 448.965, 'close': 449.145, 'time': 1700155200.0}
+2023-11-16 12:20:00,319 [INFO] [decision_engine.py:117]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 12:25:00,352 [INFO] [decision_engine.py:107]: Handling candle close: {'open': 449.145, 'high': 449.285, 'low': 448.985, 'close': 449.165, 'time': 1700155500.0}
+2023-11-16 12:25:00,352 [INFO] [decision_engine.py:117]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 12:26:49,487 [INFO] [decision_engine.py:139]: Setting Symbol PriceState: SPY State: PriceState.UP
+2023-11-16 12:26:49,487 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.LONG State: {'quote': {'bid': 449.32, 'ask': 449.33, 'price': 449.325, 'bid_size': 4, 'ask_size': 15, 'quote_time': 1700155609.0}, 'timesale': {}, 'ma': {'ma': 448.9538888888889, 'ma_period': 9, 'time': 1700155609.0}, 'lookback': {'lookback_high': 449.315, 'lookback_low': 448.655, 'time': 1700155500.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 16, 39, 21, 286588), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 17, 18, 54, 919034)}
+2023-11-16 12:26:51,334 [INFO] [decision_engine.py:219]: Sending order: {
+  "symbol": "SPY",
+  "order_type": "market",
+  "side": "buy",
+  "price": "449.325000",
+  "quantity": "1.000000",
+  "offset": "open",
+  "tif": "day",
+  "asset_class": "option",
+  "exp": "231123",
+  "strike": null,
+  "callput": "call"
+}
+2023-11-16 12:26:55,620 [INFO] [decision_engine.py:135]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 12:26:58,033 [INFO] [decision_engine.py:139]: Setting Symbol PriceState: SPY State: PriceState.UP
+2023-11-16 12:26:58,033 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.LONG State: {'quote': {'bid': 449.32, 'ask': 449.33, 'price': 449.325, 'bid_size': 6, 'ask_size': 9, 'quote_time': 1700155617.0}, 'timesale': {}, 'ma': {'ma': 448.9538888888889, 'ma_period': 9, 'time': 1700155617.0}, 'lookback': {'lookback_high': 449.315, 'lookback_low': 448.655, 'time': 1700155500.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 16, 39, 21, 286588), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 17, 27, 9, 487302)}
+2023-11-16 12:26:58,033 [WARNING] [decision_engine.py:194]: New long order lock in effect. Skipping signal: Signal.LONG symbol: SPY state: {'quote': {'bid': 449.32, 'ask': 449.33, 'price': 449.325, 'bid_size': 6, 'ask_size': 9, 'quote_time': 1700155617.0}, 'timesale': {}, 'ma': {'ma': 448.9538888888889, 'ma_period': 9, 'time': 1700155617.0}, 'lookback': {'lookback_high': 449.315, 'lookback_low': 448.655, 'time': 1700155500.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 16, 39, 21, 286588), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 17, 27, 9, 487302)}
+2023-11-16 12:26:59,844 [INFO] [decision_engine.py:135]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 12:27:16,040 [INFO] [decision_engine.py:139]: Setting Symbol PriceState: SPY State: PriceState.UP
+2023-11-16 12:27:16,040 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.LONG State: {'quote': {'bid': 449.32, 'ask': 449.33, 'price': 449.325, 'bid_size': 8, 'ask_size': 19, 'quote_time': 1700155635.0}, 'timesale': {}, 'ma': {'ma': 448.9538888888889, 'ma_period': 9, 'time': 1700155635.0}, 'lookback': {'lookback_high': 449.315, 'lookback_low': 448.655, 'time': 1700155500.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 16, 39, 21, 286588), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 17, 27, 9, 487302)}
+2023-11-16 12:27:17,347 [INFO] [decision_engine.py:219]: Sending order: {
+  "symbol": "SPY",
+  "order_type": "market",
+  "side": "buy",
+  "price": "449.325000",
+  "quantity": "1.000000",
+  "offset": "open",
+  "tif": "day",
+  "asset_class": "option",
+  "exp": "231123",
+  "strike": null,
+  "callput": "call"
+}
+2023-11-16 12:27:22,067 [INFO] [decision_engine.py:135]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 12:27:23,781 [INFO] [decision_engine.py:139]: Setting Symbol PriceState: SPY State: PriceState.UP
+2023-11-16 12:27:23,781 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.LONG State: {'quote': {'bid': 449.32, 'ask': 449.33, 'price': 449.325, 'bid_size': 6, 'ask_size': 15, 'quote_time': 1700155643.0}, 'timesale': {}, 'ma': {'ma': 448.9538888888889, 'ma_period': 9, 'time': 1700155643.0}, 'lookback': {'lookback_high': 449.315, 'lookback_low': 448.655, 'time': 1700155500.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 16, 39, 21, 286588), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 17, 27, 36, 40299)}
+2023-11-16 12:27:23,781 [WARNING] [decision_engine.py:194]: New long order lock in effect. Skipping signal: Signal.LONG symbol: SPY state: {'quote': {'bid': 449.32, 'ask': 449.33, 'price': 449.325, 'bid_size': 6, 'ask_size': 15, 'quote_time': 1700155643.0}, 'timesale': {}, 'ma': {'ma': 448.9538888888889, 'ma_period': 9, 'time': 1700155643.0}, 'lookback': {'lookback_high': 449.315, 'lookback_low': 448.655, 'time': 1700155500.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 16, 39, 21, 286588), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 17, 27, 36, 40299)}
+2023-11-16 12:28:55,504 [INFO] [decision_engine.py:135]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 12:29:00,331 [INFO] [decision_engine.py:139]: Setting Symbol PriceState: SPY State: PriceState.UP
+2023-11-16 12:29:00,331 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.LONG State: {'quote': {'bid': 449.32, 'ask': 449.33, 'price': 449.325, 'bid_size': 6, 'ask_size': 10, 'quote_time': 1700155740.0}, 'timesale': {}, 'ma': {'ma': 448.9538888888889, 'ma_period': 9, 'time': 1700155740.0}, 'lookback': {'lookback_high': 449.315, 'lookback_low': 448.655, 'time': 1700155500.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 16, 39, 21, 286588), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 17, 27, 36, 40299)}
+2023-11-16 12:29:01,386 [INFO] [decision_engine.py:219]: Sending order: {
+  "symbol": "SPY",
+  "order_type": "market",
+  "side": "buy",
+  "price": "449.325000",
+  "quantity": "1.000000",
+  "offset": "open",
+  "tif": "day",
+  "asset_class": "option",
+  "exp": "231123",
+  "strike": null,
+  "callput": "call"
+}
+2023-11-16 12:29:01,541 [INFO] [decision_engine.py:135]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 12:29:03,351 [INFO] [decision_engine.py:139]: Setting Symbol PriceState: SPY State: PriceState.UP
+2023-11-16 12:29:03,351 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.LONG State: {'quote': {'bid': 449.32, 'ask': 449.33, 'price': 449.325, 'bid_size': 5, 'ask_size': 11, 'quote_time': 1700155743.0}, 'timesale': {}, 'ma': {'ma': 448.9538888888889, 'ma_period': 9, 'time': 1700155743.0}, 'lookback': {'lookback_high': 449.315, 'lookback_low': 448.655, 'time': 1700155500.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 16, 39, 21, 286588), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 17, 29, 20, 331903)}
+2023-11-16 12:29:03,351 [WARNING] [decision_engine.py:194]: New long order lock in effect. Skipping signal: Signal.LONG symbol: SPY state: {'quote': {'bid': 449.32, 'ask': 449.33, 'price': 449.325, 'bid_size': 5, 'ask_size': 11, 'quote_time': 1700155743.0}, 'timesale': {}, 'ma': {'ma': 448.9538888888889, 'ma_period': 9, 'time': 1700155743.0}, 'lookback': {'lookback_high': 449.315, 'lookback_low': 448.655, 'time': 1700155500.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 16, 39, 21, 286588), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 17, 29, 20, 331903)}
+2023-11-16 12:29:04,056 [INFO] [decision_engine.py:135]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 12:29:17,534 [INFO] [decision_engine.py:139]: Setting Symbol PriceState: SPY State: PriceState.UP
+2023-11-16 12:29:17,534 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.LONG State: {'quote': {'bid': 449.32, 'ask': 449.33, 'price': 449.325, 'bid_size': 6, 'ask_size': 10, 'quote_time': 1700155757.0}, 'timesale': {}, 'ma': {'ma': 448.9538888888889, 'ma_period': 9, 'time': 1700155757.0}, 'lookback': {'lookback_high': 449.315, 'lookback_low': 448.655, 'time': 1700155500.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 16, 39, 21, 286588), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 17, 29, 20, 331903)}
+2023-11-16 12:29:17,534 [WARNING] [decision_engine.py:194]: New long order lock in effect. Skipping signal: Signal.LONG symbol: SPY state: {'quote': {'bid': 449.32, 'ask': 449.33, 'price': 449.325, 'bid_size': 6, 'ask_size': 10, 'quote_time': 1700155757.0}, 'timesale': {}, 'ma': {'ma': 448.9538888888889, 'ma_period': 9, 'time': 1700155757.0}, 'lookback': {'lookback_high': 449.315, 'lookback_low': 448.655, 'time': 1700155500.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 16, 39, 21, 286588), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 17, 29, 20, 331903)}
+2023-11-16 12:29:28,293 [INFO] [decision_engine.py:135]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 12:29:32,109 [INFO] [decision_engine.py:139]: Setting Symbol PriceState: SPY State: PriceState.UP
+2023-11-16 12:29:32,109 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.LONG State: {'quote': {'bid': 449.32, 'ask': 449.33, 'price': 449.325, 'bid_size': 7, 'ask_size': 9, 'quote_time': 1700155771.0}, 'timesale': {}, 'ma': {'ma': 448.9538888888889, 'ma_period': 9, 'time': 1700155771.0}, 'lookback': {'lookback_high': 449.315, 'lookback_low': 448.655, 'time': 1700155500.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 16, 39, 21, 286588), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 17, 29, 20, 331903)}
+2023-11-16 12:29:33,400 [INFO] [decision_engine.py:219]: Sending order: {
+  "symbol": "SPY",
+  "order_type": "market",
+  "side": "buy",
+  "price": "449.325000",
+  "quantity": "1.000000",
+  "offset": "open",
+  "tif": "day",
+  "asset_class": "option",
+  "exp": "231123",
+  "strike": null,
+  "callput": "call"
+}
+2023-11-16 12:29:44,787 [INFO] [decision_engine.py:135]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 12:30:00,360 [INFO] [decision_engine.py:107]: Handling candle close: {'open': 449.165, 'high': 449.385, 'low': 449.075, 'close': 449.255, 'time': 1700155800.0}
+2023-11-16 12:30:00,360 [INFO] [decision_engine.py:117]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 12:35:00,405 [INFO] [decision_engine.py:107]: Handling candle close: {'open': 449.255, 'high': 449.355, 'low': 449.105, 'close': 449.235, 'time': 1700156100.0}
+2023-11-16 12:35:00,405 [INFO] [decision_engine.py:117]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 12:38:13,102 [INFO] [decision_engine.py:139]: Setting Symbol PriceState: SPY State: PriceState.UP
+2023-11-16 12:38:13,102 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.LONG State: {'quote': {'bid': 449.39, 'ask': 449.4, 'price': 449.395, 'bid_size': 2, 'ask_size': 21, 'quote_time': 1700156292.0}, 'timesale': {}, 'ma': {'ma': 449.08833333333337, 'ma_period': 9, 'time': 1700156292.0}, 'lookback': {'lookback_high': 449.385, 'lookback_low': 448.945, 'time': 1700156100.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 16, 39, 21, 286588), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 17, 29, 52, 109138)}
+2023-11-16 12:38:13,594 [INFO] [decision_engine.py:219]: Sending order: {
+  "symbol": "SPY",
+  "order_type": "market",
+  "side": "buy",
+  "price": "449.395000",
+  "quantity": "1.000000",
+  "offset": "open",
+  "tif": "day",
+  "asset_class": "option",
+  "exp": "231123",
+  "strike": null,
+  "callput": "call"
+}
+2023-11-16 12:38:21,255 [INFO] [decision_engine.py:135]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 12:38:21,457 [INFO] [decision_engine.py:139]: Setting Symbol PriceState: SPY State: PriceState.UP
+2023-11-16 12:38:21,457 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.LONG State: {'quote': {'bid': 449.39, 'ask': 449.4, 'price': 449.395, 'bid_size': 5, 'ask_size': 16, 'quote_time': 1700156301.0}, 'timesale': {}, 'ma': {'ma': 449.08833333333337, 'ma_period': 9, 'time': 1700156301.0}, 'lookback': {'lookback_high': 449.385, 'lookback_low': 448.945, 'time': 1700156100.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 16, 39, 21, 286588), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 17, 38, 33, 102111)}
+2023-11-16 12:38:21,457 [WARNING] [decision_engine.py:194]: New long order lock in effect. Skipping signal: Signal.LONG symbol: SPY state: {'quote': {'bid': 449.39, 'ask': 449.4, 'price': 449.395, 'bid_size': 5, 'ask_size': 16, 'quote_time': 1700156301.0}, 'timesale': {}, 'ma': {'ma': 449.08833333333337, 'ma_period': 9, 'time': 1700156301.0}, 'lookback': {'lookback_high': 449.385, 'lookback_low': 448.945, 'time': 1700156100.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 16, 39, 21, 286588), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 17, 38, 33, 102111)}
+2023-11-16 12:38:48,925 [INFO] [decision_engine.py:135]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 12:38:55,261 [INFO] [decision_engine.py:139]: Setting Symbol PriceState: SPY State: PriceState.UP
+2023-11-16 12:38:55,262 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.LONG State: {'quote': {'bid': 449.39, 'ask': 449.4, 'price': 449.395, 'bid_size': 3, 'ask_size': 18, 'quote_time': 1700156334.0}, 'timesale': {}, 'ma': {'ma': 449.08833333333337, 'ma_period': 9, 'time': 1700156334.0}, 'lookback': {'lookback_high': 449.385, 'lookback_low': 448.945, 'time': 1700156100.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 16, 39, 21, 286588), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 17, 38, 33, 102111)}
+2023-11-16 12:38:55,613 [INFO] [decision_engine.py:219]: Sending order: {
+  "symbol": "SPY",
+  "order_type": "market",
+  "side": "buy",
+  "price": "449.395000",
+  "quantity": "1.000000",
+  "offset": "open",
+  "tif": "day",
+  "asset_class": "option",
+  "exp": "231123",
+  "strike": null,
+  "callput": "call"
+}
+2023-11-16 12:40:00,340 [INFO] [decision_engine.py:107]: Handling candle close: {'open': 449.235, 'high': 449.535, 'low': 449.135, 'close': 449.515, 'time': 1700156400.0}
+2023-11-16 12:40:00,340 [INFO] [decision_engine.py:117]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 12:40:22,767 [INFO] [decision_engine.py:139]: Setting Symbol PriceState: SPY State: PriceState.UP
+2023-11-16 12:40:22,767 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.LONG State: {'quote': {'bid': 449.54, 'ask': 449.55, 'price': 449.545, 'bid_size': 8, 'ask_size': 5, 'quote_time': 1700156422.0}, 'timesale': {}, 'ma': {'ma': 449.18722222222226, 'ma_period': 9, 'time': 1700156422.0}, 'lookback': {'lookback_high': 449.535, 'lookback_low': 448.965, 'time': 1700156400.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 16, 39, 21, 286588), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 17, 39, 15, 262089)}
+2023-11-16 12:40:23,640 [INFO] [decision_engine.py:219]: Sending order: {
+  "symbol": "SPY",
+  "order_type": "market",
+  "side": "buy",
+  "price": "449.545000",
+  "quantity": "1.000000",
+  "offset": "open",
+  "tif": "day",
+  "asset_class": "option",
+  "exp": "231123",
+  "strike": null,
+  "callput": "call"
+}
+2023-11-16 12:40:38,157 [INFO] [decision_engine.py:135]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 12:40:41,075 [INFO] [decision_engine.py:139]: Setting Symbol PriceState: SPY State: PriceState.UP
+2023-11-16 12:40:41,075 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.LONG State: {'quote': {'bid': 449.54, 'ask': 449.55, 'price': 449.545, 'bid_size': 11, 'ask_size': 12, 'quote_time': 1700156440.0}, 'timesale': {}, 'ma': {'ma': 449.18722222222226, 'ma_period': 9, 'time': 1700156440.0}, 'lookback': {'lookback_high': 449.535, 'lookback_low': 448.965, 'time': 1700156400.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 16, 39, 21, 286588), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 17, 40, 42, 767181)}
+2023-11-16 12:40:41,075 [WARNING] [decision_engine.py:194]: New long order lock in effect. Skipping signal: Signal.LONG symbol: SPY state: {'quote': {'bid': 449.54, 'ask': 449.55, 'price': 449.545, 'bid_size': 11, 'ask_size': 12, 'quote_time': 1700156440.0}, 'timesale': {}, 'ma': {'ma': 449.18722222222226, 'ma_period': 9, 'time': 1700156440.0}, 'lookback': {'lookback_high': 449.535, 'lookback_low': 448.965, 'time': 1700156400.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 16, 39, 21, 286588), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 17, 40, 42, 767181)}
+2023-11-16 12:45:00,308 [INFO] [decision_engine.py:107]: Handling candle close: {'open': 449.515, 'high': 449.915, 'low': 449.495, 'close': 449.635, 'time': 1700156700.0}
+2023-11-16 12:45:00,308 [INFO] [decision_engine.py:117]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 12:50:00,325 [INFO] [decision_engine.py:107]: Handling candle close: {'open': 449.635, 'high': 449.725, 'low': 449.555, 'close': 449.635, 'time': 1700157000.0}
+2023-11-16 12:50:00,325 [INFO] [decision_engine.py:117]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 12:55:00,488 [INFO] [decision_engine.py:107]: Handling candle close: {'open': 449.635, 'high': 449.645, 'low': 449.225, 'close': 449.325, 'time': 1700157300.0}
+2023-11-16 12:55:00,488 [INFO] [decision_engine.py:126]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_DOWN
+2023-11-16 13:00:00,487 [INFO] [decision_engine.py:107]: Handling candle close: {'open': 449.325, 'high': 449.525, 'low': 449.285, 'close': 449.495, 'time': 1700157600.0}
+2023-11-16 13:00:00,488 [INFO] [decision_engine.py:117]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 13:05:00,664 [INFO] [decision_engine.py:107]: Handling candle close: {'open': 449.495, 'high': 449.555, 'low': 449.295, 'close': 449.325, 'time': 1700157900.0}
+2023-11-16 13:05:00,664 [INFO] [decision_engine.py:126]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_DOWN
+2023-11-16 13:05:57,800 [INFO] [decision_engine.py:149]: Setting Symbol PriceState: SPY State: PriceState.DOWN
+2023-11-16 13:05:57,800 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.SHORT State: {'quote': {'bid': 449.21, 'ask': 449.22, 'price': 449.215, 'bid_size': 11, 'ask_size': 4, 'quote_time': 1700157957.0}, 'timesale': {}, 'ma': {'ma': 449.40388888888884, 'ma_period': 9, 'time': 1700157957.0}, 'lookback': {'lookback_high': 449.915, 'lookback_low': 449.225, 'time': 1700157900.0}, 'candle': None, 'price_state': <PriceState.DOWN: 3>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 16, 39, 21, 286588), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 17, 40, 42, 767181)}
+2023-11-16 13:05:58,200 [INFO] [decision_engine.py:219]: Sending order: {
+  "symbol": "SPY",
+  "order_type": "market",
+  "side": "buy",
+  "price": "449.215000",
+  "quantity": "1.000000",
+  "offset": "open",
+  "tif": "day",
+  "asset_class": "option",
+  "exp": "231123",
+  "strike": null,
+  "callput": "put"
+}
+2023-11-16 13:06:00,820 [INFO] [decision_engine.py:145]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_DOWN
+2023-11-16 13:08:42,525 [INFO] [decision_engine.py:149]: Setting Symbol PriceState: SPY State: PriceState.DOWN
+2023-11-16 13:08:42,525 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.SHORT State: {'quote': {'bid': 449.21, 'ask': 449.22, 'price': 449.215, 'bid_size': 7, 'ask_size': 14, 'quote_time': 1700158122.0}, 'timesale': {}, 'ma': {'ma': 449.40388888888884, 'ma_period': 9, 'time': 1700158122.0}, 'lookback': {'lookback_high': 449.915, 'lookback_low': 449.225, 'time': 1700157900.0}, 'candle': None, 'price_state': <PriceState.DOWN: 3>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 18, 6, 17, 800928), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 17, 40, 42, 767181)}
+2023-11-16 13:08:44,265 [INFO] [decision_engine.py:219]: Sending order: {
+  "symbol": "SPY",
+  "order_type": "market",
+  "side": "buy",
+  "price": "449.215000",
+  "quantity": "1.000000",
+  "offset": "open",
+  "tif": "day",
+  "asset_class": "option",
+  "exp": "231123",
+  "strike": null,
+  "callput": "put"
+}
+2023-11-16 13:08:46,347 [INFO] [decision_engine.py:145]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_DOWN
+2023-11-16 13:08:54,489 [INFO] [decision_engine.py:149]: Setting Symbol PriceState: SPY State: PriceState.DOWN
+2023-11-16 13:08:54,489 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.SHORT State: {'quote': {'bid': 449.21, 'ask': 449.22, 'price': 449.215, 'bid_size': 7, 'ask_size': 4, 'quote_time': 1700158134.0}, 'timesale': {}, 'ma': {'ma': 449.40388888888884, 'ma_period': 9, 'time': 1700158134.0}, 'lookback': {'lookback_high': 449.915, 'lookback_low': 449.225, 'time': 1700157900.0}, 'candle': None, 'price_state': <PriceState.DOWN: 3>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 18, 9, 2, 525283), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 17, 40, 42, 767181)}
+2023-11-16 13:08:54,489 [WARNING] [decision_engine.py:200]: New short order lock in effect. Skipping signal: Signal.SHORT symbol: SPY state: {'quote': {'bid': 449.21, 'ask': 449.22, 'price': 449.215, 'bid_size': 7, 'ask_size': 4, 'quote_time': 1700158134.0}, 'timesale': {}, 'ma': {'ma': 449.40388888888884, 'ma_period': 9, 'time': 1700158134.0}, 'lookback': {'lookback_high': 449.915, 'lookback_low': 449.225, 'time': 1700157900.0}, 'candle': None, 'price_state': <PriceState.DOWN: 3>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 18, 9, 2, 525283), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 17, 40, 42, 767181)}
+2023-11-16 13:10:00,473 [INFO] [decision_engine.py:107]: Handling candle close: {'open': 449.325, 'high': 449.405, 'low': 449.075, 'close': 449.135, 'time': 1700158200.0}
+2023-11-16 13:10:00,473 [INFO] [decision_engine.py:126]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_DOWN
+2023-11-16 13:10:37,087 [INFO] [decision_engine.py:149]: Setting Symbol PriceState: SPY State: PriceState.DOWN
+2023-11-16 13:10:37,087 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.SHORT State: {'quote': {'bid': 449.05, 'ask': 449.06, 'price': 449.055, 'bid_size': 7, 'ask_size': 4, 'quote_time': 1700158236.0}, 'timesale': {}, 'ma': {'ma': 449.3727777777777, 'ma_period': 9, 'time': 1700158236.0}, 'lookback': {'lookback_high': 449.725, 'lookback_low': 449.075, 'time': 1700158200.0}, 'candle': None, 'price_state': <PriceState.DOWN: 3>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 18, 9, 2, 525283), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 17, 40, 42, 767181)}
+2023-11-16 13:10:38,307 [INFO] [decision_engine.py:219]: Sending order: {
+  "symbol": "SPY",
+  "order_type": "market",
+  "side": "buy",
+  "price": "449.055000",
+  "quantity": "1.000000",
+  "offset": "open",
+  "tif": "day",
+  "asset_class": "option",
+  "exp": "231123",
+  "strike": null,
+  "callput": "put"
+}
+2023-11-16 13:10:40,705 [INFO] [decision_engine.py:145]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_DOWN
+2023-11-16 13:10:43,020 [INFO] [decision_engine.py:149]: Setting Symbol PriceState: SPY State: PriceState.DOWN
+2023-11-16 13:10:43,020 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.SHORT State: {'quote': {'bid': 449.06, 'ask': 449.07, 'price': 449.065, 'bid_size': 10, 'ask_size': 10, 'quote_time': 1700158242.0}, 'timesale': {}, 'ma': {'ma': 449.3738888888888, 'ma_period': 9, 'time': 1700158242.0}, 'lookback': {'lookback_high': 449.725, 'lookback_low': 449.075, 'time': 1700158200.0}, 'candle': None, 'price_state': <PriceState.DOWN: 3>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 18, 10, 57, 87689), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 17, 40, 42, 767181)}
+2023-11-16 13:10:43,020 [WARNING] [decision_engine.py:200]: New short order lock in effect. Skipping signal: Signal.SHORT symbol: SPY state: {'quote': {'bid': 449.06, 'ask': 449.07, 'price': 449.065, 'bid_size': 10, 'ask_size': 10, 'quote_time': 1700158242.0}, 'timesale': {}, 'ma': {'ma': 449.3738888888888, 'ma_period': 9, 'time': 1700158242.0}, 'lookback': {'lookback_high': 449.725, 'lookback_low': 449.075, 'time': 1700158200.0}, 'candle': None, 'price_state': <PriceState.DOWN: 3>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 18, 10, 57, 87689), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 17, 40, 42, 767181)}
+2023-11-16 13:10:43,828 [INFO] [decision_engine.py:145]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_DOWN
+2023-11-16 13:11:22,733 [INFO] [decision_engine.py:149]: Setting Symbol PriceState: SPY State: PriceState.DOWN
+2023-11-16 13:11:22,733 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.SHORT State: {'quote': {'bid': 449.05, 'ask': 449.06, 'price': 449.055, 'bid_size': 5, 'ask_size': 9, 'quote_time': 1700158282.0}, 'timesale': {}, 'ma': {'ma': 449.3727777777777, 'ma_period': 9, 'time': 1700158282.0}, 'lookback': {'lookback_high': 449.725, 'lookback_low': 449.075, 'time': 1700158200.0}, 'candle': None, 'price_state': <PriceState.DOWN: 3>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 18, 10, 57, 87689), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 17, 40, 42, 767181)}
+2023-11-16 13:11:24,327 [INFO] [decision_engine.py:219]: Sending order: {
+  "symbol": "SPY",
+  "order_type": "market",
+  "side": "buy",
+  "price": "449.055000",
+  "quantity": "1.000000",
+  "offset": "open",
+  "tif": "day",
+  "asset_class": "option",
+  "exp": "231123",
+  "strike": null,
+  "callput": "put"
+}
+2023-11-16 13:11:28,463 [INFO] [decision_engine.py:145]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_DOWN
+2023-11-16 13:11:32,388 [INFO] [decision_engine.py:149]: Setting Symbol PriceState: SPY State: PriceState.DOWN
+2023-11-16 13:11:32,388 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.SHORT State: {'quote': {'bid': 449.06, 'ask': 449.07, 'price': 449.065, 'bid_size': 3, 'ask_size': 14, 'quote_time': 1700158292.0}, 'timesale': {}, 'ma': {'ma': 449.3738888888888, 'ma_period': 9, 'time': 1700158292.0}, 'lookback': {'lookback_high': 449.725, 'lookback_low': 449.075, 'time': 1700158200.0}, 'candle': None, 'price_state': <PriceState.DOWN: 3>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 18, 11, 42, 733235), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 17, 40, 42, 767181)}
+2023-11-16 13:11:32,388 [WARNING] [decision_engine.py:200]: New short order lock in effect. Skipping signal: Signal.SHORT symbol: SPY state: {'quote': {'bid': 449.06, 'ask': 449.07, 'price': 449.065, 'bid_size': 3, 'ask_size': 14, 'quote_time': 1700158292.0}, 'timesale': {}, 'ma': {'ma': 449.3738888888888, 'ma_period': 9, 'time': 1700158292.0}, 'lookback': {'lookback_high': 449.725, 'lookback_low': 449.075, 'time': 1700158200.0}, 'candle': None, 'price_state': <PriceState.DOWN: 3>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 18, 11, 42, 733235), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 17, 40, 42, 767181)}
+2023-11-16 13:14:57,449 [INFO] [decision_engine.py:145]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_DOWN
+2023-11-16 13:15:00,365 [INFO] [decision_engine.py:107]: Handling candle close: {'open': 449.135, 'high': 449.185, 'low': 448.945, 'close': 449.115, 'time': 1700158500.0}
+2023-11-16 13:15:00,365 [INFO] [decision_engine.py:126]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_DOWN
+2023-11-16 13:20:00,318 [INFO] [decision_engine.py:107]: Handling candle close: {'open': 449.115, 'high': 449.385, 'low': 449.045, 'close': 449.175, 'time': 1700158800.0}
+2023-11-16 13:20:00,318 [INFO] [decision_engine.py:126]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_DOWN
+2023-11-16 13:22:24,948 [INFO] [decision_engine.py:149]: Setting Symbol PriceState: SPY State: PriceState.DOWN
+2023-11-16 13:22:24,948 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.SHORT State: {'quote': {'bid': 448.93, 'ask': 448.94, 'price': 448.935, 'bid_size': 5, 'ask_size': 9, 'quote_time': 1700158944.0}, 'timesale': {}, 'ma': {'ma': 449.30833333333334, 'ma_period': 9, 'time': 1700158944.0}, 'lookback': {'lookback_high': 449.555, 'lookback_low': 448.945, 'time': 1700158800.0}, 'candle': None, 'price_state': <PriceState.DOWN: 3>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 18, 11, 42, 733235), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 17, 40, 42, 767181)}
+2023-11-16 13:22:26,580 [INFO] [decision_engine.py:219]: Sending order: {
+  "symbol": "SPY",
+  "order_type": "market",
+  "side": "buy",
+  "price": "448.935000",
+  "quantity": "1.000000",
+  "offset": "open",
+  "tif": "day",
+  "asset_class": "option",
+  "exp": "231123",
+  "strike": null,
+  "callput": "put"
+}
+2023-11-16 13:22:39,955 [INFO] [decision_engine.py:145]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_DOWN
+2023-11-16 13:22:46,690 [INFO] [decision_engine.py:149]: Setting Symbol PriceState: SPY State: PriceState.DOWN
+2023-11-16 13:22:46,691 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.SHORT State: {'quote': {'bid': 448.93, 'ask': 448.94, 'price': 448.935, 'bid_size': 2, 'ask_size': 8, 'quote_time': 1700158966.0}, 'timesale': {}, 'ma': {'ma': 449.30833333333334, 'ma_period': 9, 'time': 1700158966.0}, 'lookback': {'lookback_high': 449.555, 'lookback_low': 448.945, 'time': 1700158800.0}, 'candle': None, 'price_state': <PriceState.DOWN: 3>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 18, 22, 44, 948405), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 17, 40, 42, 767181)}
+2023-11-16 13:22:48,589 [INFO] [decision_engine.py:219]: Sending order: {
+  "symbol": "SPY",
+  "order_type": "market",
+  "side": "buy",
+  "price": "448.935000",
+  "quantity": "1.000000",
+  "offset": "open",
+  "tif": "day",
+  "asset_class": "option",
+  "exp": "231123",
+  "strike": null,
+  "callput": "put"
+}
+2023-11-16 13:22:58,360 [INFO] [decision_engine.py:145]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_DOWN
+2023-11-16 13:23:01,078 [INFO] [decision_engine.py:149]: Setting Symbol PriceState: SPY State: PriceState.DOWN
+2023-11-16 13:23:01,078 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.SHORT State: {'quote': {'bid': 448.93, 'ask': 448.94, 'price': 448.935, 'bid_size': 6, 'ask_size': 2, 'quote_time': 1700158980.0}, 'timesale': {}, 'ma': {'ma': 449.30833333333334, 'ma_period': 9, 'time': 1700158980.0}, 'lookback': {'lookback_high': 449.555, 'lookback_low': 448.945, 'time': 1700158800.0}, 'candle': None, 'price_state': <PriceState.DOWN: 3>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 18, 23, 6, 691106), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 17, 40, 42, 767181)}
+2023-11-16 13:23:01,078 [WARNING] [decision_engine.py:200]: New short order lock in effect. Skipping signal: Signal.SHORT symbol: SPY state: {'quote': {'bid': 448.93, 'ask': 448.94, 'price': 448.935, 'bid_size': 6, 'ask_size': 2, 'quote_time': 1700158980.0}, 'timesale': {}, 'ma': {'ma': 449.30833333333334, 'ma_period': 9, 'time': 1700158980.0}, 'lookback': {'lookback_high': 449.555, 'lookback_low': 448.945, 'time': 1700158800.0}, 'candle': None, 'price_state': <PriceState.DOWN: 3>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 18, 23, 6, 691106), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 17, 40, 42, 767181)}
+2023-11-16 13:23:24,216 [INFO] [decision_engine.py:145]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_DOWN
+2023-11-16 13:25:00,444 [INFO] [decision_engine.py:107]: Handling candle close: {'open': 449.175, 'high': 449.185, 'low': 448.885, 'close': 449.135, 'time': 1700159100.0}
+2023-11-16 13:25:00,444 [INFO] [decision_engine.py:126]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_DOWN
+2023-11-16 13:30:00,382 [INFO] [decision_engine.py:107]: Handling candle close: {'open': 449.135, 'high': 449.605, 'low': 449.135, 'close': 449.415, 'time': 1700159400.0}
+2023-11-16 13:30:00,382 [INFO] [decision_engine.py:117]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 13:35:00,488 [INFO] [decision_engine.py:107]: Handling candle close: {'open': 449.415, 'high': 449.515, 'low': 449.025, 'close': 449.035, 'time': 1700159700.0}
+2023-11-16 13:35:00,488 [INFO] [decision_engine.py:126]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_DOWN
+2023-11-16 13:40:00,356 [INFO] [decision_engine.py:107]: Handling candle close: {'open': 449.035, 'high': 449.525, 'low': 449.035, 'close': 449.275, 'time': 1700160000.0}
+2023-11-16 13:40:00,356 [INFO] [decision_engine.py:117]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 13:45:00,469 [INFO] [decision_engine.py:107]: Handling candle close: {'open': 449.275, 'high': 449.355, 'low': 448.985, 'close': 449.105, 'time': 1700160300.0}
+2023-11-16 13:45:00,469 [INFO] [decision_engine.py:126]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_DOWN
+2023-11-16 13:46:10,516 [INFO] [decision_engine.py:149]: Setting Symbol PriceState: SPY State: PriceState.DOWN
+2023-11-16 13:46:10,516 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.SHORT State: {'quote': {'bid': 448.87, 'ask': 448.89, 'price': 448.88, 'bid_size': 19, 'ask_size': 6, 'quote_time': 1700160370.0}, 'timesale': {}, 'ma': {'ma': 449.1411111111111, 'ma_period': 9, 'time': 1700160370.0}, 'lookback': {'lookback_high': 449.605, 'lookback_low': 448.885, 'time': 1700160300.0}, 'candle': None, 'price_state': <PriceState.DOWN: 3>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 18, 23, 6, 691106), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 17, 40, 42, 767181)}
+2023-11-16 13:46:11,109 [INFO] [decision_engine.py:219]: Sending order: {
+  "symbol": "SPY",
+  "order_type": "market",
+  "side": "buy",
+  "price": "448.880000",
+  "quantity": "1.000000",
+  "offset": "open",
+  "tif": "day",
+  "asset_class": "option",
+  "exp": "231123",
+  "strike": null,
+  "callput": "put"
+}
+2023-11-16 13:46:12,934 [INFO] [decision_engine.py:145]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_DOWN
+2023-11-16 13:48:38,186 [INFO] [decision_engine.py:149]: Setting Symbol PriceState: SPY State: PriceState.DOWN
+2023-11-16 13:48:38,186 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.SHORT State: {'quote': {'bid': 448.87, 'ask': 448.88, 'price': 448.875, 'bid_size': 19, 'ask_size': 1, 'quote_time': 1700160517.0}, 'timesale': {}, 'ma': {'ma': 449.1405555555555, 'ma_period': 9, 'time': 1700160517.0}, 'lookback': {'lookback_high': 449.605, 'lookback_low': 448.885, 'time': 1700160300.0}, 'candle': None, 'price_state': <PriceState.DOWN: 3>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 18, 46, 30, 516833), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 17, 40, 42, 767181)}
+2023-11-16 13:48:39,166 [INFO] [decision_engine.py:219]: Sending order: {
+  "symbol": "SPY",
+  "order_type": "market",
+  "side": "buy",
+  "price": "448.875000",
+  "quantity": "1.000000",
+  "offset": "open",
+  "tif": "day",
+  "asset_class": "option",
+  "exp": "231123",
+  "strike": null,
+  "callput": "put"
+}
+2023-11-16 13:48:43,527 [INFO] [decision_engine.py:145]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_DOWN
+2023-11-16 13:48:45,536 [INFO] [decision_engine.py:149]: Setting Symbol PriceState: SPY State: PriceState.DOWN
+2023-11-16 13:48:45,536 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.SHORT State: {'quote': {'bid': 448.87, 'ask': 448.88, 'price': 448.875, 'bid_size': 11, 'ask_size': 3, 'quote_time': 1700160525.0}, 'timesale': {}, 'ma': {'ma': 449.1405555555555, 'ma_period': 9, 'time': 1700160525.0}, 'lookback': {'lookback_high': 449.605, 'lookback_low': 448.885, 'time': 1700160300.0}, 'candle': None, 'price_state': <PriceState.DOWN: 3>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 18, 48, 58, 186889), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 17, 40, 42, 767181)}
+2023-11-16 13:48:45,536 [WARNING] [decision_engine.py:200]: New short order lock in effect. Skipping signal: Signal.SHORT symbol: SPY state: {'quote': {'bid': 448.87, 'ask': 448.88, 'price': 448.875, 'bid_size': 11, 'ask_size': 3, 'quote_time': 1700160525.0}, 'timesale': {}, 'ma': {'ma': 449.1405555555555, 'ma_period': 9, 'time': 1700160525.0}, 'lookback': {'lookback_high': 449.605, 'lookback_low': 448.885, 'time': 1700160300.0}, 'candle': None, 'price_state': <PriceState.DOWN: 3>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 18, 48, 58, 186889), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 17, 40, 42, 767181)}
+2023-11-16 13:50:00,489 [INFO] [decision_engine.py:107]: Handling candle close: {'open': 449.105, 'high': 449.105, 'low': 448.585, 'close': 448.69, 'time': 1700160600.0}
+2023-11-16 13:50:00,489 [INFO] [decision_engine.py:126]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_DOWN
+2023-11-16 13:55:00,453 [INFO] [decision_engine.py:107]: Handling candle close: {'open': 448.69, 'high': 449.065, 'low': 448.665, 'close': 448.985, 'time': 1700160900.0}
+2023-11-16 13:55:00,453 [INFO] [decision_engine.py:126]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_DOWN
+2023-11-16 14:00:00,506 [INFO] [decision_engine.py:107]: Handling candle close: {'open': 448.985, 'high': 449.035, 'low': 448.755, 'close': 448.935, 'time': 1700161200.0}
+2023-11-16 14:00:00,507 [INFO] [decision_engine.py:126]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_DOWN
+2023-11-16 14:05:00,438 [INFO] [decision_engine.py:107]: Handling candle close: {'open': 448.935, 'high': 449.155, 'low': 448.795, 'close': 449.095, 'time': 1700161500.0}
+2023-11-16 14:05:00,438 [INFO] [decision_engine.py:117]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 14:10:00,451 [INFO] [decision_engine.py:107]: Handling candle close: {'open': 449.095, 'high': 449.155, 'low': 448.925, 'close': 449.085, 'time': 1700161800.0}
+2023-11-16 14:10:00,451 [INFO] [decision_engine.py:117]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 14:12:46,788 [INFO] [decision_engine.py:139]: Setting Symbol PriceState: SPY State: PriceState.UP
+2023-11-16 14:12:46,788 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.LONG State: {'quote': {'bid': 449.15, 'ask': 449.17, 'price': 449.16, 'bid_size': 6, 'ask_size': 10, 'quote_time': 1700161966.0}, 'timesale': {}, 'ma': {'ma': 449.04055555555556, 'ma_period': 9, 'time': 1700161966.0}, 'lookback': {'lookback_high': 449.155, 'lookback_low': 448.585, 'time': 1700161800.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 18, 48, 58, 186889), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 17, 40, 42, 767181)}
+2023-11-16 14:12:47,693 [INFO] [decision_engine.py:219]: Sending order: {
+  "symbol": "SPY",
+  "order_type": "market",
+  "side": "buy",
+  "price": "449.160000",
+  "quantity": "1.000000",
+  "offset": "open",
+  "tif": "day",
+  "asset_class": "option",
+  "exp": "231123",
+  "strike": null,
+  "callput": "call"
+}
+2023-11-16 14:12:52,219 [INFO] [decision_engine.py:135]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 14:13:13,032 [INFO] [decision_engine.py:139]: Setting Symbol PriceState: SPY State: PriceState.UP
+2023-11-16 14:13:13,032 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.LONG State: {'quote': {'bid': 449.16, 'ask': 449.17, 'price': 449.165, 'bid_size': 8, 'ask_size': 8, 'quote_time': 1700161992.0}, 'timesale': {}, 'ma': {'ma': 449.0411111111111, 'ma_period': 9, 'time': 1700161992.0}, 'lookback': {'lookback_high': 449.155, 'lookback_low': 448.585, 'time': 1700161800.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 18, 48, 58, 186889), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 19, 13, 6, 788434)}
+2023-11-16 14:13:13,703 [INFO] [decision_engine.py:219]: Sending order: {
+  "symbol": "SPY",
+  "order_type": "market",
+  "side": "buy",
+  "price": "449.165000",
+  "quantity": "1.000000",
+  "offset": "open",
+  "tif": "day",
+  "asset_class": "option",
+  "exp": "231123",
+  "strike": null,
+  "callput": "call"
+}
+2023-11-16 14:13:40,191 [INFO] [decision_engine.py:135]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 14:13:43,212 [INFO] [decision_engine.py:139]: Setting Symbol PriceState: SPY State: PriceState.UP
+2023-11-16 14:13:43,212 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.LONG State: {'quote': {'bid': 449.15, 'ask': 449.17, 'price': 449.16, 'bid_size': 6, 'ask_size': 6, 'quote_time': 1700162022.0}, 'timesale': {}, 'ma': {'ma': 449.04055555555556, 'ma_period': 9, 'time': 1700162022.0}, 'lookback': {'lookback_high': 449.155, 'lookback_low': 448.585, 'time': 1700161800.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 18, 48, 58, 186889), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 19, 13, 33, 32249)}
+2023-11-16 14:13:43,714 [INFO] [decision_engine.py:219]: Sending order: {
+  "symbol": "SPY",
+  "order_type": "market",
+  "side": "buy",
+  "price": "449.160000",
+  "quantity": "1.000000",
+  "offset": "open",
+  "tif": "day",
+  "asset_class": "option",
+  "exp": "231123",
+  "strike": null,
+  "callput": "call"
+}
+2023-11-16 14:13:44,821 [INFO] [decision_engine.py:135]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 14:15:00,550 [INFO] [decision_engine.py:107]: Handling candle close: {'open': 449.085, 'high': 449.255, 'low': 448.955, 'close': 449.065, 'time': 1700162100.0}
+2023-11-16 14:15:00,550 [INFO] [decision_engine.py:117]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 14:16:53,096 [INFO] [decision_engine.py:139]: Setting Symbol PriceState: SPY State: PriceState.UP
+2023-11-16 14:16:53,096 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.LONG State: {'quote': {'bid': 449.26, 'ask': 449.27, 'price': 449.265, 'bid_size': 7, 'ask_size': 4, 'quote_time': 1700162212.0}, 'timesale': {}, 'ma': {'ma': 449.05555555555554, 'ma_period': 9, 'time': 1700162212.0}, 'lookback': {'lookback_high': 449.255, 'lookback_low': 448.665, 'time': 1700162100.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 18, 48, 58, 186889), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 19, 14, 3, 212241)}
+2023-11-16 14:16:53,785 [INFO] [decision_engine.py:219]: Sending order: {
+  "symbol": "SPY",
+  "order_type": "market",
+  "side": "buy",
+  "price": "449.265000",
+  "quantity": "1.000000",
+  "offset": "open",
+  "tif": "day",
+  "asset_class": "option",
+  "exp": "231123",
+  "strike": null,
+  "callput": "call"
+}
+2023-11-16 14:16:55,409 [INFO] [decision_engine.py:135]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 14:19:45,317 [INFO] [decision_engine.py:139]: Setting Symbol PriceState: SPY State: PriceState.UP
+2023-11-16 14:19:45,317 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.LONG State: {'quote': {'bid': 449.26, 'ask': 449.27, 'price': 449.265, 'bid_size': 3, 'ask_size': 7, 'quote_time': 1700162384.0}, 'timesale': {}, 'ma': {'ma': 449.05555555555554, 'ma_period': 9, 'time': 1700162384.0}, 'lookback': {'lookback_high': 449.255, 'lookback_low': 448.665, 'time': 1700162100.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 18, 48, 58, 186889), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 19, 17, 13, 96333)}
+2023-11-16 14:19:45,855 [INFO] [decision_engine.py:219]: Sending order: {
+  "symbol": "SPY",
+  "order_type": "market",
+  "side": "buy",
+  "price": "449.265000",
+  "quantity": "1.000000",
+  "offset": "open",
+  "tif": "day",
+  "asset_class": "option",
+  "exp": "231123",
+  "strike": null,
+  "callput": "call"
+}
+2023-11-16 14:19:57,584 [INFO] [decision_engine.py:135]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 14:19:58,792 [INFO] [decision_engine.py:139]: Setting Symbol PriceState: SPY State: PriceState.UP
+2023-11-16 14:19:58,792 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.LONG State: {'quote': {'bid': 449.26, 'ask': 449.27, 'price': 449.265, 'bid_size': 2, 'ask_size': 10, 'quote_time': 1700162398.0}, 'timesale': {}, 'ma': {'ma': 449.05555555555554, 'ma_period': 9, 'time': 1700162398.0}, 'lookback': {'lookback_high': 449.255, 'lookback_low': 448.665, 'time': 1700162100.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 18, 48, 58, 186889), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 19, 20, 5, 317535)}
+2023-11-16 14:19:58,793 [WARNING] [decision_engine.py:194]: New long order lock in effect. Skipping signal: Signal.LONG symbol: SPY state: {'quote': {'bid': 449.26, 'ask': 449.27, 'price': 449.265, 'bid_size': 2, 'ask_size': 10, 'quote_time': 1700162398.0}, 'timesale': {}, 'ma': {'ma': 449.05555555555554, 'ma_period': 9, 'time': 1700162398.0}, 'lookback': {'lookback_high': 449.255, 'lookback_low': 448.665, 'time': 1700162100.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 18, 48, 58, 186889), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 19, 20, 5, 317535)}
+2023-11-16 14:20:00,506 [INFO] [decision_engine.py:107]: Handling candle close: {'open': 449.065, 'high': 449.265, 'low': 449.045, 'close': 449.235, 'time': 1700162400.0}
+2023-11-16 14:20:00,506 [INFO] [decision_engine.py:117]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 14:20:16,805 [INFO] [decision_engine.py:139]: Setting Symbol PriceState: SPY State: PriceState.UP
+2023-11-16 14:20:16,805 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.LONG State: {'quote': {'bid': 449.27, 'ask': 449.28, 'price': 449.275, 'bid_size': 5, 'ask_size': 4, 'quote_time': 1700162416.0}, 'timesale': {}, 'ma': {'ma': 449.0522222222223, 'ma_period': 9, 'time': 1700162416.0}, 'lookback': {'lookback_high': 449.265, 'lookback_low': 448.755, 'time': 1700162400.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 18, 48, 58, 186889), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 19, 20, 5, 317535)}
+2023-11-16 14:20:17,611 [INFO] [decision_engine.py:135]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 14:20:17,868 [INFO] [decision_engine.py:219]: Sending order: {
+  "symbol": "SPY",
+  "order_type": "market",
+  "side": "buy",
+  "price": "449.275000",
+  "quantity": "1.000000",
+  "offset": "open",
+  "tif": "day",
+  "asset_class": "option",
+  "exp": "231123",
+  "strike": null,
+  "callput": "call"
+}
+2023-11-16 14:20:21,633 [INFO] [decision_engine.py:139]: Setting Symbol PriceState: SPY State: PriceState.UP
+2023-11-16 14:20:21,633 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.LONG State: {'quote': {'bid': 449.26, 'ask': 449.28, 'price': 449.27, 'bid_size': 6, 'ask_size': 24, 'quote_time': 1700162421.0}, 'timesale': {}, 'ma': {'ma': 449.05166666666673, 'ma_period': 9, 'time': 1700162421.0}, 'lookback': {'lookback_high': 449.265, 'lookback_low': 448.755, 'time': 1700162400.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 18, 48, 58, 186889), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 19, 20, 36, 805534)}
+2023-11-16 14:20:21,633 [WARNING] [decision_engine.py:194]: New long order lock in effect. Skipping signal: Signal.LONG symbol: SPY state: {'quote': {'bid': 449.26, 'ask': 449.28, 'price': 449.27, 'bid_size': 6, 'ask_size': 24, 'quote_time': 1700162421.0}, 'timesale': {}, 'ma': {'ma': 449.05166666666673, 'ma_period': 9, 'time': 1700162421.0}, 'lookback': {'lookback_high': 449.265, 'lookback_low': 448.755, 'time': 1700162400.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 18, 48, 58, 186889), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 19, 20, 36, 805534)}
+2023-11-16 14:20:23,243 [INFO] [decision_engine.py:135]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 14:25:00,476 [INFO] [decision_engine.py:107]: Handling candle close: {'open': 449.235, 'high': 449.275, 'low': 449.035, 'close': 449.105, 'time': 1700162700.0}
+2023-11-16 14:25:00,476 [INFO] [decision_engine.py:117]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 14:30:00,453 [INFO] [decision_engine.py:107]: Handling candle close: {'open': 449.105, 'high': 449.125, 'low': 448.835, 'close': 448.935, 'time': 1700163000.0}
+2023-11-16 14:30:00,453 [INFO] [decision_engine.py:126]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_DOWN
+2023-11-16 14:35:00,639 [INFO] [decision_engine.py:107]: Handling candle close: {'open': 448.935, 'high': 449.185, 'low': 448.905, 'close': 449.065, 'time': 1700163300.0}
+2023-11-16 14:35:00,639 [INFO] [decision_engine.py:117]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 14:38:15,686 [INFO] [decision_engine.py:139]: Setting Symbol PriceState: SPY State: PriceState.UP
+2023-11-16 14:38:15,686 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.LONG State: {'quote': {'bid': 449.28, 'ask': 449.29, 'price': 449.285, 'bid_size': 6, 'ask_size': 11, 'quote_time': 1700163495.0}, 'timesale': {}, 'ma': {'ma': 449.08944444444444, 'ma_period': 9, 'time': 1700163495.0}, 'lookback': {'lookback_high': 449.275, 'lookback_low': 448.835, 'time': 1700163300.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 18, 48, 58, 186889), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 19, 20, 36, 805534)}
+2023-11-16 14:38:16,275 [INFO] [decision_engine.py:219]: Sending order: {
+  "symbol": "SPY",
+  "order_type": "market",
+  "side": "buy",
+  "price": "449.285000",
+  "quantity": "1.000000",
+  "offset": "open",
+  "tif": "day",
+  "asset_class": "option",
+  "exp": "231123",
+  "strike": null,
+  "callput": "call"
+}
+2023-11-16 14:39:10,994 [INFO] [decision_engine.py:135]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 14:39:17,634 [INFO] [decision_engine.py:139]: Setting Symbol PriceState: SPY State: PriceState.UP
+2023-11-16 14:39:17,634 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.LONG State: {'quote': {'bid': 449.28, 'ask': 449.29, 'price': 449.285, 'bid_size': 4, 'ask_size': 13, 'quote_time': 1700163557.0}, 'timesale': {}, 'ma': {'ma': 449.08944444444444, 'ma_period': 9, 'time': 1700163557.0}, 'lookback': {'lookback_high': 449.275, 'lookback_low': 448.835, 'time': 1700163300.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 18, 48, 58, 186889), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 19, 38, 35, 686406)}
+2023-11-16 14:39:17,735 [INFO] [decision_engine.py:135]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 14:39:18,296 [INFO] [decision_engine.py:219]: Sending order: {
+  "symbol": "SPY",
+  "order_type": "market",
+  "side": "buy",
+  "price": "449.285000",
+  "quantity": "1.000000",
+  "offset": "open",
+  "tif": "day",
+  "asset_class": "option",
+  "exp": "231123",
+  "strike": null,
+  "callput": "call"
+}
+2023-11-16 14:39:20,047 [INFO] [decision_engine.py:139]: Setting Symbol PriceState: SPY State: PriceState.UP
+2023-11-16 14:39:20,047 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.LONG State: {'quote': {'bid': 449.28, 'ask': 449.29, 'price': 449.285, 'bid_size': 5, 'ask_size': 1, 'quote_time': 1700163559.0}, 'timesale': {}, 'ma': {'ma': 449.08944444444444, 'ma_period': 9, 'time': 1700163559.0}, 'lookback': {'lookback_high': 449.275, 'lookback_low': 448.835, 'time': 1700163300.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 18, 48, 58, 186889), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 19, 39, 37, 634542)}
+2023-11-16 14:39:20,047 [WARNING] [decision_engine.py:194]: New long order lock in effect. Skipping signal: Signal.LONG symbol: SPY state: {'quote': {'bid': 449.28, 'ask': 449.29, 'price': 449.285, 'bid_size': 5, 'ask_size': 1, 'quote_time': 1700163559.0}, 'timesale': {}, 'ma': {'ma': 449.08944444444444, 'ma_period': 9, 'time': 1700163559.0}, 'lookback': {'lookback_high': 449.275, 'lookback_low': 448.835, 'time': 1700163300.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 18, 48, 58, 186889), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 19, 39, 37, 634542)}
+2023-11-16 14:39:25,579 [INFO] [decision_engine.py:135]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 14:39:27,189 [INFO] [decision_engine.py:139]: Setting Symbol PriceState: SPY State: PriceState.UP
+2023-11-16 14:39:27,189 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.LONG State: {'quote': {'bid': 449.28, 'ask': 449.29, 'price': 449.285, 'bid_size': 6, 'ask_size': 6, 'quote_time': 1700163566.0}, 'timesale': {}, 'ma': {'ma': 449.08944444444444, 'ma_period': 9, 'time': 1700163566.0}, 'lookback': {'lookback_high': 449.275, 'lookback_low': 448.835, 'time': 1700163300.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 18, 48, 58, 186889), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 19, 39, 37, 634542)}
+2023-11-16 14:39:27,189 [WARNING] [decision_engine.py:194]: New long order lock in effect. Skipping signal: Signal.LONG symbol: SPY state: {'quote': {'bid': 449.28, 'ask': 449.29, 'price': 449.285, 'bid_size': 6, 'ask_size': 6, 'quote_time': 1700163566.0}, 'timesale': {}, 'ma': {'ma': 449.08944444444444, 'ma_period': 9, 'time': 1700163566.0}, 'lookback': {'lookback_high': 449.275, 'lookback_low': 448.835, 'time': 1700163300.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 18, 48, 58, 186889), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 19, 39, 37, 634542)}
+2023-11-16 14:39:31,412 [INFO] [decision_engine.py:135]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 14:39:37,042 [INFO] [decision_engine.py:139]: Setting Symbol PriceState: SPY State: PriceState.UP
+2023-11-16 14:39:37,042 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.LONG State: {'quote': {'bid': 449.28, 'ask': 449.29, 'price': 449.285, 'bid_size': 4, 'ask_size': 7, 'quote_time': 1700163576.0}, 'timesale': {}, 'ma': {'ma': 449.08944444444444, 'ma_period': 9, 'time': 1700163576.0}, 'lookback': {'lookback_high': 449.275, 'lookback_low': 448.835, 'time': 1700163300.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 18, 48, 58, 186889), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 19, 39, 37, 634542)}
+2023-11-16 14:39:37,042 [WARNING] [decision_engine.py:194]: New long order lock in effect. Skipping signal: Signal.LONG symbol: SPY state: {'quote': {'bid': 449.28, 'ask': 449.29, 'price': 449.285, 'bid_size': 4, 'ask_size': 7, 'quote_time': 1700163576.0}, 'timesale': {}, 'ma': {'ma': 449.08944444444444, 'ma_period': 9, 'time': 1700163576.0}, 'lookback': {'lookback_high': 449.275, 'lookback_low': 448.835, 'time': 1700163300.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 18, 48, 58, 186889), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 19, 39, 37, 634542)}
+2023-11-16 14:39:46,096 [INFO] [decision_engine.py:135]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 14:39:47,105 [INFO] [decision_engine.py:139]: Setting Symbol PriceState: SPY State: PriceState.UP
+2023-11-16 14:39:47,105 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.LONG State: {'quote': {'bid': 449.28, 'ask': 449.29, 'price': 449.285, 'bid_size': 3, 'ask_size': 16, 'quote_time': 1700163586.0}, 'timesale': {}, 'ma': {'ma': 449.08944444444444, 'ma_period': 9, 'time': 1700163586.0}, 'lookback': {'lookback_high': 449.275, 'lookback_low': 448.835, 'time': 1700163300.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 18, 48, 58, 186889), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 19, 39, 37, 634542)}
+2023-11-16 14:39:48,309 [INFO] [decision_engine.py:219]: Sending order: {
+  "symbol": "SPY",
+  "order_type": "market",
+  "side": "buy",
+  "price": "449.285000",
+  "quantity": "1.000000",
+  "offset": "open",
+  "tif": "day",
+  "asset_class": "option",
+  "exp": "231123",
+  "strike": null,
+  "callput": "call"
+}
+2023-11-16 14:40:00,278 [INFO] [decision_engine.py:135]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 14:40:00,580 [INFO] [decision_engine.py:107]: Handling candle close: {'open': 449.065, 'high': 449.445, 'low': 449.055, 'close': 449.265, 'time': 1700163600.0}
+2023-11-16 14:40:00,580 [INFO] [decision_engine.py:117]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 14:43:20,969 [INFO] [decision_engine.py:139]: Setting Symbol PriceState: SPY State: PriceState.UP
+2023-11-16 14:43:20,969 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.LONG State: {'quote': {'bid': 449.45, 'ask': 449.46, 'price': 449.455, 'bid_size': 6, 'ask_size': 7, 'quote_time': 1700163800.0}, 'timesale': {}, 'ma': {'ma': 449.145, 'ma_period': 9, 'time': 1700163800.0}, 'lookback': {'lookback_high': 449.445, 'lookback_low': 448.835, 'time': 1700163600.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 18, 48, 58, 186889), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 19, 40, 7, 105211)}
+2023-11-16 14:43:22,392 [INFO] [decision_engine.py:219]: Sending order: {
+  "symbol": "SPY",
+  "order_type": "market",
+  "side": "buy",
+  "price": "449.455000",
+  "quantity": "1.000000",
+  "offset": "open",
+  "tif": "day",
+  "asset_class": "option",
+  "exp": "231123",
+  "strike": null,
+  "callput": "call"
+}
+2023-11-16 14:43:30,927 [INFO] [decision_engine.py:135]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 14:43:34,547 [INFO] [decision_engine.py:139]: Setting Symbol PriceState: SPY State: PriceState.UP
+2023-11-16 14:43:34,547 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.LONG State: {'quote': {'bid': 449.45, 'ask': 449.46, 'price': 449.455, 'bid_size': 9, 'ask_size': 3, 'quote_time': 1700163814.0}, 'timesale': {}, 'ma': {'ma': 449.145, 'ma_period': 9, 'time': 1700163814.0}, 'lookback': {'lookback_high': 449.445, 'lookback_low': 448.835, 'time': 1700163600.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 18, 48, 58, 186889), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 19, 43, 40, 969668)}
+2023-11-16 14:43:34,547 [WARNING] [decision_engine.py:194]: New long order lock in effect. Skipping signal: Signal.LONG symbol: SPY state: {'quote': {'bid': 449.45, 'ask': 449.46, 'price': 449.455, 'bid_size': 9, 'ask_size': 3, 'quote_time': 1700163814.0}, 'timesale': {}, 'ma': {'ma': 449.145, 'ma_period': 9, 'time': 1700163814.0}, 'lookback': {'lookback_high': 449.445, 'lookback_low': 448.835, 'time': 1700163600.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 18, 48, 58, 186889), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 19, 43, 40, 969668)}
+2023-11-16 14:43:41,489 [INFO] [decision_engine.py:135]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 14:43:41,690 [INFO] [decision_engine.py:139]: Setting Symbol PriceState: SPY State: PriceState.UP
+2023-11-16 14:43:41,691 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.LONG State: {'quote': {'bid': 449.45, 'ask': 449.46, 'price': 449.455, 'bid_size': 7, 'ask_size': 5, 'quote_time': 1700163821.0}, 'timesale': {}, 'ma': {'ma': 449.145, 'ma_period': 9, 'time': 1700163821.0}, 'lookback': {'lookback_high': 449.445, 'lookback_low': 448.835, 'time': 1700163600.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 18, 48, 58, 186889), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 19, 43, 40, 969668)}
+2023-11-16 14:43:42,400 [INFO] [decision_engine.py:219]: Sending order: {
+  "symbol": "SPY",
+  "order_type": "market",
+  "side": "buy",
+  "price": "449.455000",
+  "quantity": "1.000000",
+  "offset": "open",
+  "tif": "day",
+  "asset_class": "option",
+  "exp": "231123",
+  "strike": null,
+  "callput": "call"
+}
+2023-11-16 14:43:43,503 [INFO] [decision_engine.py:135]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 14:43:49,938 [INFO] [decision_engine.py:139]: Setting Symbol PriceState: SPY State: PriceState.UP
+2023-11-16 14:43:49,938 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.LONG State: {'quote': {'bid': 449.46, 'ask': 449.47, 'price': 449.465, 'bid_size': 5, 'ask_size': 7, 'quote_time': 1700163829.0}, 'timesale': {}, 'ma': {'ma': 449.1461111111111, 'ma_period': 9, 'time': 1700163829.0}, 'lookback': {'lookback_high': 449.445, 'lookback_low': 448.835, 'time': 1700163600.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 18, 48, 58, 186889), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 19, 44, 1, 691040)}
+2023-11-16 14:43:49,938 [WARNING] [decision_engine.py:194]: New long order lock in effect. Skipping signal: Signal.LONG symbol: SPY state: {'quote': {'bid': 449.46, 'ask': 449.47, 'price': 449.465, 'bid_size': 5, 'ask_size': 7, 'quote_time': 1700163829.0}, 'timesale': {}, 'ma': {'ma': 449.1461111111111, 'ma_period': 9, 'time': 1700163829.0}, 'lookback': {'lookback_high': 449.445, 'lookback_low': 448.835, 'time': 1700163600.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 18, 48, 58, 186889), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 19, 44, 1, 691040)}
+2023-11-16 14:45:00,538 [INFO] [decision_engine.py:107]: Handling candle close: {'open': 449.265, 'high': 449.605, 'low': 449.265, 'close': 449.585, 'time': 1700163900.0}
+2023-11-16 14:45:00,538 [INFO] [decision_engine.py:117]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 14:45:02,048 [INFO] [decision_engine.py:139]: Setting Symbol PriceState: SPY State: PriceState.UP
+2023-11-16 14:45:02,048 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.LONG State: {'quote': {'bid': 449.62, 'ask': 449.63, 'price': 449.625, 'bid_size': 7, 'ask_size': 4, 'quote_time': 1700163901.0}, 'timesale': {}, 'ma': {'ma': 449.21833333333336, 'ma_period': 9, 'time': 1700163901.0}, 'lookback': {'lookback_high': 449.605, 'lookback_low': 448.835, 'time': 1700163900.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 18, 48, 58, 186889), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 19, 44, 1, 691040)}
+2023-11-16 14:45:02,429 [INFO] [decision_engine.py:219]: Sending order: {
+  "symbol": "SPY",
+  "order_type": "market",
+  "side": "buy",
+  "price": "449.625000",
+  "quantity": "1.000000",
+  "offset": "open",
+  "tif": "day",
+  "asset_class": "option",
+  "exp": "231123",
+  "strike": null,
+  "callput": "call"
+}
+2023-11-16 14:50:00,550 [INFO] [decision_engine.py:107]: Handling candle close: {'open': 449.585, 'high': 449.835, 'low': 449.585, 'close': 449.725, 'time': 1700164200.0}
+2023-11-16 14:50:00,550 [INFO] [decision_engine.py:117]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 14:55:00,498 [INFO] [decision_engine.py:107]: Handling candle close: {'open': 449.725, 'high': 449.805, 'low': 449.175, 'close': 449.185, 'time': 1700164500.0}
+2023-11-16 14:55:00,498 [INFO] [decision_engine.py:126]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_DOWN
+2023-11-16 15:00:00,618 [INFO] [decision_engine.py:107]: Handling candle close: {'open': 449.185, 'high': 449.675, 'low': 449.175, 'close': 449.575, 'time': 1700164800.0}
+2023-11-16 15:00:00,618 [INFO] [decision_engine.py:117]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 15:05:00,603 [INFO] [decision_engine.py:107]: Handling candle close: {'open': 449.575, 'high': 449.635, 'low': 449.425, 'close': 449.505, 'time': 1700165100.0}
+2023-11-16 15:05:00,603 [INFO] [decision_engine.py:117]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 15:10:00,551 [INFO] [decision_engine.py:107]: Handling candle close: {'open': 449.505, 'high': 449.595, 'low': 449.405, 'close': 449.525, 'time': 1700165400.0}
+2023-11-16 15:10:00,552 [INFO] [decision_engine.py:117]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 15:15:00,580 [INFO] [decision_engine.py:107]: Handling candle close: {'open': 449.525, 'high': 449.615, 'low': 449.365, 'close': 449.385, 'time': 1700165700.0}
+2023-11-16 15:15:00,580 [INFO] [decision_engine.py:126]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_DOWN
+2023-11-16 15:20:00,548 [INFO] [decision_engine.py:107]: Handling candle close: {'open': 449.385, 'high': 449.635, 'low': 449.34, 'close': 449.555, 'time': 1700166000.0}
+2023-11-16 15:20:00,548 [INFO] [decision_engine.py:117]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 15:20:22,082 [INFO] [decision_engine.py:139]: Setting Symbol PriceState: SPY State: PriceState.UP
+2023-11-16 15:20:22,082 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.LONG State: {'quote': {'bid': 449.68, 'ask': 449.69, 'price': 449.685, 'bid_size': 6, 'ask_size': 8, 'quote_time': 1700166021.0}, 'timesale': {}, 'ma': {'ma': 449.5249999999999, 'ma_period': 9, 'time': 1700166021.0}, 'lookback': {'lookback_high': 449.675, 'lookback_low': 449.175, 'time': 1700166000.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 18, 48, 58, 186889), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 19, 45, 22, 48311)}
+2023-11-16 15:20:23,208 [INFO] [decision_engine.py:219]: Sending order: {
+  "symbol": "SPY",
+  "order_type": "market",
+  "side": "buy",
+  "price": "449.685000",
+  "quantity": "1.000000",
+  "offset": "open",
+  "tif": "day",
+  "asset_class": "option",
+  "exp": "231123",
+  "strike": null,
+  "callput": "call"
+}
+2023-11-16 15:20:25,300 [INFO] [decision_engine.py:135]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 15:20:26,807 [INFO] [decision_engine.py:139]: Setting Symbol PriceState: SPY State: PriceState.UP
+2023-11-16 15:20:26,807 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.LONG State: {'quote': {'bid': 449.68, 'ask': 449.69, 'price': 449.685, 'bid_size': 5, 'ask_size': 10, 'quote_time': 1700166026.0}, 'timesale': {}, 'ma': {'ma': 449.5249999999999, 'ma_period': 9, 'time': 1700166026.0}, 'lookback': {'lookback_high': 449.675, 'lookback_low': 449.175, 'time': 1700166000.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 18, 48, 58, 186889), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 20, 20, 42, 82538)}
+2023-11-16 15:20:26,808 [WARNING] [decision_engine.py:194]: New long order lock in effect. Skipping signal: Signal.LONG symbol: SPY state: {'quote': {'bid': 449.68, 'ask': 449.69, 'price': 449.685, 'bid_size': 5, 'ask_size': 10, 'quote_time': 1700166026.0}, 'timesale': {}, 'ma': {'ma': 449.5249999999999, 'ma_period': 9, 'time': 1700166026.0}, 'lookback': {'lookback_high': 449.675, 'lookback_low': 449.175, 'time': 1700166000.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 18, 48, 58, 186889), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 20, 20, 42, 82538)}
+2023-11-16 15:20:30,739 [INFO] [decision_engine.py:135]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 15:20:32,245 [INFO] [decision_engine.py:139]: Setting Symbol PriceState: SPY State: PriceState.UP
+2023-11-16 15:20:32,246 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.LONG State: {'quote': {'bid': 449.68, 'ask': 449.69, 'price': 449.685, 'bid_size': 5, 'ask_size': 15, 'quote_time': 1700166031.0}, 'timesale': {}, 'ma': {'ma': 449.5249999999999, 'ma_period': 9, 'time': 1700166031.0}, 'lookback': {'lookback_high': 449.675, 'lookback_low': 449.175, 'time': 1700166000.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 18, 48, 58, 186889), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 20, 20, 42, 82538)}
+2023-11-16 15:20:32,246 [WARNING] [decision_engine.py:194]: New long order lock in effect. Skipping signal: Signal.LONG symbol: SPY state: {'quote': {'bid': 449.68, 'ask': 449.69, 'price': 449.685, 'bid_size': 5, 'ask_size': 15, 'quote_time': 1700166031.0}, 'timesale': {}, 'ma': {'ma': 449.5249999999999, 'ma_period': 9, 'time': 1700166031.0}, 'lookback': {'lookback_high': 449.675, 'lookback_low': 449.175, 'time': 1700166000.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 18, 48, 58, 186889), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 20, 20, 42, 82538)}
+2023-11-16 15:20:41,199 [INFO] [decision_engine.py:135]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 15:25:00,557 [INFO] [decision_engine.py:107]: Handling candle close: {'open': 449.555, 'high': 449.715, 'low': 449.405, 'close': 449.625, 'time': 1700166300.0}
+2023-11-16 15:25:00,557 [INFO] [decision_engine.py:117]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 15:30:00,642 [INFO] [decision_engine.py:107]: Handling candle close: {'open': 449.625, 'high': 449.685, 'low': 449.555, 'close': 449.625, 'time': 1700166600.0}
+2023-11-16 15:30:00,642 [INFO] [decision_engine.py:117]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 15:33:34,183 [INFO] [decision_engine.py:139]: Setting Symbol PriceState: SPY State: PriceState.UP
+2023-11-16 15:33:34,183 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.LONG State: {'quote': {'bid': 449.72, 'ask': 449.73, 'price': 449.725, 'bid_size': 5, 'ask_size': 5, 'quote_time': 1700166813.0}, 'timesale': {}, 'ma': {'ma': 449.5227777777778, 'ma_period': 9, 'time': 1700166813.0}, 'lookback': {'lookback_high': 449.715, 'lookback_low': 449.34, 'time': 1700166600.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 18, 48, 58, 186889), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 20, 20, 42, 82538)}
+2023-11-16 15:33:35,499 [INFO] [decision_engine.py:219]: Sending order: {
+  "symbol": "SPY",
+  "order_type": "market",
+  "side": "buy",
+  "price": "449.725000",
+  "quantity": "1.000000",
+  "offset": "open",
+  "tif": "day",
+  "asset_class": "option",
+  "exp": "231123",
+  "strike": null,
+  "callput": "call"
+}
+2023-11-16 15:33:39,919 [INFO] [decision_engine.py:135]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 15:34:47,935 [INFO] [decision_engine.py:139]: Setting Symbol PriceState: SPY State: PriceState.UP
+2023-11-16 15:34:47,935 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.LONG State: {'quote': {'bid': 449.72, 'ask': 449.73, 'price': 449.725, 'bid_size': 3, 'ask_size': 7, 'quote_time': 1700166887.0}, 'timesale': {}, 'ma': {'ma': 449.5227777777778, 'ma_period': 9, 'time': 1700166887.0}, 'lookback': {'lookback_high': 449.715, 'lookback_low': 449.34, 'time': 1700166600.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 18, 48, 58, 186889), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 20, 33, 54, 183210)}
+2023-11-16 15:34:49,530 [INFO] [decision_engine.py:219]: Sending order: {
+  "symbol": "SPY",
+  "order_type": "market",
+  "side": "buy",
+  "price": "449.725000",
+  "quantity": "1.000000",
+  "offset": "open",
+  "tif": "day",
+  "asset_class": "option",
+  "exp": "231123",
+  "strike": null,
+  "callput": "call"
+}
+2023-11-16 15:35:00,511 [INFO] [decision_engine.py:107]: Handling candle close: {'open': 449.625, 'high': 449.795, 'low': 449.475, 'close': 449.785, 'time': 1700166900.0}
+2023-11-16 15:35:00,511 [INFO] [decision_engine.py:117]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 15:35:01,014 [INFO] [decision_engine.py:139]: Setting Symbol PriceState: SPY State: PriceState.UP
+2023-11-16 15:35:01,014 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.LONG State: {'quote': {'bid': 449.8, 'ask': 449.81, 'price': 449.805, 'bid_size': 3, 'ask_size': 10, 'quote_time': 1700166900.0}, 'timesale': {}, 'ma': {'ma': 449.5983333333333, 'ma_period': 9, 'time': 1700166900.0}, 'lookback': {'lookback_high': 449.795, 'lookback_low': 449.34, 'time': 1700166900.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 18, 48, 58, 186889), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 20, 35, 7, 935848)}
+2023-11-16 15:35:01,014 [WARNING] [decision_engine.py:194]: New long order lock in effect. Skipping signal: Signal.LONG symbol: SPY state: {'quote': {'bid': 449.8, 'ask': 449.81, 'price': 449.805, 'bid_size': 3, 'ask_size': 10, 'quote_time': 1700166900.0}, 'timesale': {}, 'ma': {'ma': 449.5983333333333, 'ma_period': 9, 'time': 1700166900.0}, 'lookback': {'lookback_high': 449.795, 'lookback_low': 449.34, 'time': 1700166900.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 18, 48, 58, 186889), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 20, 35, 7, 935848)}
+2023-11-16 15:35:11,886 [INFO] [decision_engine.py:135]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 15:35:14,101 [INFO] [decision_engine.py:139]: Setting Symbol PriceState: SPY State: PriceState.UP
+2023-11-16 15:35:14,101 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.LONG State: {'quote': {'bid': 449.8, 'ask': 449.81, 'price': 449.805, 'bid_size': 6, 'ask_size': 5, 'quote_time': 1700166913.0}, 'timesale': {}, 'ma': {'ma': 449.5983333333333, 'ma_period': 9, 'time': 1700166913.0}, 'lookback': {'lookback_high': 449.795, 'lookback_low': 449.34, 'time': 1700166900.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 18, 48, 58, 186889), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 20, 35, 7, 935848)}
+2023-11-16 15:35:15,109 [INFO] [decision_engine.py:135]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 15:35:15,544 [INFO] [decision_engine.py:219]: Sending order: {
+  "symbol": "SPY",
+  "order_type": "market",
+  "side": "buy",
+  "price": "449.805000",
+  "quantity": "1.000000",
+  "offset": "open",
+  "tif": "day",
+  "asset_class": "option",
+  "exp": "231123",
+  "strike": null,
+  "callput": "call"
+}
+2023-11-16 15:37:56,838 [INFO] [decision_engine.py:139]: Setting Symbol PriceState: SPY State: PriceState.UP
+2023-11-16 15:37:56,838 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.LONG State: {'quote': {'bid': 449.8, 'ask': 449.81, 'price': 449.805, 'bid_size': 6, 'ask_size': 5, 'quote_time': 1700167076.0}, 'timesale': {}, 'ma': {'ma': 449.5983333333333, 'ma_period': 9, 'time': 1700167076.0}, 'lookback': {'lookback_high': 449.795, 'lookback_low': 449.34, 'time': 1700166900.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 18, 48, 58, 186889), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 20, 35, 34, 101239)}
+2023-11-16 15:37:57,599 [INFO] [decision_engine.py:219]: Sending order: {
+  "symbol": "SPY",
+  "order_type": "market",
+  "side": "buy",
+  "price": "449.805000",
+  "quantity": "1.000000",
+  "offset": "open",
+  "tif": "day",
+  "asset_class": "option",
+  "exp": "231123",
+  "strike": null,
+  "callput": "call"
+}
+2023-11-16 15:40:00,653 [INFO] [decision_engine.py:107]: Handling candle close: {'open': 449.785, 'high': 449.915, 'low': 449.615, 'close': 449.815, 'time': 1700167200.0}
+2023-11-16 15:40:00,653 [INFO] [decision_engine.py:117]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 15:43:39,168 [INFO] [decision_engine.py:139]: Setting Symbol PriceState: SPY State: PriceState.UP
+2023-11-16 15:43:39,169 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.LONG State: {'quote': {'bid': 449.92, 'ask': 449.93, 'price': 449.925, 'bid_size': 11, 'ask_size': 6, 'quote_time': 1700167418.0}, 'timesale': {}, 'ma': {'ma': 449.6383333333334, 'ma_period': 9, 'time': 1700167418.0}, 'lookback': {'lookback_high': 449.915, 'lookback_low': 449.34, 'time': 1700167200.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 18, 48, 58, 186889), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 20, 38, 16, 838720)}
+2023-11-16 15:43:39,718 [INFO] [decision_engine.py:219]: Sending order: {
+  "symbol": "SPY",
+  "order_type": "market",
+  "side": "buy",
+  "price": "449.925000",
+  "quantity": "1.000000",
+  "offset": "open",
+  "tif": "day",
+  "asset_class": "option",
+  "exp": "231123",
+  "strike": null,
+  "callput": "call"
+}
+2023-11-16 15:43:48,128 [INFO] [decision_engine.py:135]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 15:44:20,025 [INFO] [decision_engine.py:139]: Setting Symbol PriceState: SPY State: PriceState.UP
+2023-11-16 15:44:20,025 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.LONG State: {'quote': {'bid': 449.92, 'ask': 449.93, 'price': 449.925, 'bid_size': 5, 'ask_size': 9, 'quote_time': 1700167459.0}, 'timesale': {}, 'ma': {'ma': 449.6383333333334, 'ma_period': 9, 'time': 1700167459.0}, 'lookback': {'lookback_high': 449.915, 'lookback_low': 449.34, 'time': 1700167200.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 18, 48, 58, 186889), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 20, 43, 59, 169045)}
+2023-11-16 15:44:20,628 [INFO] [decision_engine.py:135]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 15:44:21,734 [INFO] [decision_engine.py:219]: Sending order: {
+  "symbol": "SPY",
+  "order_type": "market",
+  "side": "buy",
+  "price": "449.925000",
+  "quantity": "1.000000",
+  "offset": "open",
+  "tif": "day",
+  "asset_class": "option",
+  "exp": "231123",
+  "strike": null,
+  "callput": "call"
+}
+2023-11-16 15:44:25,358 [INFO] [decision_engine.py:139]: Setting Symbol PriceState: SPY State: PriceState.UP
+2023-11-16 15:44:25,358 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.LONG State: {'quote': {'bid': 449.92, 'ask': 449.93, 'price': 449.925, 'bid_size': 6, 'ask_size': 6, 'quote_time': 1700167464.0}, 'timesale': {}, 'ma': {'ma': 449.6383333333334, 'ma_period': 9, 'time': 1700167464.0}, 'lookback': {'lookback_high': 449.915, 'lookback_low': 449.34, 'time': 1700167200.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 18, 48, 58, 186889), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 20, 44, 40, 25246)}
+2023-11-16 15:44:25,358 [WARNING] [decision_engine.py:194]: New long order lock in effect. Skipping signal: Signal.LONG symbol: SPY state: {'quote': {'bid': 449.92, 'ask': 449.93, 'price': 449.925, 'bid_size': 6, 'ask_size': 6, 'quote_time': 1700167464.0}, 'timesale': {}, 'ma': {'ma': 449.6383333333334, 'ma_period': 9, 'time': 1700167464.0}, 'lookback': {'lookback_high': 449.915, 'lookback_low': 449.34, 'time': 1700167200.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 18, 48, 58, 186889), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 20, 44, 40, 25246)}
+2023-11-16 15:45:00,669 [INFO] [decision_engine.py:107]: Handling candle close: {'open': 449.815, 'high': 449.995, 'low': 449.635, 'close': 449.965, 'time': 1700167500.0}
+2023-11-16 15:45:00,669 [INFO] [decision_engine.py:117]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 15:46:44,486 [INFO] [decision_engine.py:139]: Setting Symbol PriceState: SPY State: PriceState.UP
+2023-11-16 15:46:44,486 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.LONG State: {'quote': {'bid': 450.0, 'ask': 450.01, 'price': 450.005, 'bid_size': 45, 'ask_size': 3, 'quote_time': 1700167603.0}, 'timesale': {}, 'ma': {'ma': 449.6983333333334, 'ma_period': 9, 'time': 1700167603.0}, 'lookback': {'lookback_high': 449.995, 'lookback_low': 449.405, 'time': 1700167500.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 18, 48, 58, 186889), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 20, 44, 40, 25246)}
+2023-11-16 15:46:45,789 [INFO] [decision_engine.py:219]: Sending order: {
+  "symbol": "SPY",
+  "order_type": "market",
+  "side": "buy",
+  "price": "450.005000",
+  "quantity": "1.000000",
+  "offset": "open",
+  "tif": "day",
+  "asset_class": "option",
+  "exp": "231123",
+  "strike": null,
+  "callput": "call"
+}
+2023-11-16 15:47:48,415 [INFO] [decision_engine.py:135]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 15:48:05,828 [INFO] [decision_engine.py:139]: Setting Symbol PriceState: SPY State: PriceState.UP
+2023-11-16 15:48:05,828 [INFO] [decision_engine.py:179]: FOUND SIGNAL: Symbol: SPY Signal: Signal.LONG State: {'quote': {'bid': 450.0, 'ask': 450.01, 'price': 450.005, 'bid_size': 6, 'ask_size': 10, 'quote_time': 1700167685.0}, 'timesale': {}, 'ma': {'ma': 449.6983333333334, 'ma_period': 9, 'time': 1700167685.0}, 'lookback': {'lookback_high': 449.995, 'lookback_low': 449.405, 'time': 1700167500.0}, 'candle': None, 'price_state': <PriceState.UP: 1>, 'new_order_short_lock': datetime.datetime(2023, 11, 16, 18, 48, 58, 186889), 'new_order_long_lock': datetime.datetime(2023, 11, 16, 20, 47, 4, 486902)}
+2023-11-16 15:48:07,823 [INFO] [decision_engine.py:219]: Sending order: {
+  "symbol": "SPY",
+  "order_type": "market",
+  "side": "buy",
+  "price": "450.005000",
+  "quantity": "1.000000",
+  "offset": "open",
+  "tif": "day",
+  "asset_class": "option",
+  "exp": "231123",
+  "strike": null,
+  "callput": "call"
+}
+2023-11-16 15:50:00,680 [INFO] [decision_engine.py:107]: Handling candle close: {'open': 449.965, 'high': 450.225, 'low': 449.855, 'close': 450.105, 'time': 1700167800.0}
+2023-11-16 15:50:00,680 [INFO] [decision_engine.py:117]: Setting Symbol PriceState: SPY State: PriceState.PENDING_BREAKOUT_UP
+2023-11-16 15:50:12,865 [INFO] [decision_engine.py:350]: Market Data Handler Shutting Down
+2023-11-16 15:50:12,865 [INFO] [decision_engine.py:322]: Market Data Handler Starting
+2023-11-16 15:50:12,865 [ERROR] [decision_engine.py:352]: Market Data Handler Unable to Connect. Resetting...
+^C2023-11-16 15:50:14,209 [INFO] [decision_engine.py:408]: Decision Engine Shutting Down
+2023-11-16 15:50:14,209 [INFO] [decision_engine.py:410]: Cancelling task: exchange_handler
+2023-11-16 15:50:14,209 [INFO] [decision_engine.py:410]: Cancelling task: decision_handler
+2023-11-16 15:50:14,209 [INFO] [decision_engine.py:410]: Cancelling task: market_data_handler
+2023-11-16 15:50:14,210 [INFO] [decision_engine.py:206]: Decision Handler Cancelled
+2023-11-16 15:50:14,210 [INFO] [decision_engine.py:212]: Decision Engine signal handler shutting down
+2023-11-16 15:50:14,210 [INFO] [decision_engine.py:308]: Exchange Handler Cancelled
+2023-11-16 15:50:14,210 [INFO] [decision_engine.py:315]: Cancelling task: order_handler
+2023-11-16 15:50:14,210 [INFO] [decision_engine.py:315]: Cancelling task: msg_handler
+2023-11-16 15:50:14,210 [INFO] [decision_engine.py:241]: Exchange Order Handler Cancelled
+2023-11-16 15:50:14,210 [INFO] [decision_engine.py:276]: Exchange Message Handler Cancelled
+Traceback (most recent call last):
+  File "/home/heath/anaconda3/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/heath/anaconda3/lib/python3.11/asyncio/base_events.py", line 653, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/home/heath/systematic-trading/decision_engine.py", line 401, in decision_engine_main
+    done, pending = await asyncio.wait(decision_engine_tasks, return_when=asyncio.FIRST_COMPLETED)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/heath/anaconda3/lib/python3.11/asyncio/tasks.py", line 418, in wait
+    return await _wait(fs, timeout, return_when, loop)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/heath/anaconda3/lib/python3.11/asyncio/tasks.py", line 525, in _wait
+    await waiter
+asyncio.exceptions.CancelledError
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/heath/systematic-trading/decision_engine.py", line 429, in <module>
+    main()
+  File "/home/heath/systematic-trading/decision_engine.py", line 426, in main
+    asyncio.run(decision_engine.decision_engine_main())
+  File "/home/heath/anaconda3/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/home/heath/anaconda3/lib/python3.11/asyncio/runners.py", line 123, in run
+    raise KeyboardInterrupt()
+KeyboardInterrupt

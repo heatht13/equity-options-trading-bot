@@ -1,0 +1,1498 @@
+(.py311) heath@DESKTOP-009HMFQ:~/systematic-trading$ python exchange_handler.py --exchange tradier --account-id 6YA38565 --access-token LynAkYoihHAO80soGwu6ypAqziec
+2023-11-16 10:07:57,795 [INFO] [exchange_handler.py:256]: Exchange Starting
+2023-11-16 10:07:57,878 [INFO] [exchange_handler.py:98]: Exchange Handler Starting
+2023-11-16 10:07:57,878 [INFO] [exchange_handler.py:243]: Socket Server Starting
+2023-11-16 10:08:02,205 [INFO] [exchange_handler.py:220]: Client /tmp/exchange.sock connected
+2023-11-16 10:08:02,205 [INFO] [exchange_handler.py:152]: Received: {'type': 'subscribe', 'channels': ['positions', 'orders'], 'interval': 2}
+2023-11-16 10:08:02,205 [INFO] [exchange_handler.py:152]: Received: {'type': 'request', 'channel': 'balances'}
+2023-11-16 10:08:04,010 [INFO] [tradier_exchange_handler.py:193]: Exchange WS Handler Started
+2023-11-16 10:09:04,098 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:09:03.667910851Z'}
+2023-11-16 10:09:04,098 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:09:03.667910851Z'}
+2023-11-16 10:10:04,099 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:10:03.668033679Z'}
+2023-11-16 10:10:04,099 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:10:03.668033679Z'}
+2023-11-16 10:11:04,099 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:11:03.667162839Z'}
+2023-11-16 10:11:04,099 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:11:03.667162839Z'}
+2023-11-16 10:12:04,101 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:12:03.667278016Z'}
+2023-11-16 10:12:04,101 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:12:03.667278016Z'}
+2023-11-16 10:13:04,102 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:13:03.667389195Z'}
+2023-11-16 10:13:04,102 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:13:03.667389195Z'}
+2023-11-16 10:14:04,103 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:14:03.667502335Z'}
+2023-11-16 10:14:04,103 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:14:03.667502335Z'}
+2023-11-16 10:15:04,105 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:15:03.667605385Z'}
+2023-11-16 10:15:04,105 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:15:03.667605385Z'}
+2023-11-16 10:16:04,106 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:16:03.66770256Z'}
+2023-11-16 10:16:04,106 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:16:03.66770256Z'}
+2023-11-16 10:17:04,107 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:17:03.667807145Z'}
+2023-11-16 10:17:04,107 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:17:03.667807145Z'}
+2023-11-16 10:18:04,109 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:18:03.667924818Z'}
+2023-11-16 10:18:04,109 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:18:03.667924818Z'}
+2023-11-16 10:19:04,110 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:19:03.66803195Z'}
+2023-11-16 10:19:04,110 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:19:03.66803195Z'}
+2023-11-16 10:20:04,110 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:20:03.667140648Z'}
+2023-11-16 10:20:04,111 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:20:03.667140648Z'}
+2023-11-16 10:21:04,112 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:21:03.667244051Z'}
+2023-11-16 10:21:04,112 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:21:03.667244051Z'}
+2023-11-16 10:22:04,113 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:22:03.667351556Z'}
+2023-11-16 10:22:04,113 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:22:03.667351556Z'}
+2023-11-16 10:23:04,115 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:23:03.667471788Z'}
+2023-11-16 10:23:04,115 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:23:03.667471788Z'}
+2023-11-16 10:24:04,116 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:24:03.667582344Z'}
+2023-11-16 10:24:04,116 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:24:03.667582344Z'}
+2023-11-16 10:25:04,104 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:25:03.667698015Z'}
+2023-11-16 10:25:04,104 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:25:03.667698015Z'}
+2023-11-16 10:26:04,098 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:26:03.667811674Z'}
+2023-11-16 10:26:04,098 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:26:03.667811674Z'}
+2023-11-16 10:27:04,093 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:27:03.667925008Z'}
+2023-11-16 10:27:04,093 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:27:03.667925008Z'}
+2023-11-16 10:28:04,087 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:28:03.668046797Z'}
+2023-11-16 10:28:04,087 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:28:03.668046797Z'}
+2023-11-16 10:29:04,081 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:29:03.667157678Z'}
+2023-11-16 10:29:04,081 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:29:03.667157678Z'}
+2023-11-16 10:30:04,075 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:30:03.667276848Z'}
+2023-11-16 10:30:04,075 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:30:03.667276848Z'}
+2023-11-16 10:31:04,070 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:31:03.667382822Z'}
+2023-11-16 10:31:04,070 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:31:03.667382822Z'}
+2023-11-16 10:32:04,064 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:32:03.667490442Z'}
+2023-11-16 10:32:04,064 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:32:03.667490442Z'}
+2023-11-16 10:33:04,059 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:33:03.667606282Z'}
+2023-11-16 10:33:04,059 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:33:03.667606282Z'}
+2023-11-16 10:34:04,053 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:34:03.667720848Z'}
+2023-11-16 10:34:04,053 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:34:03.667720848Z'}
+2023-11-16 10:35:04,048 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:35:03.667827309Z'}
+2023-11-16 10:35:04,048 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:35:03.667827309Z'}
+2023-11-16 10:36:04,042 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:36:03.667943568Z'}
+2023-11-16 10:36:04,042 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:36:03.667943568Z'}
+2023-11-16 10:37:04,037 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:37:03.668058529Z'}
+2023-11-16 10:37:04,037 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:37:03.668058529Z'}
+2023-11-16 10:38:04,030 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:38:03.667173962Z'}
+2023-11-16 10:38:04,030 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:38:03.667173962Z'}
+2023-11-16 10:39:04,025 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:39:03.667282159Z'}
+2023-11-16 10:39:04,025 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:39:03.667282159Z'}
+2023-11-16 10:40:04,019 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:40:03.667401998Z'}
+2023-11-16 10:40:04,019 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:40:03.667401998Z'}
+2023-11-16 10:41:04,016 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:41:03.66752837Z'}
+2023-11-16 10:41:04,016 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:41:03.66752837Z'}
+2023-11-16 10:42:04,012 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:42:03.667647089Z'}
+2023-11-16 10:42:04,012 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:42:03.667647089Z'}
+2023-11-16 10:43:04,009 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:43:03.667774555Z'}
+2023-11-16 10:43:04,009 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:43:03.667774555Z'}
+2023-11-16 10:44:04,005 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:44:03.667890927Z'}
+2023-11-16 10:44:04,005 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:44:03.667890927Z'}
+2023-11-16 10:45:04,001 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:45:03.668015665Z'}
+2023-11-16 10:45:04,001 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:45:03.668015665Z'}
+2023-11-16 10:46:03,997 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:46:03.667129663Z'}
+2023-11-16 10:46:03,997 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:46:03.667129663Z'}
+2023-11-16 10:47:03,993 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:47:03.667239945Z'}
+2023-11-16 10:47:03,993 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:47:03.667239945Z'}
+2023-11-16 10:48:03,990 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:48:03.667355158Z'}
+2023-11-16 10:48:03,990 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:48:03.667355158Z'}
+2023-11-16 10:49:03,986 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:49:03.667472576Z'}
+2023-11-16 10:49:03,986 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:49:03.667472576Z'}
+2023-11-16 10:50:03,983 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:50:03.667612962Z'}
+2023-11-16 10:50:03,983 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:50:03.667612962Z'}
+2023-11-16 10:51:03,979 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:51:03.667729709Z'}
+2023-11-16 10:51:03,979 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:51:03.667729709Z'}
+2023-11-16 10:52:03,976 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:52:03.667853391Z'}
+2023-11-16 10:52:03,976 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:52:03.667853391Z'}
+2023-11-16 10:53:03,972 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:53:03.667961864Z'}
+2023-11-16 10:53:03,972 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:53:03.667961864Z'}
+2023-11-16 10:54:03,968 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:54:03.668074087Z'}
+2023-11-16 10:54:03,969 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:54:03.668074087Z'}
+2023-11-16 10:55:03,964 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:55:03.667183003Z'}
+2023-11-16 10:55:03,964 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:55:03.667183003Z'}
+2023-11-16 10:56:03,960 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:56:03.667295449Z'}
+2023-11-16 10:56:03,960 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:56:03.667295449Z'}
+2023-11-16 10:56:13,299 [INFO] [exchange_handler.py:152]: Received: {'type': 'request', 'channel': 'new_order', 'order': {'symbol': 'SPY', 'order_type': 'market', 'side': 'buy', 'price': '448.825000', 'quantity': '1.000000', 'offset': 'open', 'tif': 'day', 'asset_class': 'option', 'exp': '231123', 'strike': None, 'callput': 'put'}}
+2023-11-16 10:56:13,299 [INFO] [tradier_exchange_handler.py:149]: {
+    "class": "option",
+    "symbol": "SPY",
+    "side": "buy_to_open",
+    "quantity": "1",
+    "type": "market",
+    "duration": "day",
+    "price": "448.825000",
+    "option_symbol": "SPY231123P00400000"
+}
+2023-11-16 10:56:59,318 [INFO] [exchange_handler.py:152]: Received: {'type': 'request', 'channel': 'new_order', 'order': {'symbol': 'SPY', 'order_type': 'market', 'side': 'buy', 'price': '448.825000', 'quantity': '1.000000', 'offset': 'open', 'tif': 'day', 'asset_class': 'option', 'exp': '231123', 'strike': None, 'callput': 'put'}}
+2023-11-16 10:56:59,319 [INFO] [tradier_exchange_handler.py:149]: {
+    "class": "option",
+    "symbol": "SPY",
+    "side": "buy_to_open",
+    "quantity": "1",
+    "type": "market",
+    "duration": "day",
+    "price": "448.825000",
+    "option_symbol": "SPY231123P00400000"
+}
+2023-11-16 10:57:03,957 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:57:03.667427981Z'}
+2023-11-16 10:57:03,957 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:57:03.667427981Z'}
+2023-11-16 10:58:03,955 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:58:03.667554815Z'}
+2023-11-16 10:58:03,955 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:58:03.667554815Z'}
+2023-11-16 10:59:03,952 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:59:03.667664865Z'}
+2023-11-16 10:59:03,952 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T15:59:03.667664865Z'}
+2023-11-16 11:00:03,950 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:00:03.667811873Z'}
+2023-11-16 11:00:03,950 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:00:03.667811873Z'}
+2023-11-16 11:01:03,948 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:01:03.66792506Z'}
+2023-11-16 11:01:03,948 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:01:03.66792506Z'}
+2023-11-16 11:02:03,946 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:02:03.668033592Z'}
+2023-11-16 11:02:03,946 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:02:03.668033592Z'}
+2023-11-16 11:03:03,943 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:03:03.667163941Z'}
+2023-11-16 11:03:03,943 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:03:03.667163941Z'}
+2023-11-16 11:04:03,941 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:04:03.667277335Z'}
+2023-11-16 11:04:03,941 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:04:03.667277335Z'}
+2023-11-16 11:05:03,938 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:05:03.667390873Z'}
+2023-11-16 11:05:03,938 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:05:03.667390873Z'}
+2023-11-16 11:06:03,936 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:06:03.667496155Z'}
+2023-11-16 11:06:03,936 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:06:03.667496155Z'}
+2023-11-16 11:07:03,934 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:07:03.667603182Z'}
+2023-11-16 11:07:03,934 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:07:03.667603182Z'}
+2023-11-16 11:08:03,932 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:08:03.667718435Z'}
+2023-11-16 11:08:03,932 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:08:03.667718435Z'}
+2023-11-16 11:09:03,930 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:09:03.667834654Z'}
+2023-11-16 11:09:03,930 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:09:03.667834654Z'}
+2023-11-16 11:10:03,928 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:10:03.667939678Z'}
+2023-11-16 11:10:03,928 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:10:03.667939678Z'}
+2023-11-16 11:10:35,627 [INFO] [exchange_handler.py:152]: Received: {'type': 'request', 'channel': 'new_order', 'order': {'symbol': 'SPY', 'order_type': 'market', 'side': 'buy', 'price': '448.755000', 'quantity': '1.000000', 'offset': 'open', 'tif': 'day', 'asset_class': 'option', 'exp': '231123', 'strike': None, 'callput': 'put'}}
+2023-11-16 11:10:35,628 [INFO] [tradier_exchange_handler.py:149]: {
+    "class": "option",
+    "symbol": "SPY",
+    "side": "buy_to_open",
+    "quantity": "1",
+    "type": "market",
+    "duration": "day",
+    "price": "448.755000",
+    "option_symbol": "SPY231123P00400000"
+}
+2023-11-16 11:11:03,925 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:11:03.668051366Z'}
+2023-11-16 11:11:03,925 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:11:03.668051366Z'}
+2023-11-16 11:12:03,922 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:12:03.667181149Z'}
+2023-11-16 11:12:03,922 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:12:03.667181149Z'}
+2023-11-16 11:12:37,680 [INFO] [exchange_handler.py:152]: Received: {'type': 'request', 'channel': 'new_order', 'order': {'symbol': 'SPY', 'order_type': 'market', 'side': 'buy', 'price': '448.745000', 'quantity': '1.000000', 'offset': 'open', 'tif': 'day', 'asset_class': 'option', 'exp': '231123', 'strike': None, 'callput': 'put'}}
+2023-11-16 11:12:37,680 [INFO] [tradier_exchange_handler.py:149]: {
+    "class": "option",
+    "symbol": "SPY",
+    "side": "buy_to_open",
+    "quantity": "1",
+    "type": "market",
+    "duration": "day",
+    "price": "448.745000",
+    "option_symbol": "SPY231123P00400000"
+}
+2023-11-16 11:13:03,920 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:13:03.667285632Z'}
+2023-11-16 11:13:03,920 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:13:03.667285632Z'}
+2023-11-16 11:13:41,699 [INFO] [exchange_handler.py:152]: Received: {'type': 'request', 'channel': 'new_order', 'order': {'symbol': 'SPY', 'order_type': 'market', 'side': 'buy', 'price': '448.745000', 'quantity': '1.000000', 'offset': 'open', 'tif': 'day', 'asset_class': 'option', 'exp': '231123', 'strike': None, 'callput': 'put'}}
+2023-11-16 11:13:41,700 [INFO] [tradier_exchange_handler.py:149]: {
+    "class": "option",
+    "symbol": "SPY",
+    "side": "buy_to_open",
+    "quantity": "1",
+    "type": "market",
+    "duration": "day",
+    "price": "448.745000",
+    "option_symbol": "SPY231123P00400000"
+}
+2023-11-16 11:14:03,918 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:14:03.667397122Z'}
+2023-11-16 11:14:03,918 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:14:03.667397122Z'}
+2023-11-16 11:15:03,917 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:15:03.667525677Z'}
+2023-11-16 11:15:03,917 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:15:03.667525677Z'}
+2023-11-16 11:16:03,916 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:16:03.66763529Z'}
+2023-11-16 11:16:03,916 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:16:03.66763529Z'}
+2023-11-16 11:17:03,914 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:17:03.66774802Z'}
+2023-11-16 11:17:03,914 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:17:03.66774802Z'}
+2023-11-16 11:17:33,786 [INFO] [exchange_handler.py:152]: Received: {'type': 'request', 'channel': 'new_order', 'order': {'symbol': 'SPY', 'order_type': 'market', 'side': 'buy', 'price': '448.435000', 'quantity': '1.000000', 'offset': 'open', 'tif': 'day', 'asset_class': 'option', 'exp': '231123', 'strike': None, 'callput': 'put'}}
+2023-11-16 11:17:33,786 [INFO] [tradier_exchange_handler.py:149]: {
+    "class": "option",
+    "symbol": "SPY",
+    "side": "buy_to_open",
+    "quantity": "1",
+    "type": "market",
+    "duration": "day",
+    "price": "448.435000",
+    "option_symbol": "SPY231123P00400000"
+}
+2023-11-16 11:18:03,913 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:18:03.667855748Z'}
+2023-11-16 11:18:03,913 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:18:03.667855748Z'}
+2023-11-16 11:19:03,912 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:19:03.667973403Z'}
+2023-11-16 11:19:03,912 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:19:03.667973403Z'}
+2023-11-16 11:20:03,910 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:20:03.667095835Z'}
+2023-11-16 11:20:03,910 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:20:03.667095835Z'}
+2023-11-16 11:21:03,909 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:21:03.667212258Z'}
+2023-11-16 11:21:03,909 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:21:03.667212258Z'}
+2023-11-16 11:22:03,908 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:22:03.667341662Z'}
+2023-11-16 11:22:03,908 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:22:03.667341662Z'}
+2023-11-16 11:23:03,906 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:23:03.667453034Z'}
+2023-11-16 11:23:03,907 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:23:03.667453034Z'}
+2023-11-16 11:24:03,905 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:24:03.667569649Z'}
+2023-11-16 11:24:03,905 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:24:03.667569649Z'}
+2023-11-16 11:24:43,954 [INFO] [exchange_handler.py:152]: Received: {'type': 'request', 'channel': 'new_order', 'order': {'symbol': 'SPY', 'order_type': 'market', 'side': 'buy', 'price': '448.425000', 'quantity': '1.000000', 'offset': 'open', 'tif': 'day', 'asset_class': 'option', 'exp': '231123', 'strike': None, 'callput': 'put'}}
+2023-11-16 11:24:43,954 [INFO] [tradier_exchange_handler.py:149]: {
+    "class": "option",
+    "symbol": "SPY",
+    "side": "buy_to_open",
+    "quantity": "1",
+    "type": "market",
+    "duration": "day",
+    "price": "448.425000",
+    "option_symbol": "SPY231123P00400000"
+}
+2023-11-16 11:25:03,904 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:25:03.667704176Z'}
+2023-11-16 11:25:03,904 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:25:03.667704176Z'}
+2023-11-16 11:26:03,903 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:26:03.667813252Z'}
+2023-11-16 11:26:03,903 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:26:03.667813252Z'}
+2023-11-16 11:27:03,902 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:27:03.667923613Z'}
+2023-11-16 11:27:03,902 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:27:03.667923613Z'}
+2023-11-16 11:28:03,901 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:28:03.668044331Z'}
+2023-11-16 11:28:03,901 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:28:03.668044331Z'}
+2023-11-16 11:28:52,046 [INFO] [exchange_handler.py:152]: Received: {'type': 'request', 'channel': 'new_order', 'order': {'symbol': 'SPY', 'order_type': 'market', 'side': 'buy', 'price': '448.385000', 'quantity': '1.000000', 'offset': 'open', 'tif': 'day', 'asset_class': 'option', 'exp': '231123', 'strike': None, 'callput': 'put'}}
+2023-11-16 11:28:52,046 [INFO] [tradier_exchange_handler.py:149]: {
+    "class": "option",
+    "symbol": "SPY",
+    "side": "buy_to_open",
+    "quantity": "1",
+    "type": "market",
+    "duration": "day",
+    "price": "448.385000",
+    "option_symbol": "SPY231123P00400000"
+}
+2023-11-16 11:29:03,898 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:29:03.667158442Z'}
+2023-11-16 11:29:03,898 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:29:03.667158442Z'}
+2023-11-16 11:29:14,054 [INFO] [exchange_handler.py:152]: Received: {'type': 'request', 'channel': 'new_order', 'order': {'symbol': 'SPY', 'order_type': 'market', 'side': 'buy', 'price': '448.385000', 'quantity': '1.000000', 'offset': 'open', 'tif': 'day', 'asset_class': 'option', 'exp': '231123', 'strike': None, 'callput': 'put'}}
+2023-11-16 11:29:14,054 [INFO] [tradier_exchange_handler.py:149]: {
+    "class": "option",
+    "symbol": "SPY",
+    "side": "buy_to_open",
+    "quantity": "1",
+    "type": "market",
+    "duration": "day",
+    "price": "448.385000",
+    "option_symbol": "SPY231123P00400000"
+}
+2023-11-16 11:30:03,897 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:30:03.667297152Z'}
+2023-11-16 11:30:03,897 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:30:03.667297152Z'}
+2023-11-16 11:30:20,080 [INFO] [exchange_handler.py:152]: Received: {'type': 'request', 'channel': 'new_order', 'order': {'symbol': 'SPY', 'order_type': 'market', 'side': 'buy', 'price': '448.275000', 'quantity': '1.000000', 'offset': 'open', 'tif': 'day', 'asset_class': 'option', 'exp': '231123', 'strike': None, 'callput': 'put'}}
+2023-11-16 11:30:20,080 [INFO] [tradier_exchange_handler.py:149]: {
+    "class": "option",
+    "symbol": "SPY",
+    "side": "buy_to_open",
+    "quantity": "1",
+    "type": "market",
+    "duration": "day",
+    "price": "448.275000",
+    "option_symbol": "SPY231123P00400000"
+}
+2023-11-16 11:30:50,092 [INFO] [exchange_handler.py:152]: Received: {'type': 'request', 'channel': 'new_order', 'order': {'symbol': 'SPY', 'order_type': 'market', 'side': 'buy', 'price': '448.245000', 'quantity': '1.000000', 'offset': 'open', 'tif': 'day', 'asset_class': 'option', 'exp': '231123', 'strike': None, 'callput': 'put'}}
+2023-11-16 11:30:50,092 [INFO] [tradier_exchange_handler.py:149]: {
+    "class": "option",
+    "symbol": "SPY",
+    "side": "buy_to_open",
+    "quantity": "1",
+    "type": "market",
+    "duration": "day",
+    "price": "448.245000",
+    "option_symbol": "SPY231123P00400000"
+}
+2023-11-16 11:31:03,896 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:31:03.667404858Z'}
+2023-11-16 11:31:03,896 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:31:03.667404858Z'}
+2023-11-16 11:31:10,102 [INFO] [exchange_handler.py:152]: Received: {'type': 'request', 'channel': 'new_order', 'order': {'symbol': 'SPY', 'order_type': 'market', 'side': 'buy', 'price': '448.275000', 'quantity': '1.000000', 'offset': 'open', 'tif': 'day', 'asset_class': 'option', 'exp': '231123', 'strike': None, 'callput': 'put'}}
+2023-11-16 11:31:10,103 [INFO] [tradier_exchange_handler.py:149]: {
+    "class": "option",
+    "symbol": "SPY",
+    "side": "buy_to_open",
+    "quantity": "1",
+    "type": "market",
+    "duration": "day",
+    "price": "448.275000",
+    "option_symbol": "SPY231123P00400000"
+}
+2023-11-16 11:32:03,895 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:32:03.667519889Z'}
+2023-11-16 11:32:03,895 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:32:03.667519889Z'}
+2023-11-16 11:33:03,895 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:33:03.66764354Z'}
+2023-11-16 11:33:03,895 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:33:03.66764354Z'}
+2023-11-16 11:34:03,895 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:34:03.667764958Z'}
+2023-11-16 11:34:03,895 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:34:03.667764958Z'}
+2023-11-16 11:35:03,894 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:35:03.667874726Z'}
+2023-11-16 11:35:03,894 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:35:03.667874726Z'}
+2023-11-16 11:36:03,894 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:36:03.667978677Z'}
+2023-11-16 11:36:03,894 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:36:03.667978677Z'}
+2023-11-16 11:36:42,232 [INFO] [exchange_handler.py:152]: Received: {'type': 'request', 'channel': 'new_order', 'order': {'symbol': 'SPY', 'order_type': 'market', 'side': 'buy', 'price': '448.195000', 'quantity': '1.000000', 'offset': 'open', 'tif': 'day', 'asset_class': 'option', 'exp': '231123', 'strike': None, 'callput': 'put'}}
+2023-11-16 11:36:42,232 [INFO] [tradier_exchange_handler.py:149]: {
+    "class": "option",
+    "symbol": "SPY",
+    "side": "buy_to_open",
+    "quantity": "1",
+    "type": "market",
+    "duration": "day",
+    "price": "448.195000",
+    "option_symbol": "SPY231123P00400000"
+}
+2023-11-16 11:37:03,892 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:37:03.667084987Z'}
+2023-11-16 11:37:03,892 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:37:03.667084987Z'}
+2023-11-16 11:38:03,892 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:38:03.667200513Z'}
+2023-11-16 11:38:03,892 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:38:03.667200513Z'}
+2023-11-16 11:38:04,257 [INFO] [exchange_handler.py:152]: Received: {'type': 'request', 'channel': 'new_order', 'order': {'symbol': 'SPY', 'order_type': 'market', 'side': 'buy', 'price': '448.195000', 'quantity': '1.000000', 'offset': 'open', 'tif': 'day', 'asset_class': 'option', 'exp': '231123', 'strike': None, 'callput': 'put'}}
+2023-11-16 11:38:04,257 [INFO] [tradier_exchange_handler.py:149]: {
+    "class": "option",
+    "symbol": "SPY",
+    "side": "buy_to_open",
+    "quantity": "1",
+    "type": "market",
+    "duration": "day",
+    "price": "448.195000",
+    "option_symbol": "SPY231123P00400000"
+}
+2023-11-16 11:39:02,279 [INFO] [exchange_handler.py:152]: Received: {'type': 'request', 'channel': 'new_order', 'order': {'symbol': 'SPY', 'order_type': 'market', 'side': 'buy', 'price': '448.195000', 'quantity': '1.000000', 'offset': 'open', 'tif': 'day', 'asset_class': 'option', 'exp': '231123', 'strike': None, 'callput': 'put'}}
+2023-11-16 11:39:02,280 [INFO] [tradier_exchange_handler.py:149]: {
+    "class": "option",
+    "symbol": "SPY",
+    "side": "buy_to_open",
+    "quantity": "1",
+    "type": "market",
+    "duration": "day",
+    "price": "448.195000",
+    "option_symbol": "SPY231123P00400000"
+}
+2023-11-16 11:39:03,891 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:39:03.667309575Z'}
+2023-11-16 11:39:03,891 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:39:03.667309575Z'}
+2023-11-16 11:40:03,891 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:40:03.667422769Z'}
+2023-11-16 11:40:03,891 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:40:03.667422769Z'}
+2023-11-16 11:41:03,890 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:41:03.667540364Z'}
+2023-11-16 11:41:03,890 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:41:03.667540364Z'}
+2023-11-16 11:42:03,890 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:42:03.667647312Z'}
+2023-11-16 11:42:03,890 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:42:03.667647312Z'}
+2023-11-16 11:43:03,890 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:43:03.667771031Z'}
+2023-11-16 11:43:03,890 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:43:03.667771031Z'}
+2023-11-16 11:44:03,889 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:44:03.667876406Z'}
+2023-11-16 11:44:03,889 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:44:03.667876406Z'}
+2023-11-16 11:45:03,889 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:45:03.667994942Z'}
+2023-11-16 11:45:03,889 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:45:03.667994942Z'}
+2023-11-16 11:46:03,887 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:46:03.667101735Z'}
+2023-11-16 11:46:03,887 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:46:03.667101735Z'}
+2023-11-16 11:47:03,887 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:47:03.667216821Z'}
+2023-11-16 11:47:03,887 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:47:03.667216821Z'}
+2023-11-16 11:48:03,886 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:48:03.667319951Z'}
+2023-11-16 11:48:03,886 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:48:03.667319951Z'}
+2023-11-16 11:49:03,886 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:49:03.667430498Z'}
+2023-11-16 11:49:03,886 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:49:03.667430498Z'}
+2023-11-16 11:50:03,886 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:50:03.667535648Z'}
+2023-11-16 11:50:03,886 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:50:03.667535648Z'}
+2023-11-16 11:50:46,531 [INFO] [exchange_handler.py:152]: Received: {'type': 'request', 'channel': 'new_order', 'order': {'symbol': 'SPY', 'order_type': 'market', 'side': 'buy', 'price': '448.775000', 'quantity': '1.000000', 'offset': 'open', 'tif': 'day', 'asset_class': 'option', 'exp': '231123', 'strike': None, 'callput': 'call'}}
+2023-11-16 11:50:46,531 [INFO] [tradier_exchange_handler.py:149]: {
+    "class": "option",
+    "symbol": "SPY",
+    "side": "buy_to_open",
+    "quantity": "1",
+    "type": "market",
+    "duration": "day",
+    "price": "448.775000",
+    "option_symbol": "SPY231123C00400000"
+}
+2023-11-16 11:51:03,886 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:51:03.667646256Z'}
+2023-11-16 11:51:03,886 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:51:03.667646256Z'}
+2023-11-16 11:52:03,886 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:52:03.667782348Z'}
+2023-11-16 11:52:03,887 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:52:03.667782348Z'}
+2023-11-16 11:52:12,565 [INFO] [exchange_handler.py:152]: Received: {'type': 'request', 'channel': 'new_order', 'order': {'symbol': 'SPY', 'order_type': 'market', 'side': 'buy', 'price': '448.775000', 'quantity': '1.000000', 'offset': 'open', 'tif': 'day', 'asset_class': 'option', 'exp': '231123', 'strike': None, 'callput': 'call'}}
+2023-11-16 11:52:12,565 [INFO] [tradier_exchange_handler.py:149]: {
+    "class": "option",
+    "symbol": "SPY",
+    "side": "buy_to_open",
+    "quantity": "1",
+    "type": "market",
+    "duration": "day",
+    "price": "448.775000",
+    "option_symbol": "SPY231123C00400000"
+}
+2023-11-16 11:52:42,576 [INFO] [exchange_handler.py:152]: Received: {'type': 'request', 'channel': 'new_order', 'order': {'symbol': 'SPY', 'order_type': 'market', 'side': 'buy', 'price': '448.775000', 'quantity': '1.000000', 'offset': 'open', 'tif': 'day', 'asset_class': 'option', 'exp': '231123', 'strike': None, 'callput': 'call'}}
+2023-11-16 11:52:42,576 [INFO] [tradier_exchange_handler.py:149]: {
+    "class": "option",
+    "symbol": "SPY",
+    "side": "buy_to_open",
+    "quantity": "1",
+    "type": "market",
+    "duration": "day",
+    "price": "448.775000",
+    "option_symbol": "SPY231123C00400000"
+}
+2023-11-16 11:53:03,887 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:53:03.667901296Z'}
+2023-11-16 11:53:03,887 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:53:03.667901296Z'}
+2023-11-16 11:54:03,887 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:54:03.668014543Z'}
+2023-11-16 11:54:03,887 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:54:03.668014543Z'}
+2023-11-16 11:55:03,886 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:55:03.66713308Z'}
+2023-11-16 11:55:03,886 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:55:03.66713308Z'}
+2023-11-16 11:56:03,886 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:56:03.667234165Z'}
+2023-11-16 11:56:03,886 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:56:03.667234165Z'}
+2023-11-16 11:57:03,886 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:57:03.667351035Z'}
+2023-11-16 11:57:03,886 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:57:03.667351035Z'}
+2023-11-16 11:58:03,886 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:58:03.667461755Z'}
+2023-11-16 11:58:03,886 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:58:03.667461755Z'}
+2023-11-16 11:59:03,886 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:59:03.66756704Z'}
+2023-11-16 11:59:03,886 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T16:59:03.66756704Z'}
+2023-11-16 12:00:03,886 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:00:03.667699717Z'}
+2023-11-16 12:00:03,886 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:00:03.667699717Z'}
+2023-11-16 12:01:03,886 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:01:03.667811498Z'}
+2023-11-16 12:01:03,886 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:01:03.667811498Z'}
+2023-11-16 12:01:40,784 [INFO] [exchange_handler.py:152]: Received: {'type': 'request', 'channel': 'new_order', 'order': {'symbol': 'SPY', 'order_type': 'market', 'side': 'buy', 'price': '448.925000', 'quantity': '1.000000', 'offset': 'open', 'tif': 'day', 'asset_class': 'option', 'exp': '231123', 'strike': None, 'callput': 'call'}}
+2023-11-16 12:01:40,784 [INFO] [tradier_exchange_handler.py:149]: {
+    "class": "option",
+    "symbol": "SPY",
+    "side": "buy_to_open",
+    "quantity": "1",
+    "type": "market",
+    "duration": "day",
+    "price": "448.925000",
+    "option_symbol": "SPY231123C00400000"
+}
+2023-11-16 12:02:03,886 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:02:03.667926623Z'}
+2023-11-16 12:02:03,886 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:02:03.667926623Z'}
+2023-11-16 12:03:03,886 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:03:03.668033187Z'}
+2023-11-16 12:03:03,886 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:03:03.668033187Z'}
+2023-11-16 12:04:03,885 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:04:03.667154785Z'}
+2023-11-16 12:04:03,885 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:04:03.667154785Z'}
+2023-11-16 12:05:03,885 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:05:03.667259543Z'}
+2023-11-16 12:05:03,885 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:05:03.667259543Z'}
+2023-11-16 12:06:03,886 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:06:03.667369048Z'}
+2023-11-16 12:06:03,886 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:06:03.667369048Z'}
+2023-11-16 12:06:12,883 [INFO] [exchange_handler.py:152]: Received: {'type': 'request', 'channel': 'new_order', 'order': {'symbol': 'SPY', 'order_type': 'market', 'side': 'buy', 'price': '448.965000', 'quantity': '1.000000', 'offset': 'open', 'tif': 'day', 'asset_class': 'option', 'exp': '231123', 'strike': None, 'callput': 'call'}}
+2023-11-16 12:06:12,883 [INFO] [tradier_exchange_handler.py:149]: {
+    "class": "option",
+    "symbol": "SPY",
+    "side": "buy_to_open",
+    "quantity": "1",
+    "type": "market",
+    "duration": "day",
+    "price": "448.965000",
+    "option_symbol": "SPY231123C00400000"
+}
+2023-11-16 12:06:54,899 [INFO] [exchange_handler.py:152]: Received: {'type': 'request', 'channel': 'new_order', 'order': {'symbol': 'SPY', 'order_type': 'market', 'side': 'buy', 'price': '448.965000', 'quantity': '1.000000', 'offset': 'open', 'tif': 'day', 'asset_class': 'option', 'exp': '231123', 'strike': None, 'callput': 'call'}}
+2023-11-16 12:06:54,899 [INFO] [tradier_exchange_handler.py:149]: {
+    "class": "option",
+    "symbol": "SPY",
+    "side": "buy_to_open",
+    "quantity": "1",
+    "type": "market",
+    "duration": "day",
+    "price": "448.965000",
+    "option_symbol": "SPY231123C00400000"
+}
+2023-11-16 12:07:03,886 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:07:03.667478416Z'}
+2023-11-16 12:07:03,886 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:07:03.667478416Z'}
+2023-11-16 12:07:26,910 [INFO] [exchange_handler.py:152]: Received: {'type': 'request', 'channel': 'new_order', 'order': {'symbol': 'SPY', 'order_type': 'market', 'side': 'buy', 'price': '448.965000', 'quantity': '1.000000', 'offset': 'open', 'tif': 'day', 'asset_class': 'option', 'exp': '231123', 'strike': None, 'callput': 'call'}}
+2023-11-16 12:07:26,910 [INFO] [tradier_exchange_handler.py:149]: {
+    "class": "option",
+    "symbol": "SPY",
+    "side": "buy_to_open",
+    "quantity": "1",
+    "type": "market",
+    "duration": "day",
+    "price": "448.965000",
+    "option_symbol": "SPY231123C00400000"
+}
+2023-11-16 12:08:03,887 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:08:03.667608982Z'}
+2023-11-16 12:08:03,887 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:08:03.667608982Z'}
+2023-11-16 12:08:18,927 [INFO] [exchange_handler.py:152]: Received: {'type': 'request', 'channel': 'new_order', 'order': {'symbol': 'SPY', 'order_type': 'market', 'side': 'buy', 'price': '448.965000', 'quantity': '1.000000', 'offset': 'open', 'tif': 'day', 'asset_class': 'option', 'exp': '231123', 'strike': None, 'callput': 'call'}}
+2023-11-16 12:08:18,927 [INFO] [tradier_exchange_handler.py:149]: {
+    "class": "option",
+    "symbol": "SPY",
+    "side": "buy_to_open",
+    "quantity": "1",
+    "type": "market",
+    "duration": "day",
+    "price": "448.965000",
+    "option_symbol": "SPY231123C00400000"
+}
+2023-11-16 12:08:50,938 [INFO] [exchange_handler.py:152]: Received: {'type': 'request', 'channel': 'new_order', 'order': {'symbol': 'SPY', 'order_type': 'market', 'side': 'buy', 'price': '448.965000', 'quantity': '1.000000', 'offset': 'open', 'tif': 'day', 'asset_class': 'option', 'exp': '231123', 'strike': None, 'callput': 'call'}}
+2023-11-16 12:08:50,938 [INFO] [tradier_exchange_handler.py:149]: {
+    "class": "option",
+    "symbol": "SPY",
+    "side": "buy_to_open",
+    "quantity": "1",
+    "type": "market",
+    "duration": "day",
+    "price": "448.965000",
+    "option_symbol": "SPY231123C00400000"
+}
+2023-11-16 12:09:03,887 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:09:03.667713396Z'}
+2023-11-16 12:09:03,887 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:09:03.667713396Z'}
+2023-11-16 12:09:14,947 [INFO] [exchange_handler.py:152]: Received: {'type': 'request', 'channel': 'new_order', 'order': {'symbol': 'SPY', 'order_type': 'market', 'side': 'buy', 'price': '448.965000', 'quantity': '1.000000', 'offset': 'open', 'tif': 'day', 'asset_class': 'option', 'exp': '231123', 'strike': None, 'callput': 'call'}}
+2023-11-16 12:09:14,947 [INFO] [tradier_exchange_handler.py:149]: {
+    "class": "option",
+    "symbol": "SPY",
+    "side": "buy_to_open",
+    "quantity": "1",
+    "type": "market",
+    "duration": "day",
+    "price": "448.965000",
+    "option_symbol": "SPY231123C00400000"
+}
+2023-11-16 12:09:54,959 [INFO] [exchange_handler.py:152]: Received: {'type': 'request', 'channel': 'new_order', 'order': {'symbol': 'SPY', 'order_type': 'market', 'side': 'buy', 'price': '448.965000', 'quantity': '1.000000', 'offset': 'open', 'tif': 'day', 'asset_class': 'option', 'exp': '231123', 'strike': None, 'callput': 'call'}}
+2023-11-16 12:09:54,959 [INFO] [tradier_exchange_handler.py:149]: {
+    "class": "option",
+    "symbol": "SPY",
+    "side": "buy_to_open",
+    "quantity": "1",
+    "type": "market",
+    "duration": "day",
+    "price": "448.965000",
+    "option_symbol": "SPY231123C00400000"
+}
+2023-11-16 12:10:03,887 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:10:03.667843639Z'}
+2023-11-16 12:10:03,887 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:10:03.667843639Z'}
+2023-11-16 12:11:03,888 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:11:03.667958744Z'}
+2023-11-16 12:11:03,888 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:11:03.667958744Z'}
+2023-11-16 12:11:26,992 [INFO] [exchange_handler.py:152]: Received: {'type': 'request', 'channel': 'new_order', 'order': {'symbol': 'SPY', 'order_type': 'market', 'side': 'buy', 'price': '449.075000', 'quantity': '1.000000', 'offset': 'open', 'tif': 'day', 'asset_class': 'option', 'exp': '231123', 'strike': None, 'callput': 'call'}}
+2023-11-16 12:11:26,993 [INFO] [tradier_exchange_handler.py:149]: {
+    "class": "option",
+    "symbol": "SPY",
+    "side": "buy_to_open",
+    "quantity": "1",
+    "type": "market",
+    "duration": "day",
+    "price": "449.075000",
+    "option_symbol": "SPY231123C00400000"
+}
+2023-11-16 12:12:03,888 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:12:03.668057928Z'}
+2023-11-16 12:12:03,888 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:12:03.668057928Z'}
+2023-11-16 12:12:55,024 [INFO] [exchange_handler.py:152]: Received: {'type': 'request', 'channel': 'new_order', 'order': {'symbol': 'SPY', 'order_type': 'market', 'side': 'buy', 'price': '449.075000', 'quantity': '1.000000', 'offset': 'open', 'tif': 'day', 'asset_class': 'option', 'exp': '231123', 'strike': None, 'callput': 'call'}}
+2023-11-16 12:12:55,024 [INFO] [tradier_exchange_handler.py:149]: {
+    "class": "option",
+    "symbol": "SPY",
+    "side": "buy_to_open",
+    "quantity": "1",
+    "type": "market",
+    "duration": "day",
+    "price": "449.075000",
+    "option_symbol": "SPY231123C00400000"
+}
+2023-11-16 12:13:03,888 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:13:03.667176899Z'}
+2023-11-16 12:13:03,888 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:13:03.667176899Z'}
+2023-11-16 12:14:03,888 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:14:03.667285141Z'}
+2023-11-16 12:14:03,888 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:14:03.667285141Z'}
+2023-11-16 12:14:19,053 [INFO] [exchange_handler.py:152]: Received: {'type': 'request', 'channel': 'new_order', 'order': {'symbol': 'SPY', 'order_type': 'market', 'side': 'buy', 'price': '449.075000', 'quantity': '1.000000', 'offset': 'open', 'tif': 'day', 'asset_class': 'option', 'exp': '231123', 'strike': None, 'callput': 'call'}}
+2023-11-16 12:14:19,053 [INFO] [tradier_exchange_handler.py:149]: {
+    "class": "option",
+    "symbol": "SPY",
+    "side": "buy_to_open",
+    "quantity": "1",
+    "type": "market",
+    "duration": "day",
+    "price": "449.075000",
+    "option_symbol": "SPY231123C00400000"
+}
+2023-11-16 12:14:43,061 [INFO] [exchange_handler.py:152]: Received: {'type': 'request', 'channel': 'new_order', 'order': {'symbol': 'SPY', 'order_type': 'market', 'side': 'buy', 'price': '449.075000', 'quantity': '1.000000', 'offset': 'open', 'tif': 'day', 'asset_class': 'option', 'exp': '231123', 'strike': None, 'callput': 'call'}}
+2023-11-16 12:14:43,061 [INFO] [tradier_exchange_handler.py:149]: {
+    "class": "option",
+    "symbol": "SPY",
+    "side": "buy_to_open",
+    "quantity": "1",
+    "type": "market",
+    "duration": "day",
+    "price": "449.075000",
+    "option_symbol": "SPY231123C00400000"
+}
+2023-11-16 12:15:03,889 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:15:03.667389608Z'}
+2023-11-16 12:15:03,889 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:15:03.667389608Z'}
+2023-11-16 12:15:57,086 [INFO] [exchange_handler.py:152]: Received: {'type': 'request', 'channel': 'new_order', 'order': {'symbol': 'SPY', 'order_type': 'market', 'side': 'buy', 'price': '449.175000', 'quantity': '1.000000', 'offset': 'open', 'tif': 'day', 'asset_class': 'option', 'exp': '231123', 'strike': None, 'callput': 'call'}}
+2023-11-16 12:15:57,086 [INFO] [tradier_exchange_handler.py:149]: {
+    "class": "option",
+    "symbol": "SPY",
+    "side": "buy_to_open",
+    "quantity": "1",
+    "type": "market",
+    "duration": "day",
+    "price": "449.175000",
+    "option_symbol": "SPY231123C00400000"
+}
+2023-11-16 12:16:03,889 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:16:03.667510224Z'}
+2023-11-16 12:16:03,889 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:16:03.667510224Z'}
+2023-11-16 12:16:55,111 [INFO] [exchange_handler.py:152]: Received: {'type': 'request', 'channel': 'new_order', 'order': {'symbol': 'SPY', 'order_type': 'market', 'side': 'buy', 'price': '449.160000', 'quantity': '1.000000', 'offset': 'open', 'tif': 'day', 'asset_class': 'option', 'exp': '231123', 'strike': None, 'callput': 'call'}}
+2023-11-16 12:16:55,111 [INFO] [tradier_exchange_handler.py:149]: {
+    "class": "option",
+    "symbol": "SPY",
+    "side": "buy_to_open",
+    "quantity": "1",
+    "type": "market",
+    "duration": "day",
+    "price": "449.160000",
+    "option_symbol": "SPY231123C00400000"
+}
+2023-11-16 12:17:03,890 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:17:03.667639929Z'}
+2023-11-16 12:17:03,890 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:17:03.667639929Z'}
+2023-11-16 12:17:45,124 [INFO] [exchange_handler.py:152]: Received: {'type': 'request', 'channel': 'new_order', 'order': {'symbol': 'SPY', 'order_type': 'market', 'side': 'buy', 'price': '449.165000', 'quantity': '1.000000', 'offset': 'open', 'tif': 'day', 'asset_class': 'option', 'exp': '231123', 'strike': None, 'callput': 'call'}}
+2023-11-16 12:17:45,124 [INFO] [tradier_exchange_handler.py:149]: {
+    "class": "option",
+    "symbol": "SPY",
+    "side": "buy_to_open",
+    "quantity": "1",
+    "type": "market",
+    "duration": "day",
+    "price": "449.165000",
+    "option_symbol": "SPY231123C00400000"
+}
+2023-11-16 12:18:03,890 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:18:03.667761951Z'}
+2023-11-16 12:18:03,890 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:18:03.667761951Z'}
+2023-11-16 12:18:35,144 [INFO] [exchange_handler.py:152]: Received: {'type': 'request', 'channel': 'new_order', 'order': {'symbol': 'SPY', 'order_type': 'market', 'side': 'buy', 'price': '449.165000', 'quantity': '1.000000', 'offset': 'open', 'tif': 'day', 'asset_class': 'option', 'exp': '231123', 'strike': None, 'callput': 'call'}}
+2023-11-16 12:18:35,144 [INFO] [tradier_exchange_handler.py:149]: {
+    "class": "option",
+    "symbol": "SPY",
+    "side": "buy_to_open",
+    "quantity": "1",
+    "type": "market",
+    "duration": "day",
+    "price": "449.165000",
+    "option_symbol": "SPY231123C00400000"
+}
+2023-11-16 12:19:03,890 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:19:03.667875543Z'}
+2023-11-16 12:19:03,890 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:19:03.667875543Z'}
+2023-11-16 12:20:03,891 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:20:03.667988908Z'}
+2023-11-16 12:20:03,891 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:20:03.667988908Z'}
+2023-11-16 12:21:03,890 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:21:03.667101978Z'}
+2023-11-16 12:21:03,890 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:21:03.667101978Z'}
+2023-11-16 12:22:03,891 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:22:03.667211317Z'}
+2023-11-16 12:22:03,891 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:22:03.667211317Z'}
+2023-11-16 12:23:03,891 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:23:03.667324203Z'}
+2023-11-16 12:23:03,891 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:23:03.667324203Z'}
+2023-11-16 12:24:03,892 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:24:03.66745543Z'}
+2023-11-16 12:24:03,892 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:24:03.66745543Z'}
+2023-11-16 12:25:03,893 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:25:03.667574645Z'}
+2023-11-16 12:25:03,893 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:25:03.667574645Z'}
+2023-11-16 12:26:03,893 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:26:03.667687232Z'}
+2023-11-16 12:26:03,893 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:26:03.667687232Z'}
+2023-11-16 12:26:51,334 [INFO] [exchange_handler.py:152]: Received: {'type': 'request', 'channel': 'new_order', 'order': {'symbol': 'SPY', 'order_type': 'market', 'side': 'buy', 'price': '449.325000', 'quantity': '1.000000', 'offset': 'open', 'tif': 'day', 'asset_class': 'option', 'exp': '231123', 'strike': None, 'callput': 'call'}}
+2023-11-16 12:26:51,334 [INFO] [tradier_exchange_handler.py:149]: {
+    "class": "option",
+    "symbol": "SPY",
+    "side": "buy_to_open",
+    "quantity": "1",
+    "type": "market",
+    "duration": "day",
+    "price": "449.325000",
+    "option_symbol": "SPY231123C00400000"
+}
+2023-11-16 12:27:03,894 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:27:03.667800627Z'}
+2023-11-16 12:27:03,894 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:27:03.667800627Z'}
+2023-11-16 12:27:17,347 [INFO] [exchange_handler.py:152]: Received: {'type': 'request', 'channel': 'new_order', 'order': {'symbol': 'SPY', 'order_type': 'market', 'side': 'buy', 'price': '449.325000', 'quantity': '1.000000', 'offset': 'open', 'tif': 'day', 'asset_class': 'option', 'exp': '231123', 'strike': None, 'callput': 'call'}}
+2023-11-16 12:27:17,347 [INFO] [tradier_exchange_handler.py:149]: {
+    "class": "option",
+    "symbol": "SPY",
+    "side": "buy_to_open",
+    "quantity": "1",
+    "type": "market",
+    "duration": "day",
+    "price": "449.325000",
+    "option_symbol": "SPY231123C00400000"
+}
+2023-11-16 12:28:03,895 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:28:03.667889253Z'}
+2023-11-16 12:28:03,895 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:28:03.667889253Z'}
+2023-11-16 12:29:01,387 [INFO] [exchange_handler.py:152]: Received: {'type': 'request', 'channel': 'new_order', 'order': {'symbol': 'SPY', 'order_type': 'market', 'side': 'buy', 'price': '449.325000', 'quantity': '1.000000', 'offset': 'open', 'tif': 'day', 'asset_class': 'option', 'exp': '231123', 'strike': None, 'callput': 'call'}}
+2023-11-16 12:29:01,387 [INFO] [tradier_exchange_handler.py:149]: {
+    "class": "option",
+    "symbol": "SPY",
+    "side": "buy_to_open",
+    "quantity": "1",
+    "type": "market",
+    "duration": "day",
+    "price": "449.325000",
+    "option_symbol": "SPY231123C00400000"
+}
+2023-11-16 12:29:03,896 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:29:03.667998951Z'}
+2023-11-16 12:29:03,896 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:29:03.667998951Z'}
+2023-11-16 12:29:33,400 [INFO] [exchange_handler.py:152]: Received: {'type': 'request', 'channel': 'new_order', 'order': {'symbol': 'SPY', 'order_type': 'market', 'side': 'buy', 'price': '449.325000', 'quantity': '1.000000', 'offset': 'open', 'tif': 'day', 'asset_class': 'option', 'exp': '231123', 'strike': None, 'callput': 'call'}}
+2023-11-16 12:29:33,401 [INFO] [tradier_exchange_handler.py:149]: {
+    "class": "option",
+    "symbol": "SPY",
+    "side": "buy_to_open",
+    "quantity": "1",
+    "type": "market",
+    "duration": "day",
+    "price": "449.325000",
+    "option_symbol": "SPY231123C00400000"
+}
+2023-11-16 12:30:03,895 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:30:03.667126629Z'}
+2023-11-16 12:30:03,895 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:30:03.667126629Z'}
+2023-11-16 12:31:03,896 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:31:03.667232884Z'}
+2023-11-16 12:31:03,896 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:31:03.667232884Z'}
+2023-11-16 12:32:03,897 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:32:03.66735458Z'}
+2023-11-16 12:32:03,897 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:32:03.66735458Z'}
+2023-11-16 12:33:03,897 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:33:03.66748115Z'}
+2023-11-16 12:33:03,898 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:33:03.66748115Z'}
+2023-11-16 12:34:03,898 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:34:03.667607411Z'}
+2023-11-16 12:34:03,898 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:34:03.667607411Z'}
+2023-11-16 12:35:03,899 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:35:03.667712811Z'}
+2023-11-16 12:35:03,899 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:35:03.667712811Z'}
+2023-11-16 12:36:03,900 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:36:03.667884843Z'}
+2023-11-16 12:36:03,900 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:36:03.667884843Z'}
+2023-11-16 12:37:03,900 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:37:03.667994575Z'}
+2023-11-16 12:37:03,900 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:37:03.667994575Z'}
+2023-11-16 12:38:03,900 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:38:03.66710778Z'}
+2023-11-16 12:38:03,900 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:38:03.66710778Z'}
+2023-11-16 12:38:13,594 [INFO] [exchange_handler.py:152]: Received: {'type': 'request', 'channel': 'new_order', 'order': {'symbol': 'SPY', 'order_type': 'market', 'side': 'buy', 'price': '449.395000', 'quantity': '1.000000', 'offset': 'open', 'tif': 'day', 'asset_class': 'option', 'exp': '231123', 'strike': None, 'callput': 'call'}}
+2023-11-16 12:38:13,594 [INFO] [tradier_exchange_handler.py:149]: {
+    "class": "option",
+    "symbol": "SPY",
+    "side": "buy_to_open",
+    "quantity": "1",
+    "type": "market",
+    "duration": "day",
+    "price": "449.395000",
+    "option_symbol": "SPY231123C00400000"
+}
+2023-11-16 12:38:55,613 [INFO] [exchange_handler.py:152]: Received: {'type': 'request', 'channel': 'new_order', 'order': {'symbol': 'SPY', 'order_type': 'market', 'side': 'buy', 'price': '449.395000', 'quantity': '1.000000', 'offset': 'open', 'tif': 'day', 'asset_class': 'option', 'exp': '231123', 'strike': None, 'callput': 'call'}}
+2023-11-16 12:38:55,613 [INFO] [tradier_exchange_handler.py:149]: {
+    "class": "option",
+    "symbol": "SPY",
+    "side": "buy_to_open",
+    "quantity": "1",
+    "type": "market",
+    "duration": "day",
+    "price": "449.395000",
+    "option_symbol": "SPY231123C00400000"
+}
+2023-11-16 12:39:03,901 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:39:03.667217494Z'}
+2023-11-16 12:39:03,901 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:39:03.667217494Z'}
+2023-11-16 12:40:03,901 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:40:03.667336141Z'}
+2023-11-16 12:40:03,901 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:40:03.667336141Z'}
+2023-11-16 12:40:23,640 [INFO] [exchange_handler.py:152]: Received: {'type': 'request', 'channel': 'new_order', 'order': {'symbol': 'SPY', 'order_type': 'market', 'side': 'buy', 'price': '449.545000', 'quantity': '1.000000', 'offset': 'open', 'tif': 'day', 'asset_class': 'option', 'exp': '231123', 'strike': None, 'callput': 'call'}}
+2023-11-16 12:40:23,640 [INFO] [tradier_exchange_handler.py:149]: {
+    "class": "option",
+    "symbol": "SPY",
+    "side": "buy_to_open",
+    "quantity": "1",
+    "type": "market",
+    "duration": "day",
+    "price": "449.545000",
+    "option_symbol": "SPY231123C00400000"
+}
+2023-11-16 12:41:03,902 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:41:03.667454002Z'}
+2023-11-16 12:41:03,903 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:41:03.667454002Z'}
+2023-11-16 12:42:03,903 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:42:03.667577393Z'}
+2023-11-16 12:42:03,903 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:42:03.667577393Z'}
+2023-11-16 12:43:03,904 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:43:03.667694918Z'}
+2023-11-16 12:43:03,904 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:43:03.667694918Z'}
+2023-11-16 12:44:03,905 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:44:03.667819198Z'}
+2023-11-16 12:44:03,905 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:44:03.667819198Z'}
+2023-11-16 12:45:03,906 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:45:03.667939761Z'}
+2023-11-16 12:45:03,906 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:45:03.667939761Z'}
+2023-11-16 12:46:03,907 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:46:03.668051579Z'}
+2023-11-16 12:46:03,907 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:46:03.668051579Z'}
+2023-11-16 12:47:03,907 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:47:03.667175247Z'}
+2023-11-16 12:47:03,907 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:47:03.667175247Z'}
+2023-11-16 12:48:03,908 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:48:03.667299073Z'}
+2023-11-16 12:48:03,908 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:48:03.667299073Z'}
+2023-11-16 12:49:03,908 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:49:03.667420443Z'}
+2023-11-16 12:49:03,908 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:49:03.667420443Z'}
+2023-11-16 12:50:03,909 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:50:03.667529286Z'}
+2023-11-16 12:50:03,909 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:50:03.667529286Z'}
+2023-11-16 12:51:03,910 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:51:03.667658365Z'}
+2023-11-16 12:51:03,910 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:51:03.667658365Z'}
+2023-11-16 12:52:03,911 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:52:03.667780493Z'}
+2023-11-16 12:52:03,911 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:52:03.667780493Z'}
+2023-11-16 12:53:03,912 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:53:03.667900483Z'}
+2023-11-16 12:53:03,912 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:53:03.667900483Z'}
+2023-11-16 12:54:03,913 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:54:03.668018411Z'}
+2023-11-16 12:54:03,913 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:54:03.668018411Z'}
+2023-11-16 12:55:03,913 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:55:03.6671247Z'}
+2023-11-16 12:55:03,913 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:55:03.6671247Z'}
+2023-11-16 12:56:03,914 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:56:03.667258363Z'}
+2023-11-16 12:56:03,914 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:56:03.667258363Z'}
+2023-11-16 12:57:03,915 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:57:03.667369619Z'}
+2023-11-16 12:57:03,915 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:57:03.667369619Z'}
+2023-11-16 12:58:03,916 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:58:03.667479664Z'}
+2023-11-16 12:58:03,916 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:58:03.667479664Z'}
+2023-11-16 12:59:03,917 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:59:03.667592545Z'}
+2023-11-16 12:59:03,917 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T17:59:03.667592545Z'}
+2023-11-16 13:00:03,918 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:00:03.667706878Z'}
+2023-11-16 13:00:03,918 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:00:03.667706878Z'}
+2023-11-16 13:01:03,919 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:01:03.667814025Z'}
+2023-11-16 13:01:03,919 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:01:03.667814025Z'}
+2023-11-16 13:02:03,920 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:02:03.667942639Z'}
+2023-11-16 13:02:03,920 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:02:03.667942639Z'}
+2023-11-16 13:03:03,921 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:03:03.668056688Z'}
+2023-11-16 13:03:03,921 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:03:03.668056688Z'}
+2023-11-16 13:04:03,921 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:04:03.667175924Z'}
+2023-11-16 13:04:03,921 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:04:03.667175924Z'}
+2023-11-16 13:05:03,922 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:05:03.667295975Z'}
+2023-11-16 13:05:03,922 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:05:03.667295975Z'}
+2023-11-16 13:05:58,200 [INFO] [exchange_handler.py:152]: Received: {'type': 'request', 'channel': 'new_order', 'order': {'symbol': 'SPY', 'order_type': 'market', 'side': 'buy', 'price': '449.215000', 'quantity': '1.000000', 'offset': 'open', 'tif': 'day', 'asset_class': 'option', 'exp': '231123', 'strike': None, 'callput': 'put'}}
+2023-11-16 13:05:58,201 [INFO] [tradier_exchange_handler.py:149]: {
+    "class": "option",
+    "symbol": "SPY",
+    "side": "buy_to_open",
+    "quantity": "1",
+    "type": "market",
+    "duration": "day",
+    "price": "449.215000",
+    "option_symbol": "SPY231123P00400000"
+}
+2023-11-16 13:06:03,923 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:06:03.667415406Z'}
+2023-11-16 13:06:03,923 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:06:03.667415406Z'}
+2023-11-16 13:07:03,924 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:07:03.667523744Z'}
+2023-11-16 13:07:03,924 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:07:03.667523744Z'}
+2023-11-16 13:08:03,925 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:08:03.667642811Z'}
+2023-11-16 13:08:03,925 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:08:03.667642811Z'}
+2023-11-16 13:08:44,265 [INFO] [exchange_handler.py:152]: Received: {'type': 'request', 'channel': 'new_order', 'order': {'symbol': 'SPY', 'order_type': 'market', 'side': 'buy', 'price': '449.215000', 'quantity': '1.000000', 'offset': 'open', 'tif': 'day', 'asset_class': 'option', 'exp': '231123', 'strike': None, 'callput': 'put'}}
+2023-11-16 13:08:44,265 [INFO] [tradier_exchange_handler.py:149]: {
+    "class": "option",
+    "symbol": "SPY",
+    "side": "buy_to_open",
+    "quantity": "1",
+    "type": "market",
+    "duration": "day",
+    "price": "449.215000",
+    "option_symbol": "SPY231123P00400000"
+}
+2023-11-16 13:09:03,926 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:09:03.667775544Z'}
+2023-11-16 13:09:03,926 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:09:03.667775544Z'}
+2023-11-16 13:10:03,927 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:10:03.667890834Z'}
+2023-11-16 13:10:03,927 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:10:03.667890834Z'}
+2023-11-16 13:10:38,308 [INFO] [exchange_handler.py:152]: Received: {'type': 'request', 'channel': 'new_order', 'order': {'symbol': 'SPY', 'order_type': 'market', 'side': 'buy', 'price': '449.055000', 'quantity': '1.000000', 'offset': 'open', 'tif': 'day', 'asset_class': 'option', 'exp': '231123', 'strike': None, 'callput': 'put'}}
+2023-11-16 13:10:38,308 [INFO] [tradier_exchange_handler.py:149]: {
+    "class": "option",
+    "symbol": "SPY",
+    "side": "buy_to_open",
+    "quantity": "1",
+    "type": "market",
+    "duration": "day",
+    "price": "449.055000",
+    "option_symbol": "SPY231123P00400000"
+}
+2023-11-16 13:11:03,928 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:11:03.668031511Z'}
+2023-11-16 13:11:03,928 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:11:03.668031511Z'}
+2023-11-16 13:11:24,327 [INFO] [exchange_handler.py:152]: Received: {'type': 'request', 'channel': 'new_order', 'order': {'symbol': 'SPY', 'order_type': 'market', 'side': 'buy', 'price': '449.055000', 'quantity': '1.000000', 'offset': 'open', 'tif': 'day', 'asset_class': 'option', 'exp': '231123', 'strike': None, 'callput': 'put'}}
+2023-11-16 13:11:24,327 [INFO] [tradier_exchange_handler.py:149]: {
+    "class": "option",
+    "symbol": "SPY",
+    "side": "buy_to_open",
+    "quantity": "1",
+    "type": "market",
+    "duration": "day",
+    "price": "449.055000",
+    "option_symbol": "SPY231123P00400000"
+}
+2023-11-16 13:12:03,928 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:12:03.667155307Z'}
+2023-11-16 13:12:03,928 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:12:03.667155307Z'}
+2023-11-16 13:13:03,929 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:13:03.667257684Z'}
+2023-11-16 13:13:03,929 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:13:03.667257684Z'}
+2023-11-16 13:14:03,930 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:14:03.667363437Z'}
+2023-11-16 13:14:03,930 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:14:03.667363437Z'}
+2023-11-16 13:15:03,931 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:15:03.667487939Z'}
+2023-11-16 13:15:03,931 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:15:03.667487939Z'}
+2023-11-16 13:16:03,933 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:16:03.667608539Z'}
+2023-11-16 13:16:03,933 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:16:03.667608539Z'}
+2023-11-16 13:17:03,934 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:17:03.667712321Z'}
+2023-11-16 13:17:03,934 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:17:03.667712321Z'}
+2023-11-16 13:18:03,935 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:18:03.667838906Z'}
+2023-11-16 13:18:03,935 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:18:03.667838906Z'}
+2023-11-16 13:19:03,936 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:19:03.667949889Z'}
+2023-11-16 13:19:03,936 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:19:03.667949889Z'}
+2023-11-16 13:20:03,937 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:20:03.668072277Z'}
+2023-11-16 13:20:03,937 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:20:03.668072277Z'}
+2023-11-16 13:21:03,937 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:21:03.667195134Z'}
+2023-11-16 13:21:03,937 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:21:03.667195134Z'}
+2023-11-16 13:22:03,938 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:22:03.667312849Z'}
+2023-11-16 13:22:03,938 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:22:03.667312849Z'}
+2023-11-16 13:22:26,580 [INFO] [exchange_handler.py:152]: Received: {'type': 'request', 'channel': 'new_order', 'order': {'symbol': 'SPY', 'order_type': 'market', 'side': 'buy', 'price': '448.935000', 'quantity': '1.000000', 'offset': 'open', 'tif': 'day', 'asset_class': 'option', 'exp': '231123', 'strike': None, 'callput': 'put'}}
+2023-11-16 13:22:26,580 [INFO] [tradier_exchange_handler.py:149]: {
+    "class": "option",
+    "symbol": "SPY",
+    "side": "buy_to_open",
+    "quantity": "1",
+    "type": "market",
+    "duration": "day",
+    "price": "448.935000",
+    "option_symbol": "SPY231123P00400000"
+}
+2023-11-16 13:22:48,589 [INFO] [exchange_handler.py:152]: Received: {'type': 'request', 'channel': 'new_order', 'order': {'symbol': 'SPY', 'order_type': 'market', 'side': 'buy', 'price': '448.935000', 'quantity': '1.000000', 'offset': 'open', 'tif': 'day', 'asset_class': 'option', 'exp': '231123', 'strike': None, 'callput': 'put'}}
+2023-11-16 13:22:48,589 [INFO] [tradier_exchange_handler.py:149]: {
+    "class": "option",
+    "symbol": "SPY",
+    "side": "buy_to_open",
+    "quantity": "1",
+    "type": "market",
+    "duration": "day",
+    "price": "448.935000",
+    "option_symbol": "SPY231123P00400000"
+}
+2023-11-16 13:23:03,940 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:23:03.66741461Z'}
+2023-11-16 13:23:03,940 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:23:03.66741461Z'}
+2023-11-16 13:24:03,941 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:24:03.667546877Z'}
+2023-11-16 13:24:03,941 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:24:03.667546877Z'}
+2023-11-16 13:25:03,942 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:25:03.667665827Z'}
+2023-11-16 13:25:03,942 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:25:03.667665827Z'}
+2023-11-16 13:26:03,943 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:26:03.667787576Z'}
+2023-11-16 13:26:03,943 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:26:03.667787576Z'}
+2023-11-16 13:27:03,944 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:27:03.66791769Z'}
+2023-11-16 13:27:03,944 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:27:03.66791769Z'}
+2023-11-16 13:28:03,945 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:28:03.668044468Z'}
+2023-11-16 13:28:03,945 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:28:03.668044468Z'}
+2023-11-16 13:29:03,945 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:29:03.667173971Z'}
+2023-11-16 13:29:03,945 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:29:03.667173971Z'}
+2023-11-16 13:30:03,946 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:30:03.667302976Z'}
+2023-11-16 13:30:03,947 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:30:03.667302976Z'}
+2023-11-16 13:31:03,948 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:31:03.66742632Z'}
+2023-11-16 13:31:03,948 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:31:03.66742632Z'}
+2023-11-16 13:32:03,949 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:32:03.667531598Z'}
+2023-11-16 13:32:03,949 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:32:03.667531598Z'}
+2023-11-16 13:33:03,950 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:33:03.667633098Z'}
+2023-11-16 13:33:03,950 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:33:03.667633098Z'}
+2023-11-16 13:34:03,951 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:34:03.66775707Z'}
+2023-11-16 13:34:03,951 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:34:03.66775707Z'}
+2023-11-16 13:35:03,952 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:35:03.667893146Z'}
+2023-11-16 13:35:03,953 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:35:03.667893146Z'}
+2023-11-16 13:36:03,954 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:36:03.66801305Z'}
+2023-11-16 13:36:03,954 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:36:03.66801305Z'}
+2023-11-16 13:37:03,954 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:37:03.66714006Z'}
+2023-11-16 13:37:03,954 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:37:03.66714006Z'}
+2023-11-16 13:38:03,955 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:38:03.667275497Z'}
+2023-11-16 13:38:03,955 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:38:03.667275497Z'}
+2023-11-16 13:39:03,956 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:39:03.667386458Z'}
+2023-11-16 13:39:03,956 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:39:03.667386458Z'}
+2023-11-16 13:40:03,957 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:40:03.667489607Z'}
+2023-11-16 13:40:03,957 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:40:03.667489607Z'}
+2023-11-16 13:41:03,959 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:41:03.667598855Z'}
+2023-11-16 13:41:03,959 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:41:03.667598855Z'}
+2023-11-16 13:42:03,960 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:42:03.667713834Z'}
+2023-11-16 13:42:03,960 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:42:03.667713834Z'}
+2023-11-16 13:43:03,961 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:43:03.667837236Z'}
+2023-11-16 13:43:03,961 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:43:03.667837236Z'}
+2023-11-16 13:44:03,962 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:44:03.667948974Z'}
+2023-11-16 13:44:03,962 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:44:03.667948974Z'}
+2023-11-16 13:45:03,963 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:45:03.668054918Z'}
+2023-11-16 13:45:03,964 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:45:03.668054918Z'}
+2023-11-16 13:46:03,964 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:46:03.667178745Z'}
+2023-11-16 13:46:03,964 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:46:03.667178745Z'}
+2023-11-16 13:46:11,109 [INFO] [exchange_handler.py:152]: Received: {'type': 'request', 'channel': 'new_order', 'order': {'symbol': 'SPY', 'order_type': 'market', 'side': 'buy', 'price': '448.880000', 'quantity': '1.000000', 'offset': 'open', 'tif': 'day', 'asset_class': 'option', 'exp': '231123', 'strike': None, 'callput': 'put'}}
+2023-11-16 13:46:11,109 [INFO] [tradier_exchange_handler.py:149]: {
+    "class": "option",
+    "symbol": "SPY",
+    "side": "buy_to_open",
+    "quantity": "1",
+    "type": "market",
+    "duration": "day",
+    "price": "448.880000",
+    "option_symbol": "SPY231123P00400000"
+}
+2023-11-16 13:47:03,965 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:47:03.667307318Z'}
+2023-11-16 13:47:03,965 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:47:03.667307318Z'}
+2023-11-16 13:48:03,966 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:48:03.66741739Z'}
+2023-11-16 13:48:03,966 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:48:03.66741739Z'}
+2023-11-16 13:48:39,167 [INFO] [exchange_handler.py:152]: Received: {'type': 'request', 'channel': 'new_order', 'order': {'symbol': 'SPY', 'order_type': 'market', 'side': 'buy', 'price': '448.875000', 'quantity': '1.000000', 'offset': 'open', 'tif': 'day', 'asset_class': 'option', 'exp': '231123', 'strike': None, 'callput': 'put'}}
+2023-11-16 13:48:39,167 [INFO] [tradier_exchange_handler.py:149]: {
+    "class": "option",
+    "symbol": "SPY",
+    "side": "buy_to_open",
+    "quantity": "1",
+    "type": "market",
+    "duration": "day",
+    "price": "448.875000",
+    "option_symbol": "SPY231123P00400000"
+}
+2023-11-16 13:49:03,967 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:49:03.667536452Z'}
+2023-11-16 13:49:03,967 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:49:03.667536452Z'}
+2023-11-16 13:50:03,969 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:50:03.667660926Z'}
+2023-11-16 13:50:03,969 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:50:03.667660926Z'}
+2023-11-16 13:51:03,970 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:51:03.667803234Z'}
+2023-11-16 13:51:03,970 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:51:03.667803234Z'}
+2023-11-16 13:52:03,971 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:52:03.667916947Z'}
+2023-11-16 13:52:03,971 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:52:03.667916947Z'}
+2023-11-16 13:53:03,972 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:53:03.668034922Z'}
+2023-11-16 13:53:03,972 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:53:03.668034922Z'}
+2023-11-16 13:54:03,973 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:54:03.667145346Z'}
+2023-11-16 13:54:03,973 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:54:03.667145346Z'}
+2023-11-16 13:55:03,974 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:55:03.667273117Z'}
+2023-11-16 13:55:03,974 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:55:03.667273117Z'}
+2023-11-16 13:56:03,975 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:56:03.667394307Z'}
+2023-11-16 13:56:03,975 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:56:03.667394307Z'}
+2023-11-16 13:57:03,976 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:57:03.667515212Z'}
+2023-11-16 13:57:03,976 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:57:03.667515212Z'}
+2023-11-16 13:58:03,978 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:58:03.667642625Z'}
+2023-11-16 13:58:03,978 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:58:03.667642625Z'}
+2023-11-16 13:59:03,979 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:59:03.667722875Z'}
+2023-11-16 13:59:03,979 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T18:59:03.667722875Z'}
+2023-11-16 14:00:03,980 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:00:03.667839863Z'}
+2023-11-16 14:00:03,980 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:00:03.667839863Z'}
+2023-11-16 14:01:03,981 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:01:03.667957994Z'}
+2023-11-16 14:01:03,981 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:01:03.667957994Z'}
+2023-11-16 14:02:03,982 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:02:03.668086768Z'}
+2023-11-16 14:02:03,982 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:02:03.668086768Z'}
+2023-11-16 14:03:03,983 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:03:03.66720944Z'}
+2023-11-16 14:03:03,983 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:03:03.66720944Z'}
+2023-11-16 14:04:03,984 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:04:03.667313269Z'}
+2023-11-16 14:04:03,984 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:04:03.667313269Z'}
+2023-11-16 14:05:03,985 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:05:03.667439099Z'}
+2023-11-16 14:05:03,985 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:05:03.667439099Z'}
+2023-11-16 14:06:03,986 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:06:03.667553204Z'}
+2023-11-16 14:06:03,986 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:06:03.667553204Z'}
+2023-11-16 14:07:03,988 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:07:03.667681944Z'}
+2023-11-16 14:07:03,988 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:07:03.667681944Z'}
+2023-11-16 14:08:03,989 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:08:03.667815572Z'}
+2023-11-16 14:08:03,989 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:08:03.667815572Z'}
+2023-11-16 14:09:03,990 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:09:03.667927455Z'}
+2023-11-16 14:09:03,990 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:09:03.667927455Z'}
+2023-11-16 14:10:03,991 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:10:03.66803594Z'}
+2023-11-16 14:10:03,992 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:10:03.66803594Z'}
+2023-11-16 14:11:03,992 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:11:03.667145476Z'}
+2023-11-16 14:11:03,992 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:11:03.667145476Z'}
+2023-11-16 14:12:03,993 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:12:03.667265723Z'}
+2023-11-16 14:12:03,993 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:12:03.667265723Z'}
+2023-11-16 14:12:47,694 [INFO] [exchange_handler.py:152]: Received: {'type': 'request', 'channel': 'new_order', 'order': {'symbol': 'SPY', 'order_type': 'market', 'side': 'buy', 'price': '449.160000', 'quantity': '1.000000', 'offset': 'open', 'tif': 'day', 'asset_class': 'option', 'exp': '231123', 'strike': None, 'callput': 'call'}}
+2023-11-16 14:12:47,694 [INFO] [tradier_exchange_handler.py:149]: {
+    "class": "option",
+    "symbol": "SPY",
+    "side": "buy_to_open",
+    "quantity": "1",
+    "type": "market",
+    "duration": "day",
+    "price": "449.160000",
+    "option_symbol": "SPY231123C00400000"
+}
+2023-11-16 14:13:03,994 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:13:03.66737128Z'}
+2023-11-16 14:13:03,994 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:13:03.66737128Z'}
+2023-11-16 14:13:13,703 [INFO] [exchange_handler.py:152]: Received: {'type': 'request', 'channel': 'new_order', 'order': {'symbol': 'SPY', 'order_type': 'market', 'side': 'buy', 'price': '449.165000', 'quantity': '1.000000', 'offset': 'open', 'tif': 'day', 'asset_class': 'option', 'exp': '231123', 'strike': None, 'callput': 'call'}}
+2023-11-16 14:13:13,703 [INFO] [tradier_exchange_handler.py:149]: {
+    "class": "option",
+    "symbol": "SPY",
+    "side": "buy_to_open",
+    "quantity": "1",
+    "type": "market",
+    "duration": "day",
+    "price": "449.165000",
+    "option_symbol": "SPY231123C00400000"
+}
+2023-11-16 14:13:43,715 [INFO] [exchange_handler.py:152]: Received: {'type': 'request', 'channel': 'new_order', 'order': {'symbol': 'SPY', 'order_type': 'market', 'side': 'buy', 'price': '449.160000', 'quantity': '1.000000', 'offset': 'open', 'tif': 'day', 'asset_class': 'option', 'exp': '231123', 'strike': None, 'callput': 'call'}}
+2023-11-16 14:13:43,715 [INFO] [tradier_exchange_handler.py:149]: {
+    "class": "option",
+    "symbol": "SPY",
+    "side": "buy_to_open",
+    "quantity": "1",
+    "type": "market",
+    "duration": "day",
+    "price": "449.160000",
+    "option_symbol": "SPY231123C00400000"
+}
+2023-11-16 14:14:03,995 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:14:03.667501276Z'}
+2023-11-16 14:14:03,996 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:14:03.667501276Z'}
+2023-11-16 14:15:03,997 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:15:03.667624436Z'}
+2023-11-16 14:15:03,997 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:15:03.667624436Z'}
+2023-11-16 14:16:03,998 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:16:03.667702091Z'}
+2023-11-16 14:16:03,998 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:16:03.667702091Z'}
+2023-11-16 14:16:53,786 [INFO] [exchange_handler.py:152]: Received: {'type': 'request', 'channel': 'new_order', 'order': {'symbol': 'SPY', 'order_type': 'market', 'side': 'buy', 'price': '449.265000', 'quantity': '1.000000', 'offset': 'open', 'tif': 'day', 'asset_class': 'option', 'exp': '231123', 'strike': None, 'callput': 'call'}}
+2023-11-16 14:16:53,786 [INFO] [tradier_exchange_handler.py:149]: {
+    "class": "option",
+    "symbol": "SPY",
+    "side": "buy_to_open",
+    "quantity": "1",
+    "type": "market",
+    "duration": "day",
+    "price": "449.265000",
+    "option_symbol": "SPY231123C00400000"
+}
+2023-11-16 14:17:03,999 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:17:03.667804729Z'}
+2023-11-16 14:17:03,999 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:17:03.667804729Z'}
+2023-11-16 14:18:04,001 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:18:03.667915838Z'}
+2023-11-16 14:18:04,001 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:18:03.667915838Z'}
+2023-11-16 14:19:04,002 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:19:03.668045302Z'}
+2023-11-16 14:19:04,002 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:19:03.668045302Z'}
+2023-11-16 14:19:45,855 [INFO] [exchange_handler.py:152]: Received: {'type': 'request', 'channel': 'new_order', 'order': {'symbol': 'SPY', 'order_type': 'market', 'side': 'buy', 'price': '449.265000', 'quantity': '1.000000', 'offset': 'open', 'tif': 'day', 'asset_class': 'option', 'exp': '231123', 'strike': None, 'callput': 'call'}}
+2023-11-16 14:19:45,855 [INFO] [tradier_exchange_handler.py:149]: {
+    "class": "option",
+    "symbol": "SPY",
+    "side": "buy_to_open",
+    "quantity": "1",
+    "type": "market",
+    "duration": "day",
+    "price": "449.265000",
+    "option_symbol": "SPY231123C00400000"
+}
+2023-11-16 14:20:04,002 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:20:03.667166869Z'}
+2023-11-16 14:20:04,002 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:20:03.667166869Z'}
+2023-11-16 14:20:17,868 [INFO] [exchange_handler.py:152]: Received: {'type': 'request', 'channel': 'new_order', 'order': {'symbol': 'SPY', 'order_type': 'market', 'side': 'buy', 'price': '449.275000', 'quantity': '1.000000', 'offset': 'open', 'tif': 'day', 'asset_class': 'option', 'exp': '231123', 'strike': None, 'callput': 'call'}}
+2023-11-16 14:20:17,868 [INFO] [tradier_exchange_handler.py:149]: {
+    "class": "option",
+    "symbol": "SPY",
+    "side": "buy_to_open",
+    "quantity": "1",
+    "type": "market",
+    "duration": "day",
+    "price": "449.275000",
+    "option_symbol": "SPY231123C00400000"
+}
+2023-11-16 14:21:04,003 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:21:03.667287152Z'}
+2023-11-16 14:21:04,003 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:21:03.667287152Z'}
+2023-11-16 14:22:04,005 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:22:03.667398473Z'}
+2023-11-16 14:22:04,005 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:22:03.667398473Z'}
+2023-11-16 14:23:04,006 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:23:03.667523022Z'}
+2023-11-16 14:23:04,006 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:23:03.667523022Z'}
+2023-11-16 14:24:04,007 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:24:03.667647642Z'}
+2023-11-16 14:24:04,007 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:24:03.667647642Z'}
+2023-11-16 14:25:04,009 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:25:03.667765293Z'}
+2023-11-16 14:25:04,009 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:25:03.667765293Z'}
+2023-11-16 14:26:04,010 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:26:03.667880601Z'}
+2023-11-16 14:26:04,010 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:26:03.667880601Z'}
+2023-11-16 14:27:04,011 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:27:03.667998573Z'}
+2023-11-16 14:27:04,011 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:27:03.667998573Z'}
+2023-11-16 14:28:04,011 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:28:03.667114669Z'}
+2023-11-16 14:28:04,011 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:28:03.667114669Z'}
+2023-11-16 14:29:04,013 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:29:03.667231152Z'}
+2023-11-16 14:29:04,013 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:29:03.667231152Z'}
+2023-11-16 14:30:04,014 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:30:03.667356214Z'}
+2023-11-16 14:30:04,014 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:30:03.667356214Z'}
+2023-11-16 14:31:04,015 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:31:03.667467358Z'}
+2023-11-16 14:31:04,015 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:31:03.667467358Z'}
+2023-11-16 14:32:04,017 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:32:03.667583826Z'}
+2023-11-16 14:32:04,017 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:32:03.667583826Z'}
+2023-11-16 14:33:04,018 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:33:03.66770438Z'}
+2023-11-16 14:33:04,018 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:33:03.66770438Z'}
+2023-11-16 14:34:04,024 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:34:03.667831814Z'}
+2023-11-16 14:34:04,025 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:34:03.667831814Z'}
+2023-11-16 14:35:04,026 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:35:03.667942066Z'}
+2023-11-16 14:35:04,026 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:35:03.667942066Z'}
+2023-11-16 14:36:04,027 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:36:03.668058206Z'}
+2023-11-16 14:36:04,027 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:36:03.668058206Z'}
+2023-11-16 14:37:04,027 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:37:03.667184022Z'}
+2023-11-16 14:37:04,027 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:37:03.667184022Z'}
+2023-11-16 14:38:04,029 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:38:03.667296306Z'}
+2023-11-16 14:38:04,029 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:38:03.667296306Z'}
+2023-11-16 14:38:16,275 [INFO] [exchange_handler.py:152]: Received: {'type': 'request', 'channel': 'new_order', 'order': {'symbol': 'SPY', 'order_type': 'market', 'side': 'buy', 'price': '449.285000', 'quantity': '1.000000', 'offset': 'open', 'tif': 'day', 'asset_class': 'option', 'exp': '231123', 'strike': None, 'callput': 'call'}}
+2023-11-16 14:38:16,275 [INFO] [tradier_exchange_handler.py:149]: {
+    "class": "option",
+    "symbol": "SPY",
+    "side": "buy_to_open",
+    "quantity": "1",
+    "type": "market",
+    "duration": "day",
+    "price": "449.285000",
+    "option_symbol": "SPY231123C00400000"
+}
+2023-11-16 14:39:04,030 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:39:03.667413253Z'}
+2023-11-16 14:39:04,030 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:39:03.667413253Z'}
+2023-11-16 14:39:18,297 [INFO] [exchange_handler.py:152]: Received: {'type': 'request', 'channel': 'new_order', 'order': {'symbol': 'SPY', 'order_type': 'market', 'side': 'buy', 'price': '449.285000', 'quantity': '1.000000', 'offset': 'open', 'tif': 'day', 'asset_class': 'option', 'exp': '231123', 'strike': None, 'callput': 'call'}}
+2023-11-16 14:39:18,297 [INFO] [tradier_exchange_handler.py:149]: {
+    "class": "option",
+    "symbol": "SPY",
+    "side": "buy_to_open",
+    "quantity": "1",
+    "type": "market",
+    "duration": "day",
+    "price": "449.285000",
+    "option_symbol": "SPY231123C00400000"
+}
+2023-11-16 14:39:48,309 [INFO] [exchange_handler.py:152]: Received: {'type': 'request', 'channel': 'new_order', 'order': {'symbol': 'SPY', 'order_type': 'market', 'side': 'buy', 'price': '449.285000', 'quantity': '1.000000', 'offset': 'open', 'tif': 'day', 'asset_class': 'option', 'exp': '231123', 'strike': None, 'callput': 'call'}}
+2023-11-16 14:39:48,309 [INFO] [tradier_exchange_handler.py:149]: {
+    "class": "option",
+    "symbol": "SPY",
+    "side": "buy_to_open",
+    "quantity": "1",
+    "type": "market",
+    "duration": "day",
+    "price": "449.285000",
+    "option_symbol": "SPY231123C00400000"
+}
+2023-11-16 14:40:04,032 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:40:03.66753487Z'}
+2023-11-16 14:40:04,032 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:40:03.66753487Z'}
+2023-11-16 14:41:04,033 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:41:03.667691042Z'}
+2023-11-16 14:41:04,033 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:41:03.667691042Z'}
+2023-11-16 14:42:04,034 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:42:03.667801433Z'}
+2023-11-16 14:42:04,034 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:42:03.667801433Z'}
+2023-11-16 14:43:04,035 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:43:03.667908026Z'}
+2023-11-16 14:43:04,035 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:43:03.667908026Z'}
+2023-11-16 14:43:22,392 [INFO] [exchange_handler.py:152]: Received: {'type': 'request', 'channel': 'new_order', 'order': {'symbol': 'SPY', 'order_type': 'market', 'side': 'buy', 'price': '449.455000', 'quantity': '1.000000', 'offset': 'open', 'tif': 'day', 'asset_class': 'option', 'exp': '231123', 'strike': None, 'callput': 'call'}}
+2023-11-16 14:43:22,392 [INFO] [tradier_exchange_handler.py:149]: {
+    "class": "option",
+    "symbol": "SPY",
+    "side": "buy_to_open",
+    "quantity": "1",
+    "type": "market",
+    "duration": "day",
+    "price": "449.455000",
+    "option_symbol": "SPY231123C00400000"
+}
+2023-11-16 14:43:42,400 [INFO] [exchange_handler.py:152]: Received: {'type': 'request', 'channel': 'new_order', 'order': {'symbol': 'SPY', 'order_type': 'market', 'side': 'buy', 'price': '449.455000', 'quantity': '1.000000', 'offset': 'open', 'tif': 'day', 'asset_class': 'option', 'exp': '231123', 'strike': None, 'callput': 'call'}}
+2023-11-16 14:43:42,400 [INFO] [tradier_exchange_handler.py:149]: {
+    "class": "option",
+    "symbol": "SPY",
+    "side": "buy_to_open",
+    "quantity": "1",
+    "type": "market",
+    "duration": "day",
+    "price": "449.455000",
+    "option_symbol": "SPY231123C00400000"
+}
+2023-11-16 14:44:04,037 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:44:03.668022342Z'}
+2023-11-16 14:44:04,037 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:44:03.668022342Z'}
+2023-11-16 14:45:02,430 [INFO] [exchange_handler.py:152]: Received: {'type': 'request', 'channel': 'new_order', 'order': {'symbol': 'SPY', 'order_type': 'market', 'side': 'buy', 'price': '449.625000', 'quantity': '1.000000', 'offset': 'open', 'tif': 'day', 'asset_class': 'option', 'exp': '231123', 'strike': None, 'callput': 'call'}}
+2023-11-16 14:45:02,430 [INFO] [tradier_exchange_handler.py:149]: {
+    "class": "option",
+    "symbol": "SPY",
+    "side": "buy_to_open",
+    "quantity": "1",
+    "type": "market",
+    "duration": "day",
+    "price": "449.625000",
+    "option_symbol": "SPY231123C00400000"
+}
+2023-11-16 14:45:04,037 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:45:03.667137113Z'}
+2023-11-16 14:45:04,037 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:45:03.667137113Z'}
+2023-11-16 14:46:04,038 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:46:03.667245557Z'}
+2023-11-16 14:46:04,038 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:46:03.667245557Z'}
+2023-11-16 14:47:04,039 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:47:03.667357568Z'}
+2023-11-16 14:47:04,040 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:47:03.667357568Z'}
+2023-11-16 14:48:04,041 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:48:03.66748375Z'}
+2023-11-16 14:48:04,041 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:48:03.66748375Z'}
+2023-11-16 14:49:04,042 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:49:03.667616478Z'}
+2023-11-16 14:49:04,042 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:49:03.667616478Z'}
+2023-11-16 14:50:04,044 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:50:03.6677392Z'}
+2023-11-16 14:50:04,044 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:50:03.6677392Z'}
+2023-11-16 14:51:04,045 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:51:03.667855328Z'}
+2023-11-16 14:51:04,045 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:51:03.667855328Z'}
+2023-11-16 14:52:04,046 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:52:03.667959971Z'}
+2023-11-16 14:52:04,046 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:52:03.667959971Z'}
+2023-11-16 14:53:04,047 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:53:03.668079614Z'}
+2023-11-16 14:53:04,047 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:53:03.668079614Z'}
+2023-11-16 14:54:04,048 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:54:03.667189359Z'}
+2023-11-16 14:54:04,048 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:54:03.667189359Z'}
+2023-11-16 14:55:04,049 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:55:03.667315899Z'}
+2023-11-16 14:55:04,049 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:55:03.667315899Z'}
+2023-11-16 14:56:04,050 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:56:03.667443992Z'}
+2023-11-16 14:56:04,051 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:56:03.667443992Z'}
+2023-11-16 14:57:04,052 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:57:03.667557153Z'}
+2023-11-16 14:57:04,052 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:57:03.667557153Z'}
+2023-11-16 14:58:04,053 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:58:03.667690308Z'}
+2023-11-16 14:58:04,053 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:58:03.667690308Z'}
+2023-11-16 14:59:04,054 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:59:03.667802759Z'}
+2023-11-16 14:59:04,054 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T19:59:03.667802759Z'}
+2023-11-16 15:00:04,056 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:00:03.667920774Z'}
+2023-11-16 15:00:04,056 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:00:03.667920774Z'}
+2023-11-16 15:01:04,057 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:01:03.668044932Z'}
+2023-11-16 15:01:04,057 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:01:03.668044932Z'}
+2023-11-16 15:02:04,058 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:02:03.667169883Z'}
+2023-11-16 15:02:04,058 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:02:03.667169883Z'}
+2023-11-16 15:03:04,059 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:03:03.667288157Z'}
+2023-11-16 15:03:04,059 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:03:03.667288157Z'}
+2023-11-16 15:04:04,060 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:04:03.667398444Z'}
+2023-11-16 15:04:04,060 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:04:03.667398444Z'}
+2023-11-16 15:05:04,061 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:05:03.667515995Z'}
+2023-11-16 15:05:04,061 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:05:03.667515995Z'}
+2023-11-16 15:06:04,063 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:06:03.667632295Z'}
+2023-11-16 15:06:04,063 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:06:03.667632295Z'}
+2023-11-16 15:07:04,064 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:07:03.667743248Z'}
+2023-11-16 15:07:04,064 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:07:03.667743248Z'}
+2023-11-16 15:08:04,065 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:08:03.667852424Z'}
+2023-11-16 15:08:04,065 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:08:03.667852424Z'}
+2023-11-16 15:09:04,067 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:09:03.667989465Z'}
+2023-11-16 15:09:04,067 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:09:03.667989465Z'}
+2023-11-16 15:10:04,067 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:10:03.667101234Z'}
+2023-11-16 15:10:04,067 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:10:03.667101234Z'}
+2023-11-16 15:11:04,068 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:11:03.667214516Z'}
+2023-11-16 15:11:04,068 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:11:03.667214516Z'}
+2023-11-16 15:12:04,070 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:12:03.667325704Z'}
+2023-11-16 15:12:04,070 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:12:03.667325704Z'}
+2023-11-16 15:13:04,071 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:13:03.667436447Z'}
+2023-11-16 15:13:04,071 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:13:03.667436447Z'}
+2023-11-16 15:14:04,072 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:14:03.667551633Z'}
+2023-11-16 15:14:04,073 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:14:03.667551633Z'}
+2023-11-16 15:15:04,074 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:15:03.667665383Z'}
+2023-11-16 15:15:04,074 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:15:03.667665383Z'}
+2023-11-16 15:16:04,075 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:16:03.66779991Z'}
+2023-11-16 15:16:04,075 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:16:03.66779991Z'}
+2023-11-16 15:17:04,076 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:17:03.667939988Z'}
+2023-11-16 15:17:04,076 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:17:03.667939988Z'}
+2023-11-16 15:18:04,078 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:18:03.66804377Z'}
+2023-11-16 15:18:04,078 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:18:03.66804377Z'}
+2023-11-16 15:19:04,078 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:19:03.667157725Z'}
+2023-11-16 15:19:04,078 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:19:03.667157725Z'}
+2023-11-16 15:20:04,079 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:20:03.667272262Z'}
+2023-11-16 15:20:04,080 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:20:03.667272262Z'}
+2023-11-16 15:20:23,208 [INFO] [exchange_handler.py:152]: Received: {'type': 'request', 'channel': 'new_order', 'order': {'symbol': 'SPY', 'order_type': 'market', 'side': 'buy', 'price': '449.685000', 'quantity': '1.000000', 'offset': 'open', 'tif': 'day', 'asset_class': 'option', 'exp': '231123', 'strike': None, 'callput': 'call'}}
+2023-11-16 15:20:23,208 [INFO] [tradier_exchange_handler.py:149]: {
+    "class": "option",
+    "symbol": "SPY",
+    "side": "buy_to_open",
+    "quantity": "1",
+    "type": "market",
+    "duration": "day",
+    "price": "449.685000",
+    "option_symbol": "SPY231123C00400000"
+}
+2023-11-16 15:21:04,081 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:21:03.667395161Z'}
+2023-11-16 15:21:04,081 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:21:03.667395161Z'}
+2023-11-16 15:22:04,084 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:22:03.668545914Z'}
+2023-11-16 15:22:04,084 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:22:03.668545914Z'}
+2023-11-16 15:23:04,084 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:23:03.667652333Z'}
+2023-11-16 15:23:04,084 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:23:03.667652333Z'}
+2023-11-16 15:24:04,085 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:24:03.667785954Z'}
+2023-11-16 15:24:04,086 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:24:03.667785954Z'}
+2023-11-16 15:25:04,086 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:25:03.667902747Z'}
+2023-11-16 15:25:04,086 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:25:03.667902747Z'}
+2023-11-16 15:26:04,088 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:26:03.668015751Z'}
+2023-11-16 15:26:04,088 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:26:03.668015751Z'}
+2023-11-16 15:27:04,088 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:27:03.667147432Z'}
+2023-11-16 15:27:04,088 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:27:03.667147432Z'}
+2023-11-16 15:28:04,090 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:28:03.667263402Z'}
+2023-11-16 15:28:04,090 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:28:03.667263402Z'}
+2023-11-16 15:29:04,091 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:29:03.667388326Z'}
+2023-11-16 15:29:04,091 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:29:03.667388326Z'}
+2023-11-16 15:30:04,092 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:30:03.667496388Z'}
+2023-11-16 15:30:04,092 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:30:03.667496388Z'}
+2023-11-16 15:31:04,093 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:31:03.667622274Z'}
+2023-11-16 15:31:04,093 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:31:03.667622274Z'}
+2023-11-16 15:32:04,095 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:32:03.667736024Z'}
+2023-11-16 15:32:04,095 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:32:03.667736024Z'}
+2023-11-16 15:33:04,096 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:33:03.667850518Z'}
+2023-11-16 15:33:04,096 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:33:03.667850518Z'}
+2023-11-16 15:33:35,499 [INFO] [exchange_handler.py:152]: Received: {'type': 'request', 'channel': 'new_order', 'order': {'symbol': 'SPY', 'order_type': 'market', 'side': 'buy', 'price': '449.725000', 'quantity': '1.000000', 'offset': 'open', 'tif': 'day', 'asset_class': 'option', 'exp': '231123', 'strike': None, 'callput': 'call'}}
+2023-11-16 15:33:35,499 [INFO] [tradier_exchange_handler.py:149]: {
+    "class": "option",
+    "symbol": "SPY",
+    "side": "buy_to_open",
+    "quantity": "1",
+    "type": "market",
+    "duration": "day",
+    "price": "449.725000",
+    "option_symbol": "SPY231123C00400000"
+}
+2023-11-16 15:34:04,097 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:34:03.667972186Z'}
+2023-11-16 15:34:04,097 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:34:03.667972186Z'}
+2023-11-16 15:34:49,530 [INFO] [exchange_handler.py:152]: Received: {'type': 'request', 'channel': 'new_order', 'order': {'symbol': 'SPY', 'order_type': 'market', 'side': 'buy', 'price': '449.725000', 'quantity': '1.000000', 'offset': 'open', 'tif': 'day', 'asset_class': 'option', 'exp': '231123', 'strike': None, 'callput': 'call'}}
+2023-11-16 15:34:49,530 [INFO] [tradier_exchange_handler.py:149]: {
+    "class": "option",
+    "symbol": "SPY",
+    "side": "buy_to_open",
+    "quantity": "1",
+    "type": "market",
+    "duration": "day",
+    "price": "449.725000",
+    "option_symbol": "SPY231123C00400000"
+}
+2023-11-16 15:35:04,099 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:35:03.668089875Z'}
+2023-11-16 15:35:04,099 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:35:03.668089875Z'}
+2023-11-16 15:35:15,544 [INFO] [exchange_handler.py:152]: Received: {'type': 'request', 'channel': 'new_order', 'order': {'symbol': 'SPY', 'order_type': 'market', 'side': 'buy', 'price': '449.805000', 'quantity': '1.000000', 'offset': 'open', 'tif': 'day', 'asset_class': 'option', 'exp': '231123', 'strike': None, 'callput': 'call'}}
+2023-11-16 15:35:15,544 [INFO] [tradier_exchange_handler.py:149]: {
+    "class": "option",
+    "symbol": "SPY",
+    "side": "buy_to_open",
+    "quantity": "1",
+    "type": "market",
+    "duration": "day",
+    "price": "449.805000",
+    "option_symbol": "SPY231123C00400000"
+}
+2023-11-16 15:36:04,099 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:36:03.667235247Z'}
+2023-11-16 15:36:04,099 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:36:03.667235247Z'}
+2023-11-16 15:37:04,101 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:37:03.667374045Z'}
+2023-11-16 15:37:04,101 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:37:03.667374045Z'}
+2023-11-16 15:37:57,599 [INFO] [exchange_handler.py:152]: Received: {'type': 'request', 'channel': 'new_order', 'order': {'symbol': 'SPY', 'order_type': 'market', 'side': 'buy', 'price': '449.805000', 'quantity': '1.000000', 'offset': 'open', 'tif': 'day', 'asset_class': 'option', 'exp': '231123', 'strike': None, 'callput': 'call'}}
+2023-11-16 15:37:57,599 [INFO] [tradier_exchange_handler.py:149]: {
+    "class": "option",
+    "symbol": "SPY",
+    "side": "buy_to_open",
+    "quantity": "1",
+    "type": "market",
+    "duration": "day",
+    "price": "449.805000",
+    "option_symbol": "SPY231123C00400000"
+}
+2023-11-16 15:38:04,102 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:38:03.667490429Z'}
+2023-11-16 15:38:04,102 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:38:03.667490429Z'}
+2023-11-16 15:39:04,103 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:39:03.667609128Z'}
+2023-11-16 15:39:04,103 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:39:03.667609128Z'}
+2023-11-16 15:40:04,105 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:40:03.667774081Z'}
+2023-11-16 15:40:04,105 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:40:03.667774081Z'}
+2023-11-16 15:41:04,106 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:41:03.66791659Z'}
+2023-11-16 15:41:04,106 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:41:03.66791659Z'}
+2023-11-16 15:42:04,107 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:42:03.668031076Z'}
+2023-11-16 15:42:04,107 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:42:03.668031076Z'}
+2023-11-16 15:43:04,108 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:43:03.66714206Z'}
+2023-11-16 15:43:04,108 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:43:03.66714206Z'}
+2023-11-16 15:43:39,718 [INFO] [exchange_handler.py:152]: Received: {'type': 'request', 'channel': 'new_order', 'order': {'symbol': 'SPY', 'order_type': 'market', 'side': 'buy', 'price': '449.925000', 'quantity': '1.000000', 'offset': 'open', 'tif': 'day', 'asset_class': 'option', 'exp': '231123', 'strike': None, 'callput': 'call'}}
+2023-11-16 15:43:39,718 [INFO] [tradier_exchange_handler.py:149]: {
+    "class": "option",
+    "symbol": "SPY",
+    "side": "buy_to_open",
+    "quantity": "1",
+    "type": "market",
+    "duration": "day",
+    "price": "449.925000",
+    "option_symbol": "SPY231123C00400000"
+}
+2023-11-16 15:44:04,109 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:44:03.667261331Z'}
+2023-11-16 15:44:04,109 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:44:03.667261331Z'}
+2023-11-16 15:44:21,734 [INFO] [exchange_handler.py:152]: Received: {'type': 'request', 'channel': 'new_order', 'order': {'symbol': 'SPY', 'order_type': 'market', 'side': 'buy', 'price': '449.925000', 'quantity': '1.000000', 'offset': 'open', 'tif': 'day', 'asset_class': 'option', 'exp': '231123', 'strike': None, 'callput': 'call'}}
+2023-11-16 15:44:21,734 [INFO] [tradier_exchange_handler.py:149]: {
+    "class": "option",
+    "symbol": "SPY",
+    "side": "buy_to_open",
+    "quantity": "1",
+    "type": "market",
+    "duration": "day",
+    "price": "449.925000",
+    "option_symbol": "SPY231123C00400000"
+}
+2023-11-16 15:45:04,110 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:45:03.667374544Z'}
+2023-11-16 15:45:04,110 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:45:03.667374544Z'}
+2023-11-16 15:46:04,112 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:46:03.667498197Z'}
+2023-11-16 15:46:04,112 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:46:03.667498197Z'}
+2023-11-16 15:46:45,789 [INFO] [exchange_handler.py:152]: Received: {'type': 'request', 'channel': 'new_order', 'order': {'symbol': 'SPY', 'order_type': 'market', 'side': 'buy', 'price': '450.005000', 'quantity': '1.000000', 'offset': 'open', 'tif': 'day', 'asset_class': 'option', 'exp': '231123', 'strike': None, 'callput': 'call'}}
+2023-11-16 15:46:45,789 [INFO] [tradier_exchange_handler.py:149]: {
+    "class": "option",
+    "symbol": "SPY",
+    "side": "buy_to_open",
+    "quantity": "1",
+    "type": "market",
+    "duration": "day",
+    "price": "450.005000",
+    "option_symbol": "SPY231123C00400000"
+}
+2023-11-16 15:47:04,113 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:47:03.667615678Z'}
+2023-11-16 15:47:04,113 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:47:03.667615678Z'}
+2023-11-16 15:48:04,115 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:48:03.667732462Z'}
+2023-11-16 15:48:04,115 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:48:03.667732462Z'}
+2023-11-16 15:48:07,824 [INFO] [exchange_handler.py:152]: Received: {'type': 'request', 'channel': 'new_order', 'order': {'symbol': 'SPY', 'order_type': 'market', 'side': 'buy', 'price': '450.005000', 'quantity': '1.000000', 'offset': 'open', 'tif': 'day', 'asset_class': 'option', 'exp': '231123', 'strike': None, 'callput': 'call'}}
+2023-11-16 15:48:07,824 [INFO] [tradier_exchange_handler.py:149]: {
+    "class": "option",
+    "symbol": "SPY",
+    "side": "buy_to_open",
+    "quantity": "1",
+    "type": "market",
+    "duration": "day",
+    "price": "450.005000",
+    "option_symbol": "SPY231123C00400000"
+}
+2023-11-16 15:49:04,116 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:49:03.667844658Z'}
+2023-11-16 15:49:04,116 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:49:03.667844658Z'}
+2023-11-16 15:50:04,117 [INFO] [tradier_exchange_handler.py:204]: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:50:03.667957623Z'}
+2023-11-16 15:50:04,117 [INFO] [tradier_exchange_handler.py:209]: Unhandled message type: {'event': 'heartbeat', 'status': 'active', 'timestamp': '2023-11-16T20:50:03.667957623Z'}
+^C2023-11-16 15:50:13,461 [INFO] [exchange_handler.py:266]: Exchange Shutting Down
+2023-11-16 15:50:13,461 [INFO] [exchange_handler.py:269]: Cancelling task: tradier Exchange Handler
+2023-11-16 15:50:13,461 [INFO] [exchange_handler.py:269]: Cancelling task: Exchange Socket Server
+2023-11-16 15:50:13,461 [INFO] [exchange_handler.py:248]: Socket Server Shutting Down
+2023-11-16 15:50:13,461 [INFO] [tradier_exchange_handler.py:222]: Exchange WS Handler Shutting Down
+2023-11-16 15:50:14,210 [INFO] [exchange_handler.py:227]: Client disconnected on /tmp/exchange.sock
+2023-11-16 15:50:15,497 [INFO] [exchange_handler.py:116]: Exchange Handler Shutting Down
+Traceback (most recent call last):
+  File "/home/heath/anaconda3/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/heath/anaconda3/lib/python3.11/asyncio/base_events.py", line 653, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/home/heath/systematic-trading/exchange_handler.py", line 264, in main_task
+    await asyncio.wait(exchange_handler_tasks, return_when=asyncio.FIRST_COMPLETED)
+  File "/home/heath/anaconda3/lib/python3.11/asyncio/tasks.py", line 418, in wait
+    return await _wait(fs, timeout, return_when, loop)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/heath/anaconda3/lib/python3.11/asyncio/tasks.py", line 525, in _wait
+    await waiter
+asyncio.exceptions.CancelledError
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/heath/systematic-trading/exchange_handler.py", line 287, in <module>
+    main()
+  File "/home/heath/systematic-trading/exchange_handler.py", line 284, in main
+    asyncio.run(server.main_task())
+  File "/home/heath/anaconda3/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/home/heath/anaconda3/lib/python3.11/asyncio/runners.py", line 123, in run
+    raise KeyboardInterrupt()
+KeyboardInterrupt

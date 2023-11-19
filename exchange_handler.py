@@ -53,6 +53,9 @@ class ExchangeHandler:
     async def get_orders(self, order_id):
         raise NotImplementedError
     
+    async def get_options_chains(self, underlying, expiration):
+        raise NotImplementedError
+    
     def parse_msg(self, msg):
         raise NotImplementedError
     
@@ -169,8 +172,10 @@ class ExchangeSocketServer:
                         response = {'error': 'Invalid message. Must specify order_id'}
                     else:
                         response = await self.exchange_handler.cancel_order(order_id=msg['order_id'])
+                elif channel == 'options_chains':
+                    response = await self.exchange_handler.get_options_chains(**msg['data'])
                 else:
-                    response = {'error': 'Invalid message channel. Must be either \'accounts\', \'new_order\', \'get_order\', or \'cancel_order\''}
+                    response = {'error': 'Invalid message channel. Must be either \'accounts\', \'new_order\', \'get_order\', \'cancel_order\', or \'options_chains\''}
             else:
                 if msg_type == 'subscribe':
                     channels = msg.get('channels', [])

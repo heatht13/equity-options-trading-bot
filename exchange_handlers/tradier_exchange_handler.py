@@ -36,18 +36,21 @@ class TradierExchangeHandler(ExchangeHandler):
             'balances': f'/v1/accounts/{self.account_id}/balances',
             'positions': f'/v1/accounts/{self.account_id}/positions',
             'orders': f'/v1/accounts/{self.account_id}/orders',
+            'options_chains': '/v1/markets/options/chains',
             'create_session': '/v1/accounts/events/session'
         }
 
-    async def rest_query(self, method, endpoint, headers=None, json=None):
+    async def rest_query(self, method, endpoint, headers=None, data=None, params=None):
         if self.rest_session is None:
             self.rest_session = aiohttp.ClientSession()
         headers = (headers if headers is not None else {'Authorization': f'Bearer {self.access_token}',
                                                         'Accept':'application/json'})
         uri = self.rest_url + endpoint
-        async with self.rest_session.request(method, uri, headers=headers, data=json) as response:
+        data = '' if data is None else json.dumps(data)
+        async with self.rest_session.request(method, uri, headers=headers, data=data, params=params) as response:
             if response.status // 100 != 2:
-                raise Exception(f'Error {response.status} on {method} {endpoint}: {response.reason}')
+                logger.exception(f'Error {response.status} on {method} {endpoint}: {response.reason}')
+                return response.text
             return await response.json()
         
     async def get_session_id(self):
@@ -156,6 +159,51 @@ class TradierExchangeHandler(ExchangeHandler):
 
     async def cancel_order(self, order_id):
         response = await self.rest_query('DELETE', self.endpoints['orders']+order_id)
+        return response
+    
+    async def get_options_chains(self, underlying, expiration, max_price, min_price):
+        if '-' not in expiration:
+            exp = datetime.strptime(expiration, '%y%m%d')
+            exp = exp.strftime('%Y-%m-%d')
+        data = {
+            'symbol': str(underlying),
+            'expiration': exp,
+            'greeks': 'false',
+        }
+        chains = dict()
+        chains_resp = await self.rest_query('GET', self.endpoints['options_chains'], params=data)
+        if chains_resp['options'] is not None:
+            calls = dict()
+            puts = dict()
+            for chain in chains_resp['options']['option']:
+                if chain['last'] == 'null':
+                    continue
+                last = float(chain['last'])
+                if last > max_price or last < min_price:
+                    continue
+                strike = float(chain['strike'])
+                symbol_data = {
+                        'symbol': chain['underlying'],
+                        'option_symbol': chain['symbol'],
+                        'strike': float(chain['strike']),
+                        'expiration': chain['expiration_date'],
+                        'callput': chain['option_type'],
+                        'last': last,
+                        'volume': float(chain['average_volume']),
+                    }
+                if chain['option_type'] == 'call':
+                    calls[strike] = symbol_data
+                else:
+                    puts[strike] = symbol_data
+            calls = {k: v for k, v in sorted(calls.items(), key=lambda x: x[1]['volume'], reverse=True)}
+            puts = {k: v for k, v in sorted(puts.items(), key=lambda x: x[1]['volume'], reverse=True)}
+            chains['call'] = calls
+            chains['put'] = puts
+        response = {
+            'underlying': underlying,
+            'expiration': expiration,
+            'options_chain': chains
+        }
         return response
 
     def parse_msg(self, msg):
