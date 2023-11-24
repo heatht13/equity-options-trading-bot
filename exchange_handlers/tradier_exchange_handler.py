@@ -46,7 +46,6 @@ class TradierExchangeHandler(ExchangeHandler):
         headers = (headers if headers is not None else {'Authorization': f'Bearer {self.access_token}',
                                                         'Accept':'application/json'})
         uri = self.rest_url + endpoint
-        data = '' if data is None else json.dumps(data)
         async with self.rest_session.request(method, uri, headers=headers, data=data, params=params) as response:
             if response.status // 100 != 2:
                 logger.exception(f'Error {response.status} on {method} {endpoint}: {response.reason}')
@@ -132,14 +131,12 @@ class TradierExchangeHandler(ExchangeHandler):
             'quantity': quantity,
             'type': order_type,
             'duration': tif,
-            'price': price
+            #'price': price #NOTE: Decision Engine is passing underlying price. Dont want to use that when placing option orders
         }
 
         if asset_class == 'option':
-            strike = 400 #TODO: remove this, just testing for now
             option_type = 'C' if callput == 'call' else 'P' if callput == 'put' else None
-            option_type = 'C' if option_type is None else option_type
-            strike = f"{int(strike*10**3):0>{8}}"
+            strike = f"{int(float(strike)*10**3):0>{8}}"
             data['option_symbol'] = symbol+exp+option_type+strike
 
             if side == 'buy':
@@ -149,16 +146,16 @@ class TradierExchangeHandler(ExchangeHandler):
             data['side'] = direction
             data['quantity'] = "1" #NOTE: tradier says number of shares, but we need to test #str(int(quantity)*100)
         
-        logger.info(json.dumps(data, indent=4))
-        return data
-        #response = await self.rest_query('POST', self.endpoints['orders'], json=data)
-        #return response
+        logger.info(f"New Order: {json.dumps(data, indent=4)}")
+        response = await self.rest_query('POST', self.endpoints['orders'], data=data)
+        logger.info(f"NEW ORDER RESP: {json.dumps(response, indent=4)}")
+        return response
 
     async def modify_order(self, order_id, order_type, price, quantity, tif):
         raise NotImplementedError
 
     async def cancel_order(self, order_id):
-        response = await self.rest_query('DELETE', self.endpoints['orders']+order_id)
+        response = await self.rest_query('DELETE', self.endpoints['orders']+'/'+order_id)
         return response
     
     async def get_options_chains(self, underlying, expiration, max_price, min_price):
@@ -173,10 +170,10 @@ class TradierExchangeHandler(ExchangeHandler):
         chains = dict()
         chains_resp = await self.rest_query('GET', self.endpoints['options_chains'], params=data)
         if chains_resp['options'] is not None:
-            calls = dict()
-            puts = dict()
+            calls = []
+            puts = []
             for chain in chains_resp['options']['option']:
-                if chain['last'] == 'null':
+                if chain['last'] is None:
                     continue
                 last = float(chain['last'])
                 if last > max_price or last < min_price:
@@ -189,14 +186,16 @@ class TradierExchangeHandler(ExchangeHandler):
                         'expiration': chain['expiration_date'],
                         'callput': chain['option_type'],
                         'last': last,
-                        'volume': float(chain['average_volume']),
+                        'open_interest': float(chain['open_interest']),
                     }
                 if chain['option_type'] == 'call':
-                    calls[strike] = symbol_data
+                    calls.append(symbol_data)
                 else:
-                    puts[strike] = symbol_data
-            calls = {k: v for k, v in sorted(calls.items(), key=lambda x: x[1]['volume'], reverse=True)}
-            puts = {k: v for k, v in sorted(puts.items(), key=lambda x: x[1]['volume'], reverse=True)}
+                    puts.append(symbol_data)
+            # calls = {k: v for k, v in sorted(calls.items(), key=lambda x: x[1]['volume'], reverse=True)}
+            # puts = {k: v for k, v in sorted(puts.items(), key=lambda x: x[1]['volume'], reverse=True)}
+            calls = sorted(calls, key=lambda x: x['open_interest'], reverse=True)
+            puts = sorted(puts, key=lambda x: x['open_interest'], reverse=True)
             chains['call'] = calls
             chains['put'] = puts
         response = {

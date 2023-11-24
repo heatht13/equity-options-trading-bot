@@ -290,16 +290,14 @@ class DecisionEngine():
                         elif msg['channel'] == 'orders':
                             logger.info(f"Received order update: {msg['data']}")
                     elif msg['type'] == 'response':
-                        if msg['type'] == 'success':
-                            logger.info(msg)
-                            if msg['channel'] == 'balances':
-                                self.balances = msg['data']
-                            elif msg['channel'] == 'options_chains':
-                                if 'error' in msg['data'] or not msg['data']:
-                                    raise Exception(f"Failed to retrieve options chain: {msg['data']}")
-                                self.options_chain[msg['data']['underlying']] = msg['data']['options_chain']
-                        elif msg['type'] == 'error':
-                            logger.error(msg)
+                        logger.info(msg)
+                        if msg['channel'] == 'balances':
+                            self.balances = msg['data']
+                        elif msg['channel'] == 'options_chains':
+                            if 'error' in msg['data'] or not msg['data']:
+                                raise Exception(f"Failed to retrieve options chain: {msg['data']}")
+                            self.options_chain[msg['data']['underlying']] = msg['data']['options_chain']
+                            logger.info(f"Received options chain: {msg['data']['underlying']} {msg['data']['options_chain']}")
                 await asyncio.sleep(ORDER_SOCKET_INTERVAL_SEC)
         except ConnectionError as e:
             logger.error(f'Exchange socket disconnected; Exchange Message Handler task resetting: {e}')
