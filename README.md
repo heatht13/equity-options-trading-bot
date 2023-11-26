@@ -58,7 +58,7 @@
 ## To Do
 
 * Write MD and exchange task management like i do in decision handler
-* Need to get support running from remote
+* Need to add support running from remote
 * Need to log to files at some point
 * Potentially add some timeout logic to the queues and sockets
 * Have server respond with list of symbols that fail to subscribe
