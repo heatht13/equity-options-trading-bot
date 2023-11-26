@@ -290,7 +290,14 @@ class MDSocketServer:
                         self.data_handler.client.candle.update(msg['symbols'])
                         response = {'success': f'Subscribed candle for {msg["symbols"]}'}
                     else:
-                        response = {'error': 'Invalid message channel. Must be either \'quote\', \'timesale\', \'ma\', \'lookback\', or \'trade\''}
+                        response = {'error': f'Invalid message channel: {channel}. Must be either \'quote\', \'timesale\', \'ma\', \'lookback\', \'trade\', or \'candle\''}
+                    resp = {
+                        'type': 'response',
+                        'channel': channel,
+                        'timestamp': datetime.utcnow().timestamp(),
+                        'data': response
+                    }
+                    await self.send_json(writer, json.dumps(resp))
             else:
                 for channel in msg_channels:
                     if channel == 'quote':
@@ -312,16 +319,14 @@ class MDSocketServer:
                         self.data_handler.client.candle.difference_update(msg['symbols'])
                         response = {'success': f'Unsubscibed candle for {msg["symbols"]}'}
                     else:
-                        response = {'error': 'Invalid message channel. Must be either \'quote\', \'timesale\', \'ma\', \'lookback\', or \'trade\''}
-            if response is not None:
-                msg = {
-                    'type': 'response',
-                    'channel': channel,
-                    'timestamp': datetime.utcnow().timestamp(),
-                    'data': response
-                }
-                await self.send_json(writer, json.dumps(msg))
-
+                        response = {'error': f'Invalid message channel: {channel}. Must be either \'quote\', \'timesale\', \'ma\', \'lookback\', \'trade\', or \'candle\''}
+                    resp = {
+                        'type': 'response',
+                        'channel': channel,
+                        'timestamp': datetime.utcnow().timestamp(),
+                        'data': response
+                    }
+                    await self.send_json(writer, json.dumps(resp))
 
     async def on_connect(self, reader, writer):
         try:

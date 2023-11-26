@@ -30,7 +30,7 @@ DAYS_TO_EXPIRATION = 7
 MAX_OPTION_PRICE = 1.0
 MIN_OPTION_PRICE = 0.5
 
-Order = namedtuple('Order', (
+OrderRequest = namedtuple('Order', (
     'symbol',
     'order_type',
     'side',
@@ -43,6 +43,15 @@ Order = namedtuple('Order', (
     'strike',
     'callput'
 ))
+
+OptionsChainRequest = namedtuple('OptionsChainRequest', (
+    'underlying',
+    'expiration',
+    'max_price',
+    'min_price'
+))
+
+BalanceRequest = namedtuple('BalanceRequest', tuple())
 
 SymbolState = namedtuple('SymbolState', (
     'quote',
@@ -91,6 +100,7 @@ class DecisionEngine():
             'new_order_short_lock': datetime.datetime.utcnow(),
             'new_order_long_lock': datetime.datetime.utcnow()
          } for symbol in symbols}
+        self.exchange_msg_queue = asyncio.Queue()
         self.exchange_tasks = set()
 
     def generate_signal(self, symbol):
@@ -170,31 +180,32 @@ class DecisionEngine():
                     strike = float(self.positions[symbol]['strike'])
                     callput = self.positions[symbol]['callput']
                     if price < ma and self.positions[symbol]['callput'] == 'call':
-                        self.orders.append(self.create_order(symbol, 'market', 'sell', price, NUM_CONTRACTS, 'close', 'day', 'option', expiration, strike, callput))
+                        await self.exchange_msg_queue.put(self.create_order(symbol, 'market', 'sell', price, NUM_CONTRACTS, 'close', 'day', 'option', expiration, strike, callput))
                     elif price > ma and self.positions[symbol]['callput'] == 'put':
-                        self.orders.append(self.create_order(symbol, 'market', 'sell', price, NUM_CONTRACTS, 'close', 'day', 'option', expiration, strike, callput))
+                        await self.exchange_msg_queue.put(self.create_order(symbol, 'market', 'sell', price, NUM_CONTRACTS, 'close', 'day', 'option', expiration, strike, callput))
                 if signal == Signal.HOLD:
                     continue
                 logger.info(f"SIGNAL: Symbol: {symbol} Signal: {signal} State: {self.symbols[symbol]}")
                 if symbol in self.positions:
-                    logger.warning(f"Already have position. Skipping Signal {signal}. Position Side: {self.positions[symbol]['callput']} Positon: {self.positions[symbol]}")
+                    logger.warning(f"Already have position. Skipping signal {signal}. Position Side: {self.positions[symbol]['callput']} Positon: {self.positions[symbol]}")
                     continue
-                if self.options_chain[symbol] is None:
-                    logger.warning(f"Options chain not found. Skipping Signal {signal}")
+                if self.options_chain.get(symbol) is None:
+                    logger.warning(f"Options chain not found. Skipping signal {signal} and requesting options chain")
+                    await self.exchange_msg_queue.put(OptionsChainRequest(symbol, self.expiration, MAX_OPTION_PRICE, MIN_OPTION_PRICE))
                     continue
                 if signal == Signal.LONG:
                     if datetime.datetime.utcnow() < self.symbols[symbol]['new_order_long_lock']:
                         logger.warning(f"New long order lock in effect. Skipping signal: {signal} symbol: {symbol} state: {self.symbols[symbol]} postions: {self.positions}")
                         continue
                     strike = float(self.options_chain[symbol]['call'][0]['strike'])
-                    self.orders.append(self.create_order(symbol, 'market', 'buy', price, NUM_CONTRACTS, 'open', 'day', 'option', self.expiration, strike, 'call'))
+                    await self.exchange_msg_queue.put(self.create_order(symbol, 'market', 'buy', price, NUM_CONTRACTS, 'open', 'day', 'option', self.expiration, strike, 'call'))
                     self.symbols[symbol]['new_order_long_lock'] = datetime.datetime.utcnow() + datetime.timedelta(seconds=NEW_ORDER_LOCK_SECS)
                 else:
                     if datetime.datetime.utcnow() < self.symbols[symbol]['new_order_short_lock']:
                         logger.warning(f"New short order lock in effect. Skipping signal: {signal} symbol: {symbol} state: {self.symbols[symbol]}")
                         continue
                     strike = float(self.options_chain[symbol]['put'][0]['strike'])
-                    self.orders.append(self.create_order(symbol, 'market', 'buy', price, NUM_CONTRACTS, 'open', 'day', 'option', self.expiration, strike, 'put'))
+                    await self.exchange_msg_queue.put(self.create_order(symbol, 'market', 'buy', price, NUM_CONTRACTS, 'open', 'day', 'option', self.expiration, strike, 'put'))
                     self.symbols[symbol]['new_order_short_lock'] = datetime.datetime.utcnow() + datetime.timedelta(seconds=NEW_ORDER_LOCK_SECS)
         except asyncio.CancelledError as e:
             logger.info(f"Symbol {symbol} Signal Handler cancelled")
@@ -204,7 +215,7 @@ class DecisionEngine():
             raise e
     
     def create_order(self, symbol, order_type, side, price, quantity, offset, tif, asset_type, exp=None, strike=None, callput=None):
-        return Order(
+        return OrderRequest(
             symbol=str(symbol),
             order_type=str(order_type),
             side=str(side),
@@ -247,60 +258,64 @@ class DecisionEngine():
     async def exchange_msg_sender(self, exchange_socket):
         try:
             while True:
-                while len(self.orders)> 0:
-                    order = self.orders.popleft()
-                    logger.info(f"Sending order: {json.dumps(order._asdict(), indent=2)}")
+                msg = await self.exchange_msg_queue.get()
+                if isinstance(msg, OrderRequest):
+                    logger.info(f"Sending order: {json.dumps(msg._asdict(), indent=2)}")
                     await exchange_socket.send_json(json.dumps({
                         'type': 'request',
                         'channel': 'new_order',
                         'order': {
-                            'symbol': order.symbol,
-                            'order_type': order.order_type,
-                            'side': order.side,
-                            'price': order.price,
-                            'quantity': order.quantity,
-                            'offset': order.offset,
-                            'tif': order.tif,
-                            'asset_class': order.asset_class,
-                            'exp': order.exp,
-                            'strike': order.strike,
-                            'callput': order.callput
+                            'symbol': msg.symbol,
+                            'order_type': msg.order_type,
+                            'side': msg.side,
+                            'price': msg.price,
+                            'quantity': msg.quantity,
+                            'offset': msg.offset,
+                            'tif': msg.tif,
+                            'asset_class': msg.asset_class,
+                            'exp': msg.exp,
+                            'strike': msg.strike,
+                            'callput': msg.callput
                         }
                     }))
-                await asyncio.sleep(ORDER_SOCKET_INTERVAL_SEC)
+                elif isinstance(msg, BalanceRequest):
+                    await exchange_socket.send_json(json.dumps({
+                        'type': 'request',
+                        'channel': 'balances'
+                    }))
+                elif isinstance(msg, OptionsChainRequest):
+                    await exchange_socket.send_json(json.dumps({
+                        'type': 'request',
+                        'channel': 'options_chains',
+                        'data': {
+                            'underlying': msg.underlying,
+                            'expiration': msg.expiration,
+                            'max_price': msg.max_price,
+                            'min_price': msg.min_price
+                        }
+                    }))
+                else:
+                    logger.warning(f"Unhandled message type: {msg}")
         except ConnectionError as e:
-            logger.error(f'Exchange socket disconnected; Exchange Order Handler resetting: {e}')
+            logger.error(f'Exchange socket disconnected; Exchange Msg Sender resetting: {e}')
         except asyncio.CancelledError as e:
-            logger.info(f"Exchange Order Handler cancelled")
+            logger.info(f"Exchange Msg Sender cancelled")
             raise e
         except Exception as e:
-            logger.exception(f"Exchange Order Handler exception: {str(e)}")
+            logger.exception(f"Exchange Msg Sender exception: {str(e)}")
             raise e
     
     async def exchange_msg_receiver(self, exchange_socket):
         try:
-            #TODO: modify to support sending msgs anytime decision engine wants. use queues and tasks
             while True:
                 await exchange_socket.send_json(json.dumps({
                         'type': 'subscribe',
                         'channels': ['positions', 'orders'],
                         'interval': POSITIONS_INTERVAL_SEC
                 }))
-                await exchange_socket.send_json(json.dumps({
-                    'type': 'request',
-                    'channel': 'balances'
-                }))
+                await self.exchange_msg_queue.put(BalanceRequest())
                 for symbol in self.symbols.keys():
-                    await exchange_socket.send_json(json.dumps({
-                        'type': 'request',
-                        'channel': 'options_chains',
-                        'data': {
-                            'underlying': symbol,
-                            'expiration': self.expiration,
-                            'max_price': MAX_OPTION_PRICE,
-                            'min_price': MIN_OPTION_PRICE
-                        }
-                    }))
+                    await self.exchange_msg_queue.put(OptionsChainRequest(symbol, self.expiration, MAX_OPTION_PRICE, MIN_OPTION_PRICE))
                 async for msg in exchange_socket.receive():
                     msg = json.loads(msg)
                     if msg['type'] == 'update':
@@ -309,22 +324,25 @@ class DecisionEngine():
                         elif msg['channel'] == 'orders':
                             logger.info(f"Received order update: {msg['data']}")
                     elif msg['type'] == 'response':
-                        logger.info(msg)
                         if msg['channel'] == 'balances':
                             self.balances = msg['data']
                         elif msg['channel'] == 'options_chains':
                             if 'error' in msg['data'] or not msg['data']:
                                 raise Exception(f"Failed to retrieve options chain: {msg['data']}")
                             self.options_chain[msg['data']['underlying']] = msg['data']['options_chain']
-                            logger.info(f"Received options chain: {msg['data']['underlying']} {msg['data']['options_chain']}")
+                        elif msg['channel'] in ('orders', 'positions'):
+                            if 'error' in msg['data']:
+                                raise Exception(f"Failed to subscribe {msg['channel']}: {msg['data']}")
+                        else:
+                            logger.warning(f"Unhandled message type: {msg}")
                 await asyncio.sleep(ORDER_SOCKET_INTERVAL_SEC)
         except ConnectionError as e:
-            logger.error(f'Exchange socket disconnected; Exchange Message Handler task resetting: {e}')
+            logger.error(f'Exchange socket disconnected; Exchange Message Receiver task resetting: {e}')
         except asyncio.CancelledError as e:
-            logger.info(f"Exchange Message Handler cancelled")
+            logger.info(f"Exchange Message Receiver cancelled")
             raise e
         except Exception as e:
-            logger.exception(f"Exchange Message Handler exception: {str(e)}")
+            logger.exception(f"Exchange Message Receiver exception: {str(e)}")
             raise e
 
     async def exchange_handler(self):
@@ -388,11 +406,11 @@ class DecisionEngine():
                             else:
                                 logger.warning(f"Unhandled message type: {msg}")
                         elif msg['type'] == 'response':
-                            logger.info(msg)
-                            continue
-                        elif msg['type'] == 'error':
-                            logger.error(msg)
-                            break
+                            if msg['channel'] in ('quote', 'candle', 'ma', 'lookback'):
+                                if 'error' in msg['data']:
+                                    raise Exception(f"Failed to subscribe {msg['channel']}: {msg['data']}")
+                            else:
+                                logger.warning(f"Unhandled message type: {msg}")
             except (ConnectionRefusedError, ConnectionResetError):
                 logger.error(f"Market Data Handler unable to connect. resetting...")
                 await asyncio.sleep(SOCKET_CONN_INTERVAL_SEC)
