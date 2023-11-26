@@ -163,9 +163,8 @@ class DecisionEngine():
                 signal = self.generate_signal(symbol)
                 if signal is None:
                     continue
-                #TODO: this only allows us to have 1 open position at a time for SPY. Need to make more robust
                 price = float(self.symbols[symbol]['quote'].get('price'))
-                if symbol in self.positions: #NOTE: Long only options strategy
+                if symbol in self.positions:
                     ma = float(self.symbols[symbol]['ma'].get('ma'))
                     expiration = self.positions[symbol]['expiration']
                     strike = float(self.positions[symbol]['strike'])
@@ -187,14 +186,14 @@ class DecisionEngine():
                     if datetime.datetime.utcnow() < self.symbols[symbol]['new_order_long_lock']:
                         logger.warning(f"New long order lock in effect. Skipping signal: {signal} symbol: {symbol} state: {self.symbols[symbol]} postions: {self.positions}")
                         continue
-                    strike = float(self.options_chain[symbol]['call'][0]['strike']) #NOTE: gets strike with highest volum
+                    strike = float(self.options_chain[symbol]['call'][0]['strike'])
                     self.orders.append(self.create_order(symbol, 'market', 'buy', price, NUM_CONTRACTS, 'open', 'day', 'option', self.expiration, strike, 'call'))
                     self.symbols[symbol]['new_order_long_lock'] = datetime.datetime.utcnow() + datetime.timedelta(seconds=NEW_ORDER_LOCK_SECS)
                 else:
                     if datetime.datetime.utcnow() < self.symbols[symbol]['new_order_short_lock']:
                         logger.warning(f"New short order lock in effect. Skipping signal: {signal} symbol: {symbol} state: {self.symbols[symbol]}")
                         continue
-                    strike = float(self.options_chain[symbol]['put'][0]['strike']) #NOTE: gets strike with highest volume
+                    strike = float(self.options_chain[symbol]['put'][0]['strike'])
                     self.orders.append(self.create_order(symbol, 'market', 'buy', price, NUM_CONTRACTS, 'open', 'day', 'option', self.expiration, strike, 'put'))
                     self.symbols[symbol]['new_order_short_lock'] = datetime.datetime.utcnow() + datetime.timedelta(seconds=NEW_ORDER_LOCK_SECS)
         except asyncio.CancelledError as e:
@@ -226,7 +225,6 @@ class DecisionEngine():
             for symbol in self.symbols.keys():
                 signal_tasks.add(asyncio.create_task(self.signal_handler(symbol), name=f'{symbol}_signal_handler'))
             while True:
-                logger.info(f"num tasks: {len(asyncio.all_tasks())}")
                 done, pending = await asyncio.wait(signal_tasks, return_when=asyncio.FIRST_COMPLETED)
                 for task in done:
                     task_name = task.get_name()
@@ -246,7 +244,7 @@ class DecisionEngine():
             await asyncio.gather(*self.exchange_tasks, return_exceptions=True)
             logger.info(f"Decision Handler shutting down")
 
-    async def exchange_order_handler(self, exchange_socket):
+    async def exchange_msg_sender(self, exchange_socket):
         try:
             while True:
                 while len(self.orders)> 0:
@@ -279,7 +277,7 @@ class DecisionEngine():
             logger.exception(f"Exchange Order Handler exception: {str(e)}")
             raise e
     
-    async def exchange_msg_handler(self, exchange_socket):
+    async def exchange_msg_receiver(self, exchange_socket):
         try:
             #TODO: modify to support sending msgs anytime decision engine wants. use queues and tasks
             while True:
@@ -331,20 +329,18 @@ class DecisionEngine():
 
     async def exchange_handler(self):
         methods = {
-            'msg_handler': self.exchange_msg_handler,
-            'order_handler': self.exchange_order_handler
+            'msg_handler': self.exchange_msg_receiver,
+            'order_handler': self.exchange_msg_sender
         }
         self.exchange_tasks.clear()
         try:
             logger.info(f"Exchange Handler started")
             async with ContextManagedAsyncUnixSocketClient(self.exchange_socket) as exchange_socket:
                 self.exchange_tasks = {
-                    asyncio.create_task(self.exchange_msg_handler(exchange_socket), name='msg_handler'),
-                    asyncio.create_task(self.exchange_order_handler(exchange_socket), name='order_handler')
+                    asyncio.create_task(self.exchange_msg_receiver(exchange_socket), name='exchange_msg_receiver'),
+                    asyncio.create_task(self.exchange_msg_sender(exchange_socket), name='exchange_msg_sender')
                 }
                 while True:
-                    #TODO: Remove when confident number of tasks doesnt increase over time
-                    logger.info(f"{len(asyncio.all_tasks())} tasks running")
                     done, pending = await asyncio.wait(self.exchange_tasks, return_when=asyncio.FIRST_COMPLETED)
                     for task in done:
                         task_name = task.get_name()
@@ -445,8 +441,6 @@ class DecisionEngine():
                     asyncio.create_task(self.exchange_handler(), name=f'exchange_handler')
                 }
                 while True:
-                    #TODO: Remove when confident number of tasks doesnt increase over time
-                    logger.info(f"{len(asyncio.all_tasks())} tasks running")
                     done, pending = await asyncio.wait(decision_engine_tasks, return_when=asyncio.FIRST_COMPLETED)
                     for task in done:
                         task_name = task.get_name()
