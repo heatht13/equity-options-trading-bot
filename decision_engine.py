@@ -20,15 +20,15 @@ logger = logging.getLogger()
 
 ORDER_SOCKET_INTERVAL_SEC = 2
 SOCKET_CONN_INTERVAL_SEC = 2
-SIGNAL_PROC_INTERVAL_SEC = 0.1
+SIGNAL_HANDLER_INTERVAL_SEC = 0.5
 POSITIONS_INTERVAL_SEC = 2
 NUM_CONTRACTS = 1
 MAX_ORDERS = 2
 NEW_ORDER_LOCK_SECS = 20
 MSG_LENGTH_PREFIX_BYTES = 4
 DAYS_TO_EXPIRATION = 7
-MAX_OPTION_PRICE = 1.5
-MIN_OPTION_PRICE = 0.4
+MAX_OPTION_PRICE = 1.0
+MIN_OPTION_PRICE = 0.5
 
 Order = namedtuple('Order', (
     'symbol',
@@ -155,6 +155,55 @@ class DecisionEngine():
                     return Signal.SHORT
         return Signal.HOLD
 
+    async def signal_handler(self, symbol):
+        try:
+            logger.info(f"{symbol} Signal Handler started")
+            while True:
+                await asyncio.sleep(SIGNAL_HANDLER_INTERVAL_SEC)
+                signal = self.generate_signal(symbol)
+                if signal is None:
+                    continue
+                #TODO: this only allows us to have 1 open position at a time for SPY. Need to make more robust
+                price = float(self.symbols[symbol]['quote'].get('price'))
+                if symbol in self.positions: #NOTE: Long only options strategy
+                    ma = float(self.symbols[symbol]['ma'].get('ma'))
+                    expiration = self.positions[symbol]['expiration']
+                    strike = float(self.positions[symbol]['strike'])
+                    callput = self.positions[symbol]['callput']
+                    if price < ma and self.positions[symbol]['callput'] == 'call':
+                        self.orders.append(self.create_order(symbol, 'market', 'sell', price, NUM_CONTRACTS, 'close', 'day', 'option', expiration, strike, callput))
+                    elif price > ma and self.positions[symbol]['callput'] == 'put':
+                        self.orders.append(self.create_order(symbol, 'market', 'sell', price, NUM_CONTRACTS, 'close', 'day', 'option', expiration, strike, callput))
+                if signal == Signal.HOLD:
+                    continue
+                logger.info(f"SIGNAL: Symbol: {symbol} Signal: {signal} State: {self.symbols[symbol]}")
+                if symbol in self.positions:
+                    logger.warning(f"Already have position. Skipping Signal {signal}. Position Side: {self.positions[symbol]['callput']} Positon: {self.positions[symbol]}")
+                    continue
+                if self.options_chain[symbol] is None:
+                    logger.warning(f"Options chain not found. Skipping Signal {signal}")
+                    continue
+                if signal == Signal.LONG:
+                    if datetime.datetime.utcnow() < self.symbols[symbol]['new_order_long_lock']:
+                        logger.warning(f"New long order lock in effect. Skipping signal: {signal} symbol: {symbol} state: {self.symbols[symbol]} postions: {self.positions}")
+                        continue
+                    strike = float(self.options_chain[symbol]['call'][0]['strike']) #NOTE: gets strike with highest volum
+                    self.orders.append(self.create_order(symbol, 'market', 'buy', price, NUM_CONTRACTS, 'open', 'day', 'option', self.expiration, strike, 'call'))
+                    self.symbols[symbol]['new_order_long_lock'] = datetime.datetime.utcnow() + datetime.timedelta(seconds=NEW_ORDER_LOCK_SECS)
+                else:
+                    if datetime.datetime.utcnow() < self.symbols[symbol]['new_order_short_lock']:
+                        logger.warning(f"New short order lock in effect. Skipping signal: {signal} symbol: {symbol} state: {self.symbols[symbol]}")
+                        continue
+                    strike = float(self.options_chain[symbol]['put'][0]['strike']) #NOTE: gets strike with highest volume
+                    self.orders.append(self.create_order(symbol, 'market', 'buy', price, NUM_CONTRACTS, 'open', 'day', 'option', self.expiration, strike, 'put'))
+                    self.symbols[symbol]['new_order_short_lock'] = datetime.datetime.utcnow() + datetime.timedelta(seconds=NEW_ORDER_LOCK_SECS)
+        except asyncio.CancelledError as e:
+            logger.info(f"Symbol {symbol} Signal Handler cancelled")
+            raise e
+        except Exception as e:
+            logger.exception(f"Symbol {symbol} Signal Handler exception: {str(e)}")
+            raise e
+    
     def create_order(self, symbol, order_type, side, price, quantity, offset, tif, asset_type, exp=None, strike=None, callput=None):
         return Order(
             symbol=str(symbol),
@@ -169,60 +218,33 @@ class DecisionEngine():
             strike=str(strike) if strike is not None else None,
             callput=str(callput) if callput is not None else None
         )
-    
+
     async def decision_handler(self):
-        logger.info(f"Decision Engine signal handler started")
-        #TODO Define Strike price
-        #TODO: Create tasks for each symbol
+        logger.info(f"Decision Handler started")
         try:
+            signal_tasks = set()
+            for symbol in self.symbols.keys():
+                signal_tasks.add(asyncio.create_task(self.signal_handler(symbol), name=f'{symbol}_signal_handler'))
             while True:
-                for symbol in self.symbols.keys():
-                    signal = self.generate_signal(symbol)
-                    if signal is None:
-                        continue
-                    #TODO: this only allows us to have 1 open position at a time for SPY. Need to make more robust
-                    price = float(self.symbols[symbol]['quote'].get('price'))
-                    if symbol in self.positions: #NOTE: Long only options strategy
-                        ma = float(self.symbols[symbol]['ma'].get('ma'))
-                        expiration = self.positions[symbol]['expiration']
-                        strike = float(self.positions[symbol]['strike'])
-                        callput = self.positions[symbol]['callput']
-                        if price < ma and self.positions[symbol]['callput'] == 'call':
-                            self.orders.append(self.create_order(symbol, 'market', 'sell', price, NUM_CONTRACTS, 'close', 'day', 'option', expiration, strike, callput))
-                        elif price > ma and self.positions[symbol]['callput'] == 'put':
-                            self.orders.append(self.create_order(symbol, 'market', 'sell', price, NUM_CONTRACTS, 'close', 'day', 'option', expiration, strike, callput))
-                    if signal == Signal.HOLD:
-                        continue
-                    logger.info(f"FOUND SIGNAL: Symbol: {symbol} Signal: {signal} State: {self.symbols[symbol]}")
-                    if symbol in self.positions:
-                        logger.warning(f"Already have position. Skipping Signal {signal}. Position Side: {self.positions[symbol]['callput']} Positon: {self.positions[symbol]}")
-                        continue
-                    if self.options_chain[symbol] is None:
-                        logger.warning(f"Options chain not found. Skipping Signal {signal}")
-                        continue
-                    if signal == Signal.LONG:
-                        if datetime.datetime.utcnow() < self.symbols[symbol]['new_order_long_lock']:
-                            logger.warning(f"New long order lock in effect. Skipping signal: {signal} symbol: {symbol} state: {self.symbols[symbol]} postions: {self.positions}")
-                            continue
-                        strike = float(self.options_chain[symbol]['call'][0]['strike']) #NOTE: gets strike with highest volum
-                        self.orders.append(self.create_order(symbol, 'market', 'buy', price, NUM_CONTRACTS, 'open', 'day', 'option', self.expiration, strike, 'call'))
-                        self.symbols[symbol]['new_order_long_lock'] = datetime.datetime.utcnow() + datetime.timedelta(seconds=NEW_ORDER_LOCK_SECS)
-                    else:
-                        if datetime.datetime.utcnow() < self.symbols[symbol]['new_order_short_lock']:
-                            logger.warning(f"New short order lock in effect. Skipping signal: {signal} symbol: {symbol} state: {self.symbols[symbol]}")
-                            continue
-                        strike = float(self.options_chain[symbol]['put'][0]['strike']) #NOTE: gets strike with highest volume
-                        self.orders.append(self.create_order(symbol, 'market', 'buy', price, NUM_CONTRACTS, 'open', 'day', 'option', self.expiration, strike, 'put'))
-                        self.symbols[symbol]['new_order_short_lock'] = datetime.datetime.utcnow() + datetime.timedelta(seconds=NEW_ORDER_LOCK_SECS)
-                await asyncio.sleep(SIGNAL_PROC_INTERVAL_SEC)
-        except asyncio.CancelledError:
-            logger.info(f"Decision Handler Cancelled")
+                logger.info(f"num tasks: {len(asyncio.all_tasks())}")
+                done, pending = await asyncio.wait(signal_tasks, return_when=asyncio.FIRST_COMPLETED)
+                for task in done:
+                    task_name = task.get_name()
+                    logger.info(f"{task_name} task completed. respawning...")
+                    signal_tasks.remove(task)
+                    signal_tasks.add(asyncio.create_task(self.signal_handler(task_name.split('_')[0]), name=task_name))
+        except asyncio.CancelledError as e:
+            logger.info(f"Decision Handler cancelled")
             raise e
         except Exception as e:
-            logger.exception(f"Decision Handler Exception: {str(e)}")
+            logger.exception(f"Decision Handler exception: {str(e)}")
             raise e
         finally:
-            logger.info(f"Decision Engine signal handler shutting down")
+            for task in signal_tasks:
+                logger.info(f"cancelling task: {task.get_name()}")
+                task.cancel()
+            await asyncio.gather(*self.exchange_tasks, return_exceptions=True)
+            logger.info(f"Decision Handler shutting down")
 
     async def exchange_order_handler(self, exchange_socket):
         try:
@@ -250,11 +272,11 @@ class DecisionEngine():
                 await asyncio.sleep(ORDER_SOCKET_INTERVAL_SEC)
         except ConnectionError as e:
             logger.error(f'Exchange socket disconnected; Exchange Order Handler resetting: {e}')
-        except asyncio.CancelledError:
-            logger.info(f"Exchange Order Handler Cancelled")
+        except asyncio.CancelledError as e:
+            logger.info(f"Exchange Order Handler cancelled")
             raise e
         except Exception as e:
-            logger.exception(f"Exchange Order Handler Exception: {str(e)}")
+            logger.exception(f"Exchange Order Handler exception: {str(e)}")
             raise e
     
     async def exchange_msg_handler(self, exchange_socket):
@@ -283,7 +305,6 @@ class DecisionEngine():
                     }))
                 async for msg in exchange_socket.receive():
                     msg = json.loads(msg)
-                    #logger.info(f"Received Exchange message: {msg}")
                     if msg['type'] == 'update':
                         if msg['channel'] == 'positions':
                             self.positions = msg['data']
@@ -301,11 +322,11 @@ class DecisionEngine():
                 await asyncio.sleep(ORDER_SOCKET_INTERVAL_SEC)
         except ConnectionError as e:
             logger.error(f'Exchange socket disconnected; Exchange Message Handler task resetting: {e}')
-        except asyncio.CancelledError:
-            logger.info(f"Exchange Message Handler Cancelled")
+        except asyncio.CancelledError as e:
+            logger.info(f"Exchange Message Handler cancelled")
             raise e
         except Exception as e:
-            logger.exception(f"Exchange Message Handler Exception: {str(e)}")
+            logger.exception(f"Exchange Message Handler exception: {str(e)}")
             raise e
 
     async def exchange_handler(self):
@@ -315,7 +336,7 @@ class DecisionEngine():
         }
         self.exchange_tasks.clear()
         try:
-            logger.info(f"Exchange Handler Starting")
+            logger.info(f"Exchange Handler started")
             async with ContextManagedAsyncUnixSocketClient(self.exchange_socket) as exchange_socket:
                 self.exchange_tasks = {
                     asyncio.create_task(self.exchange_msg_handler(exchange_socket), name='msg_handler'),
@@ -327,17 +348,17 @@ class DecisionEngine():
                     done, pending = await asyncio.wait(self.exchange_tasks, return_when=asyncio.FIRST_COMPLETED)
                     for task in done:
                         task_name = task.get_name()
-                        logger.info(f"Exchange {task_name} task completed. Respawning...")
+                        logger.info(f"Exchange {task_name} task completed. respawning...")
                         self.exchange_tasks.remove(task)
                         self.exchange_tasks.add(asyncio.create_task(methods[task_name](exchange_socket), name=task_name))
         except (ConnectionRefusedError, ConnectionResetError):
-            logger.error(f"Exchange Handler Unable to Connect. Resetting...")
+            logger.error(f"Exchange Handler unable to connect. resetting...")
             await asyncio.sleep(SOCKET_CONN_INTERVAL_SEC)
-        except asyncio.CancelledError:
-                logger.info(f"Exchange Handler Cancelled")
+        except asyncio.CancelledError as e:
+                logger.info(f"Exchange Handler cancelled")
                 raise e
         except Exception as e:
-            logger.exception(f"Exchange Handler Exception: {str(e)}")
+            logger.exception(f"Exchange Handler exception: {str(e)}")
             raise e
         finally:
             for task in self.exchange_tasks:
@@ -348,7 +369,7 @@ class DecisionEngine():
     async def market_data_handler(self):
         while True:
             try:
-                logger.info(f"Market Data Handler Starting")
+                logger.info(f"Market Data Handler started")
                 async with ContextManagedAsyncUnixSocketClient(self.market_data_socket) as md_socket:
                     await md_socket.send_json(json.dumps({
                         'type': 'subscribe',
@@ -357,7 +378,6 @@ class DecisionEngine():
                     }))
                     async for msg in md_socket.receive():
                         msg = json.loads(msg)
-                        #logger.info(f"Received  MD message: {msg['channel']}")
                         if msg['type'] == 'update' and msg['symbol'] in self.symbols:
                             if msg['channel'] == 'quote':
                                 self.symbols[msg['symbol']]['quote'] = msg['data']
@@ -372,19 +392,19 @@ class DecisionEngine():
                             else:
                                 logger.warning(f"Unhandled message type: {msg}")
                         elif msg['type'] == 'response':
+                            logger.info(msg)
                             continue
                         elif msg['type'] == 'error':
                             logger.error(msg)
                             break
-                logger.info(f"Market Data Handler Shutting Down")
             except (ConnectionRefusedError, ConnectionResetError):
-                logger.error(f"Market Data Handler Unable to Connect. Resetting...")
+                logger.error(f"Market Data Handler unable to connect. resetting...")
                 await asyncio.sleep(SOCKET_CONN_INTERVAL_SEC)
-            except asyncio.CancelledError:
-                logger.info(f"Market Data Handler Cancelled")
+            except asyncio.CancelledError as e:
+                logger.info(f"Market Data Handler cancelled")
                 raise e
             except Exception as e:
-                logger.exception(f"Market Data Handler Exception: {str(e)}")
+                logger.exception(f"Market Data Handler exception: {str(e)}")
                 raise e
 
     async def test_exchange_handler(self):
@@ -417,7 +437,7 @@ class DecisionEngine():
                     'market_data_handler': self.market_data_handler,
                     'exchange_handler': self.exchange_handler
                 }
-                logger.info("Decision Engine Starting")
+                logger.info("Decision Engine started")
                 self.running = True
                 decision_engine_tasks = {
                     asyncio.create_task(self.decision_handler(), name=f'decision_handler'),
@@ -430,13 +450,13 @@ class DecisionEngine():
                     done, pending = await asyncio.wait(decision_engine_tasks, return_when=asyncio.FIRST_COMPLETED)
                     for task in done:
                         task_name = task.get_name()
-                        logger.info(f"Exchange {task_name} task completed. Respawning...")
+                        logger.info(f"Decision Engine Main {task_name} task completed. respawning...")
                         decision_engine_tasks.remove(task)
                         decision_engine_tasks.add(asyncio.create_task(methods[task_name](), name=task_name))
             finally:
-                logger.info("Decision Engine Shutting Down")
+                logger.info("Decision Engine shutting down")
                 for task in decision_engine_tasks:
-                    logger.info(f"Cancelling task: {task.get_name()}")
+                    logger.info(f"cancelling task: {task.get_name()}")
                     task.cancel()
                 await asyncio.gather(*decision_engine_tasks, return_exceptions=True)
 
