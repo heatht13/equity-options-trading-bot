@@ -6,16 +6,15 @@ from argparse import ArgumentParser
 from importlib import import_module
 from collections import deque
 
-#logger = Logger(__name__)
 logging.basicConfig(
     level=logging.DEBUG,
     format="%(asctime)s [%(levelname)s] [%(filename)s:%(lineno)d]: %(message)s",
     handlers=[
-        #logging.FileHandler("path.log"),
+        logging.FileHandler(f"exchange-{datetime.now().strftime('%Y-%m-%d')}.log"),
         logging.StreamHandler()
     ]
 )
-logger = logging.getLogger()
+logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
 SUB_HANDLER_INTERVAL_SECS = 2
@@ -31,6 +30,8 @@ class ExchangeHandler:
         self.rest_session = None
         self.ws_session = None
         pass
+
+        self.logger = logger
 
     async def get_accounts(self, **kwargs):
         raise NotImplementedError

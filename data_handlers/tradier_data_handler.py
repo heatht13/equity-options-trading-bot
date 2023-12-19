@@ -6,17 +6,6 @@ from datetime import datetime
 
 from md_handler import MALookbackDataParser
 
-#logger = Logger(__name__)
-logging.basicConfig(
-    level=logging.DEBUG,
-    format="%(asctime)s [%(levelname)s] [%(filename)s:%(lineno)d]: %(message)s",
-    handlers=[
-        #logging.FileHandler("path.log"),
-        logging.StreamHandler()
-    ]
-)
-logger = logging.getLogger()
-
 class TradierDataHandler(MALookbackDataParser):
 
     def __init__(self, access_token, **kwargs):
@@ -48,7 +37,7 @@ class TradierDataHandler(MALookbackDataParser):
         resp = await self.rest_query('POST', self.endpoints['create_session'], headers=headers)
         session_id = resp.get('stream', {}).get('sessionid', None)
         if session_id is None:
-            logger.error(f'Failed to get session id: {resp}')
+            self.logger.error(f'Failed to get session id: {resp}')
             return
         self.session_id = session_id
 
@@ -98,7 +87,7 @@ class TradierDataHandler(MALookbackDataParser):
                 async with aiohttp.ClientSession() as self.ws_session:
                     async with self.ws_session.ws_connect(self.ws_uri, ssl=True) as ws:
                         try:
-                            logger.info(f"Stream Handler Started")
+                            self.logger.info(f"Stream Handler Started")
                             if self.session_id is None:
                                 await self.get_session_id()
                             sub_symbols = {
@@ -110,22 +99,22 @@ class TradierDataHandler(MALookbackDataParser):
                             await ws.send_str(json.dumps(sub_symbols))
                             async for msg in ws:
                                 msg = msg.json()
-                                # logger.info(f"Received {json.dumps(msg, indent=2)}")
+                                # self.logger.info(f"Received {json.dumps(msg, indent=2)}")
                                 if 'type' in msg:
                                     if msg['type'] in ('quote', 'timesale', 'summary'):
                                         await self.handle_msg(msg)
                                     else:
-                                        logger.info(f'Unhandled message type: {msg}')
+                                        self.logger.info(f'Unhandled message type: {msg}')
                                 elif 'error' in msg:
                                     if 'session' in msg['error']:
-                                        logger.info(f"Session expired; resetting. {msg}")
+                                        self.logger.info(f"Session expired; resetting. {msg}")
                                         self.session_id = None
                                         break
                                     else:
-                                        logger.error(f"Received unhandled error msg: {msg}")
+                                        self.logger.error(f"Received unhandled error msg: {msg}")
                                 else:
-                                    logger.warning(f'Unknown message: {msg}')
+                                    self.logger.warning(f'Unknown message: {msg}')
                         finally:
-                            logger.info(f"Stream Handler Shutting Down")
+                            self.logger.info(f"Stream Handler Shutting Down")
             except (aiohttp.ClientError, aiohttp.WSServerHandshakeError, ConnectionResetError) as e:
-                logger.error(f"websocket connection closed; resetting. {e}")
+                self.logger.error(f"websocket connection closed; resetting. {e}")

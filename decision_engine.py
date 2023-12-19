@@ -12,11 +12,11 @@ logging.basicConfig(
     level=logging.DEBUG,
     format="%(asctime)s [%(levelname)s] [%(filename)s:%(lineno)d]: %(message)s",
     handlers=[
-        #logging.FileHandler("path.log"),
+        logging.FileHandler(f"decision-{datetime.datetime.now().strftime('%Y-%m-%d')}.log"),
         logging.StreamHandler()
     ]
 )
-logger = logging.getLogger()
+logger = logging.getLogger(__name__)
 
 ORDER_SOCKET_INTERVAL_SEC = 2
 SOCKET_CONN_INTERVAL_SEC = 2

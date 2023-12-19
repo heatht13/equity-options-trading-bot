@@ -12,11 +12,11 @@ logging.basicConfig(
     level=logging.DEBUG,
     format="%(asctime)s [%(levelname)s] [%(filename)s:%(lineno)d]: %(message)s",
     handlers=[
-        #logging.FileHandler("path.log"),
+        logging.FileHandler(f"md-{datetime.now().strftime('%Y-%m-%d')}.log"),
         logging.StreamHandler()
     ]
 )
-logger = logging.getLogger()
+logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
 Client = namedtuple('Client', (
@@ -68,6 +68,8 @@ class MALookbackDataParser():
             ohlc=OHLC.copy()
         ) for symbol in symbols}
 
+        self.logger = logger
+
     def sma(self, symbol, period, price, closed=False):
         ma_queue = self.symbols[symbol].ma_queue
         ma = (sum((candle['c'] for candle in ma_queue)) + price) / period
@@ -96,7 +98,7 @@ class MALookbackDataParser():
             return
         ohlc = self.symbols[symbol].ohlc
         tick = quote_time % self.timeframe
-        logger.info(f"Tick: {tick}")
+        #logger.info(f"Tick: {tick}")
         ohlc['c'] = price
         if price > ohlc['h']:
             ohlc['h'] = price
@@ -199,8 +201,8 @@ class MALookbackDataParser():
         channel = msg['channel']
         symbol = msg['symbol']
         if msg['channel'] == 'quote':
-            logger.info(f"TIME: {datetime.fromtimestamp(msg['data']['quote_time'])}")
-            logger.info(self.symbols[symbol].ohlc)
+            #logger.info(f"TIME: {datetime.fromtimestamp(msg['data']['quote_time'])}")
+            #logger.info(self.symbols[symbol].ohlc)
             if msg['data']['price'] != self.symbols[symbol].ohlc['c'] and symbol in self.client.quote:
                 await self.send_msg(msg)
             await self.update_symbol_state(msg)

@@ -8,17 +8,6 @@ from datetime import datetime
 
 from exchange_handler import ExchangeHandler
 
-#logger = Logger(__name__)
-logging.basicConfig(
-    level=logging.DEBUG,
-    format="%(asctime)s [%(levelname)s] [%(filename)s:%(lineno)d]: %(message)s",
-    handlers=[
-        #logging.FileHandler("path.log"),
-        logging.StreamHandler()
-    ]
-)
-logger = logging.getLogger()
-
 POSITIONS_HANDLER_INTERVAL_SECS = 2
 OCC_REGEX = r'(\d{6})([PC])(\d{8})'
 
@@ -48,7 +37,7 @@ class TradierExchangeHandler(ExchangeHandler):
         uri = self.rest_url + endpoint
         async with self.rest_session.request(method, uri, headers=headers, data=data, params=params) as response:
             if response.status // 100 != 2:
-                logger.exception(f'Error {response.status} on {method} {endpoint}: {response.reason}')
+                self.logger.exception(f'Error {response.status} on {method} {endpoint}: {response.reason}')
                 return response.text
             return await response.json()
         
@@ -60,7 +49,7 @@ class TradierExchangeHandler(ExchangeHandler):
         resp = await self.rest_query('POST', self.endpoints['create_session'], headers=headers)
         session_id = resp.get('stream', {}).get('sessionid', None)
         if session_id is None:
-            logger.error(f'Failed to get session id: {resp}')
+            self.logger.error(f'Failed to get session id: {resp}')
             return
         self.session_id = session_id
 
@@ -146,9 +135,9 @@ class TradierExchangeHandler(ExchangeHandler):
             data['side'] = direction
             data['quantity'] = "1" #NOTE: tradier says number of shares, but we need to test #str(int(quantity)*100)
         
-        logger.info(f"New Order: {json.dumps(data, indent=4)}")
+        self.logger.info(f"New Order: {json.dumps(data, indent=4)}")
         response = await self.rest_query('POST', self.endpoints['orders'], data=data)
-        logger.info(f"NEW ORDER RESP: {json.dumps(response, indent=4)}")
+        self.logger.info(f"NEW ORDER RESP: {json.dumps(response, indent=4)}")
         return response
 
     async def modify_order(self, order_id, order_type, price, quantity, tif):
@@ -209,17 +198,17 @@ class TradierExchangeHandler(ExchangeHandler):
         channel = msg['event']
         if channel == 'order':
             data = {
-                'order_id': str(msg['id']),
-                'status': msg['status'],
-                'type': msg['type'],
-                'price': float(msg['price']),
-                'avg_fill_price': float(msg['avg_fill_price']),
-                'exec_quantity': float(msg['exec_quantity']),
-                'last_fill_quantity': float(msg['last_fill_quantity']),
-                'remaining_quantity': float(msg['remaining_quantity']),
-                'trade_time': float(datetime.strptime(msg['transaction_date'], '%Y-%m-%dT%H:%M:%SZ').timestamp()),
-                'create_time': float(datetime.strptime(msg['create_date'], '%Y-%m-%dT%H:%M:%SZ').timestamp()),
-                'account_id': msg['account']
+                # 'order_id': str(msg['id']),
+                # 'status': msg['status'],
+                # 'type': msg['type'],
+                # 'price': float(msg['price']),
+                # 'avg_fill_price': float(msg['avg_fill_price']),
+                # 'exec_quantity': float(msg['exec_quantity']),
+                # 'last_fill_quantity': float(msg['last_fill_quantity']),
+                # 'remaining_quantity': float(msg['remaining_quantity']),
+                # 'trade_time': float(datetime.strptime(msg['transaction_date'], '%Y-%m-%dT%H:%M:%SZ').timestamp()),
+                # 'create_time': float(datetime.strptime(msg['create_date'], '%Y-%m-%dT%H:%M:%SZ').timestamp()),
+                # 'account_id': msg['account']
             }
         else:
             return None
@@ -237,7 +226,7 @@ class TradierExchangeHandler(ExchangeHandler):
                 async with aiohttp.ClientSession() as self.ws_session:
                     async with self.ws_session.ws_connect(self.ws_uri, ssl=True) as ws:
                         try:
-                            logger.info('Exchange WS Handler Started')
+                            self.logger.info('Exchange WS Handler Started')
                             if self.session_id is None:
                                 await self.get_session_id()
                             sub_events = {
@@ -248,27 +237,29 @@ class TradierExchangeHandler(ExchangeHandler):
                             await ws.send_str(json.dumps(sub_events))
                             async for msg in ws:
                                 msg = msg.json()
-                                logger.info(msg)
                                 if 'event' in msg:
                                     if msg['event'] == 'order':
+                                        self.logger.info(msg)
                                         await self.handle_msg(msg)
+                                    elif msg['event'] == 'heartbeat':
+                                        pass
                                     else:
-                                        logger.info(f'Unhandled message type: {msg}')
+                                        self.logger.info(f'Unhandled message type: {msg}')
                                 elif 'error' in msg:
                                     if 'session' in msg['error']:
-                                        logger.info(f"Session expired; resetting. {msg}")
+                                        self.logger.info(f"Session expired; resetting. {msg}")
                                         self.session_id = None
                                         break
                                     else:
-                                        logger.error(f"Received unhandled error msg: {msg}")
+                                        self.logger.error(f"Received unhandled error msg: {msg}")
                                 else:
-                                    logger.warning(f'Unknown message: {msg}')
+                                    self.logger.warning(f'Unknown message: {msg}')
                                 if not self.client['order']:
                                     break
                         finally:
-                            logger.info(f"Exchange WS Handler Shutting Down")
+                            self.logger.info(f"Exchange WS Handler Shutting Down")
             except (aiohttp.ClientError, aiohttp.WSServerHandshakeError, ConnectionResetError) as e:
-                logger.error(f"websocket connection closed; resetting. {e}")
+                self.logger.error(f"websocket connection closed; resetting. {e}")
             finally:
                 if self.ws_session and not self.ws_session.closed:
                     await self.ws_session.close()
