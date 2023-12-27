@@ -62,28 +62,37 @@ class TradierExchangeHandler(ExchangeHandler):
         return balances
     
     async def get_positions(self):
-        positions_resp = await self.rest_query('GET', self.endpoints['positions'])
-        positions = dict()
-        if positions_resp['positions'] == 'null':
-            return positions
-        for pos in positions_resp['positions']['position']:
+        def parse_position(pos):
             position = {
                 'symbol': pos['symbol'],
                 'quantity': float(pos['quantity']),
                 'cost_basis': float(pos['cost_basis']),
-                'side': 'long' if position['quantity'] > 0 else 'short',
+                'side': 'long' if float(pos['quantity']) > 0 else 'short',
                 'date_acquired': float(datetime.strptime(pos['date_acquired'], '%Y-%m-%dT%H:%M:%S.%fZ').timestamp()),
             }
             symbol = re.search(OCC_REGEX+'$', pos['symbol'])
             if symbol is None:
                 position['asset_class'] = 'stock'
-                positions[position['symbol']] = position
             else:
                 position['asset_class'] = 'option'
                 position['expiration'] = symbol.group(1)
                 position['strike'] = float(symbol.group(3))/10**3
                 position['callput'] = 'call' if symbol.group(2) == 'C' else 'put'
-                positions[str(position['symbol']).split(symbol.group(1))[0]] = position
+                position['underlying'] = str(position['symbol']).split(symbol.group(1))[0]
+            return position
+        positions_resp = await self.rest_query('GET', self.endpoints['positions'])
+        positions = dict()
+        if positions_resp['positions'] == 'null':
+            return positions
+        if isinstance(positions_resp['positions']['position'], list):
+            for pos in positions_resp['positions']['position']:
+                position = parse_position(pos)
+                symbol = position['underlying'] if position['asset_class'] == 'option' else position['symbol']
+                positions[symbol] = position
+        else:
+            position = parse_position(positions_resp['positions']['position'])
+            symbol = position['underlying'] if position['asset_class'] == 'option' else position['symbol']
+            positions[symbol] = position
         return positions
 
     async def get_orders(self, order_id=None):
@@ -197,6 +206,7 @@ class TradierExchangeHandler(ExchangeHandler):
     def parse_msg(self, msg):
         channel = msg['event']
         if channel == 'order':
+            #2023-12-27 11:31:11,911 [INFO] [tradier_exchange_handler.py:242]: {'id': 44586343, 'event': 'order', 'status': 'filled', 'type': 'market', 'price': 0.0, 'last_fill_price': 0.95, 'stop_price': 0.0, 'avg_fill_price': 0.95, 'exec_quantity': 1.0, 'last_fill_quantity': 1.0, 'remaining_quantity': 0.0, 'transaction_date': '2023-12-27T16:31:11.769Z', 'create_date': '2023-12-27T16:31:11.626Z', 'account': '6YA38565'}
             data = {
                 # 'order_id': str(msg['id']),
                 # 'status': msg['status'],
@@ -213,7 +223,7 @@ class TradierExchangeHandler(ExchangeHandler):
         else:
             return None
         return {
-                'handler': 'data',
+                'handler': 'exchange',
                 'type': 'update',
                 'channel': channel,
                 'timestamp': datetime.utcnow().timestamp(),
@@ -240,7 +250,7 @@ class TradierExchangeHandler(ExchangeHandler):
                                 if 'event' in msg:
                                     if msg['event'] == 'order':
                                         self.logger.info(msg)
-                                        await self.handle_msg(msg)
+                                        #await self.handle_msg(msg)
                                     elif msg['event'] == 'heartbeat':
                                         pass
                                     else:

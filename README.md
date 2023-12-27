@@ -58,9 +58,10 @@
 ## To Do
 
 * Write MD and exchange task management like i do in decision handler
-* Need to add support running from remote
-* Need to log to files at some point
+* Need to (properly) close all processes upon insufficient funds or market close.
+* Need to integrate limit orders. Paying spread is not fun
 * Potentially add some timeout logic to the queues and sockets
+* Need to add support running from remote
 * Have server respond with list of symbols that fail to subscribe
 * Need to get api keys from webull
 * If decide to build book, seperate md from signal generator and stream it to both signal generator and book

@@ -1,3 +1,4 @@
+import sys
 import json
 import asyncio
 import enum
@@ -12,7 +13,7 @@ logging.basicConfig(
     level=logging.DEBUG,
     format="%(asctime)s [%(levelname)s] [%(filename)s:%(lineno)d]: %(message)s",
     handlers=[
-        logging.FileHandler(f"decision-{datetime.datetime.now().strftime('%Y-%m-%d')}.log"),
+        logging.FileHandler(f"./logs/decision-{datetime.datetime.now().strftime('%Y-%m-%d')}.log"),
         logging.StreamHandler()
     ]
 )
@@ -27,8 +28,8 @@ MAX_ORDERS = 2
 NEW_ORDER_LOCK_SECS = 20
 MSG_LENGTH_PREFIX_BYTES = 4
 DAYS_TO_EXPIRATION = 7
-MAX_OPTION_PRICE = 1.0
-MIN_OPTION_PRICE = 0.5
+MAX_OPTION_PRICE = 0.9
+MIN_OPTION_PRICE = 0.6
 
 OrderRequest = namedtuple('Order', (
     'symbol',
@@ -52,6 +53,8 @@ OptionsChainRequest = namedtuple('OptionsChainRequest', (
 ))
 
 BalanceRequest = namedtuple('BalanceRequest', tuple())
+
+ShutdownRequest = namedtuple('ShutdownRequest', tuple())
 
 SymbolState = namedtuple('SymbolState', (
     'quote',
@@ -98,7 +101,8 @@ class DecisionEngine():
             'candle':dict(),
             'price_state':PriceState.UNSET,
             'new_order_short_lock': datetime.datetime.utcnow(),
-            'new_order_long_lock': datetime.datetime.utcnow()
+            'new_order_long_lock': datetime.datetime.utcnow(),
+            'close_position_lock': datetime.datetime.utcnow()
          } for symbol in symbols}
         self.exchange_msg_queue = asyncio.Queue()
         self.exchange_tasks = set()
@@ -180,9 +184,15 @@ class DecisionEngine():
                     strike = float(self.positions[symbol]['strike'])
                     callput = self.positions[symbol]['callput']
                     if price < ma and self.positions[symbol]['callput'] == 'call':
-                        await self.exchange_msg_queue.put(self.create_order(symbol, 'market', 'sell', price, NUM_CONTRACTS, 'close', 'day', 'option', expiration, strike, callput))
+                        if datetime.datetime.utcnow() >= self.symbols[symbol]['close_position_lock']:
+                            logger.info(f'Closing position: {self.positions[symbol]}')
+                            await self.exchange_msg_queue.put(self.create_order(symbol, 'market', 'sell', price, NUM_CONTRACTS, 'close', 'day', 'option', expiration, strike, callput))
+                            self.symbols[symbol]['close_position_lock'] = datetime.datetime.utcnow() + datetime.timedelta(seconds=NEW_ORDER_LOCK_SECS)
                     elif price > ma and self.positions[symbol]['callput'] == 'put':
-                        await self.exchange_msg_queue.put(self.create_order(symbol, 'market', 'sell', price, NUM_CONTRACTS, 'close', 'day', 'option', expiration, strike, callput))
+                        if datetime.datetime.utcnow() >= self.symbols[symbol]['close_position_lock']:
+                            logger.info(f'Closing position: {self.positions[symbol]}')
+                            await self.exchange_msg_queue.put(self.create_order(symbol, 'market', 'sell', price, NUM_CONTRACTS, 'close', 'day', 'option', expiration, strike, callput))
+                            self.symbols[symbol]['close_position_lock'] = datetime.datetime.utcnow() + datetime.timedelta(seconds=NEW_ORDER_LOCK_SECS)
                 if signal == Signal.HOLD:
                     continue
                 logger.info(f"SIGNAL: Symbol: {symbol} Signal: {signal} State: {self.symbols[symbol]}")
@@ -294,6 +304,12 @@ class DecisionEngine():
                             'min_price': msg.min_price
                         }
                     }))
+                elif isinstance(msg, ShutdownRequest):
+                    await exchange_socket.send_json(json.dumps({
+                        'type': 'request',
+                        'channel': 'shutdown'
+                    }))
+                    sys.exit(0)
                 else:
                     logger.warning(f"Unhandled message type: {msg}")
         except ConnectionError as e:
@@ -330,6 +346,15 @@ class DecisionEngine():
                             if 'error' in msg['data'] or not msg['data']:
                                 raise Exception(f"Failed to retrieve options chain: {msg['data']}")
                             self.options_chain[msg['data']['underlying']] = msg['data']['options_chain']
+                        elif msg['channel'] == 'new_order':
+                            if 'errors' in msg['data']:
+                                logger.error(f"Failed to place order: {msg}")
+                                error = msg['data']['errors']
+                                if 'InitialMargin' in error.get('error'):
+                                    logger.error(f"Insufficient funds to place order: {msg}")
+                                    if len(self.positions) == 0:
+                                        logger.info("Insufficient Funds. Shutting Down...")
+                                        await self.exchange_msg_queue.put(ShutdownRequest())
                         elif msg['channel'] in ('orders', 'positions'):
                             if 'error' in msg['data']:
                                 raise Exception(f"Failed to subscribe {msg['channel']}: {msg['data']}")

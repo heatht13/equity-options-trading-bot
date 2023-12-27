@@ -12,7 +12,7 @@ logging.basicConfig(
     level=logging.DEBUG,
     format="%(asctime)s [%(levelname)s] [%(filename)s:%(lineno)d]: %(message)s",
     handlers=[
-        logging.FileHandler(f"md-{datetime.now().strftime('%Y-%m-%d')}.log"),
+        logging.FileHandler(f"./logs/md-{datetime.now().strftime('%Y-%m-%d')}.log"),
         logging.StreamHandler()
     ]
 )

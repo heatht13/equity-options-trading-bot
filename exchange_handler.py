@@ -1,3 +1,4 @@
+import sys
 import json
 import asyncio
 import logging
@@ -10,7 +11,7 @@ logging.basicConfig(
     level=logging.DEBUG,
     format="%(asctime)s [%(levelname)s] [%(filename)s:%(lineno)d]: %(message)s",
     handlers=[
-        logging.FileHandler(f"exchange-{datetime.now().strftime('%Y-%m-%d')}.log"),
+        logging.FileHandler(f"./logs/exchange-{datetime.now().strftime('%Y-%m-%d')}.log"),
         logging.StreamHandler()
     ]
 )
@@ -175,6 +176,9 @@ class ExchangeSocketServer:
                         response = await self.exchange_handler.cancel_order(order_id=msg['order_id'])
                 elif channel == 'options_chains':
                     response = await self.exchange_handler.get_options_chains(**msg['data'])
+                elif channel == 'shutdown':
+                    logger.info('Received shutdown request. System exiting.')
+                    sys.exit(0)
                 else:
                     response = {'error': 'Invalid message channel. Must be either \'accounts\', \'new_order\', \'get_order\', \'cancel_order\', or \'options_chains\''}
             else:
