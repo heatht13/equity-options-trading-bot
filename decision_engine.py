@@ -346,6 +346,7 @@ class DecisionEngine():
                             if 'error' in msg['data'] or not msg['data']:
                                 raise Exception(f"Failed to retrieve options chain: {msg['data']}")
                             self.options_chain[msg['data']['underlying']] = msg['data']['options_chain']
+                            logger.info(f"Received options chain for {msg['data']['underlying']}: {self.options_chain[msg['data']['underlying']]}")
                         elif msg['channel'] == 'new_order':
                             if 'errors' in msg['data']:
                                 logger.error(f"Failed to place order: {msg}")
