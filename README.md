@@ -2,21 +2,23 @@
 
 ## DISCLAIMER: THIS PROJECT DOES NOT IMPLEMENT A PROFITABLE STRATEGY. FOR REFERENCE ONLY
 
+This is a fully automated equity option trading bot. Provided the user passes valid exchange auth credentials, simply starting one of each of the listed programs under [Startup](#startup) and allowing some time for initializing the MAs, a fully automated bot will place orders on exchange respecting the strategy discussed below.
+
 ## Strategy
 
 * Stream real-time tick data and build OHLC candles at pre-defined intervals
-* Direction is determined by the close of the last candle. Short (long puts) if close is below  pre-defined MA else Long (long calls)
+* Direction is determined by the close of the last candle. Short (long puts) if close is below pre-defined MA else Long (long calls)
 * After we have determined direction, we wait for price (does not have to be a candle close) to break out of x candles highs (if long) or lows (if short)
-* If these criteria are met, we will enter a position. Once in a position, if price (not candle close) crosses 9MA, flatten position.
+* If these criteria are met, we will enter a position. Once in a position, if price (not candle close) crosses pre-defined MA, flatten position.
 * Focused on getting into a position. Currently sending market orders until we stream options MD to decision engine. Limit orders will then be implemented
 
-## Architecture
-
-* ### Startup
-
-  * Market Data Server: `.py311/bin/python md_handler.py --symbols SPY QQQ --exchange fake`
-  * Exchange Router: `.py311/bin/python exchange_handler.py --exchange fake **kwargs`
+## Startup
+Refer to the desired handler's source code to retrieve a list of valid startup parameters and their use cases. Auth credentials will be required if running with a live account.
+  * Market Data Server: `.py311/bin/python md_handler.py --exchange fake --symbols SPY QQQ --timeframe 10m --ma sma --period 21 --lookback 3`
+  * Exchange Router: `.py311/bin/python exchange_handler.py --exchange fake` Note: Currently, there is no `fake` exchange handler implemented, but it is rather easy to do so. I will leave that up to you to build out as you please.
   * Decision Engine: `.py311/bin/python decision_engine.py --symbols SPY QQQ`
+
+## Architecture
   
 * ### Decision Engine
 
