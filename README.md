@@ -2,7 +2,7 @@
 
 ## DISCLAIMER: THIS PROJECT DOES NOT IMPLEMENT A PROFITABLE STRATEGY. FOR REFERENCE ONLY
 
-This is a fully automated equity option trading bot. Provided the user passes valid exchange auth credentials, simply starting one of each of the listed programs under [Startup](#startup) and allowing some time for initializing the MAs, a fully automated bot will place orders on exchange respecting the strategy discussed below.
+This is a fully automated equity option trading bot. Provided the user passes valid exchange auth credentials, simply starting the listed programs under [Startup](#startup) will have you kicked back enjoying the ride while the bot trades its strategy. No user interference or guidance is necessary once startup has completed.
 
 ## Strategy
 
@@ -14,7 +14,7 @@ This is a fully automated equity option trading bot. Provided the user passes va
 
 ## Startup
 Refer to the desired handler's source code to retrieve a list of valid startup parameters and their use cases. Auth credentials will be required if running with a live account.
-  * Market Data Server: `.py311/bin/python md_handler.py --exchange fake --symbols SPY QQQ --timeframe 10m --ma sma --period 21 --lookback 3`
+  * Market Data Server: `.py311/bin/python md_handler.py --exchange fake --symbols SPY QQQ --timeframe 5m --ma sma --period 9 --lookback 3`
   * Exchange Router: `.py311/bin/python exchange_handler.py --exchange fake` Note: Currently, there is no `fake` exchange handler implemented, but it is rather easy to do so. I will leave that up to you to build out as you please.
   * Decision Engine: `.py311/bin/python decision_engine.py --symbols SPY QQQ`
 
