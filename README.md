@@ -1,5 +1,7 @@
 # Equity Options Trading Bot
 
+## DISCLAIMER: THIS PROJECT DOES NOT IMPLEMENT A PROFITABLE STRATEGY. FOR REFERENCE ONLY
+
 ## Strategy
 
 * Stream real-time tick data and build OHLC candles at pre-defined intervals
