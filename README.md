@@ -2,7 +2,7 @@
 
 ## DISCLAIMER: THIS PROJECT DOES NOT IMPLEMENT A PROFITABLE STRATEGY. FOR REFERENCE ONLY
 
-This is a fully automated equity option trading bot. Provided the user passes valid exchange auth credentials, simply starting the listed programs under [Startup](#startup) will have you kicked back enjoying the ride while the bot trades its strategy. No user interference or guidance is necessary once startup has completed.
+This is a fully automated equity option trading bot. Provided the user passes valid exchange auth credentials, simply starting the listed programs under [Startup](#startup) will have you kicked back drinking an ice cold beer while the bot trades its strategy. No user interference or guidance necessary.
 
 ## Strategy
 
