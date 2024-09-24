@@ -19,6 +19,8 @@ Refer to the desired handler's source code to retrieve a list of valid startup p
   * Decision Engine: `.py311/bin/python decision_engine.py --symbols SPY QQQ`
 
 ## Architecture
+
+IPC between Decision Engine, Exchange and Market Data Handlers implemented using unix domain sockets
   
 * ### Decision Engine
 
